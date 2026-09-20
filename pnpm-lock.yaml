@@ -16,26 +16,26 @@ importers:
         version: 1.9.4
       lucide-react:
         specifier: 0.546.0
-        version: 0.546.0(react@19.0.1)
+        version: 0.546.0(react@19.3.0)
       react:
-        specifier: 19.0.1
-        version: 19.0.1
+        specifier: 19.3.0
+        version: 19.3.0
       react-dom:
         specifier: 19.0.1
-        version: 19.0.1(react@19.0.1)
+        version: 19.0.1(react@19.3.0)
       recharts:
         specifier: 3.10.1
-        version: 3.10.1(@types/react@19.3.0)(react-dom@19.0.1(react@19.0.1))(react-is@19.3.0)(react@19.0.1)(redux@5.0.1)
+        version: 3.10.1(@types/react@19.3.0)(react-dom@19.0.1(react@19.3.0))(react-is@19.3.0)(react@19.3.0)(redux@5.0.1)
     devDependencies:
       '@tailwindcss/vite':
         specifier: 4.1.14
-        version: 4.1.14(vite@6.4.3(@types/node@22.20.4)(jiti@2.7.0)(lightningcss@1.30.1)(tsx@4.23.13))
+        version: 4.1.14(vite@6.4.3(@types/node@22.20.3)(jiti@2.7.0)(lightningcss@1.30.1)(tsx@4.23.13))
       '@types/canvas-confetti':
         specifier: 1.9.0
         version: 1.9.0
       '@types/node':
         specifier: ^22.14.0
-        version: 22.20.4
+        version: 22.20.3
       '@types/react':
         specifier: ^19.0.0
         version: 19.3.0
@@ -44,7 +44,7 @@ importers:
         version: 19.3.0(@types/react@19.3.0)
       '@vitejs/plugin-react':
         specifier: 5.0.4
-        version: 5.0.4(vite@6.4.3(@types/node@22.20.4)(jiti@2.7.0)(lightningcss@1.30.1)(tsx@4.23.13))
+        version: 5.0.4(vite@6.4.3(@types/node@22.20.3)(jiti@2.7.0)(lightningcss@1.30.1)(tsx@4.23.13))
       tailwindcss:
         specifier: 4.1.14
         version: 4.1.14
@@ -56,7 +56,7 @@ importers:
         version: 5.8.3
       vite:
         specifier: ^6.2.3
-        version: 6.4.3(@types/node@22.20.4)(jiti@2.7.0)(lightningcss@1.30.1)(tsx@4.23.13)
+        version: 6.4.3(@types/node@22.20.3)(jiti@2.7.0)(lightningcss@1.30.1)(tsx@4.23.13)
 
 packages:
 
@@ -782,8 +782,8 @@ packages:
   '@types/estree@1.0.9':
     resolution: {integrity: sha512-GhdPgy1el4/ImP05X05Uw4cw2/M93BCUmnEvWZNStlCzEKME4Fkk+YpoA5OiHNQmoS7Cafb8Xa3Pya8m1Qrzeg==}
 
-  '@types/node@22.20.4':
-    resolution: {integrity: sha512-zJRE40jpHtKqE/C4fgHrAKQLJuSpzEnP9ff9Y7YtoR3Wd2pwqzlekDeEuUQXjRd+QCYnVnNwuJYmhdk9XV8gvA==}
+  '@types/node@22.20.3':
+    resolution: {integrity: sha512-DZmzkmwHzXrLPAXPyKNDzlIwMMUZCVacoD25ywdy5YTKGbOx/2ld+Q38Im2zJ0vBuZP5Prd3VZutKZyXwkOS8A==}
 
   '@types/react-dom@19.3.0':
     resolution: {integrity: sha512-ZI7bU42mZXXKHn/qNLEw2IrbiINU7X5+vfgdixBHkCNpYWXjKgfQ/P+uyGb5CjOLB9UcnTeg3rylQtV2hym44Q==}
@@ -1098,8 +1098,8 @@ packages:
     resolution: {integrity: sha512-z6F7K9bV85EfseRCp2bzrpyQ0Gkw1uLoCel9XBVWPg/TjRj94SkJzUTGfOa4bs7iJvBWtQG0Wq7wnI0syw3EBQ==}
     engines: {node: '>=0.10.0'}
 
-  react@19.0.1:
-    resolution: {integrity: sha512-nVRaZCuEyvu69sWrkdwjP6QY57C+lY+uMNNMyWUFJb9Z/JlaBOQus7mSMfGYsblv7R691u6SSJA/dX9IRnyyLQ==}
+  react@19.3.0:
+    resolution: {integrity: sha512-E8LUcbtBWt20bbl2YoHfx4ZDBdxVTfOKtCZn9cDSJ4l6/nuoApcpIBcj47t2wZoVX8g2ZHuMHbiShgCR1T5Sog==}
     engines: {node: '>=0.10.0'}
 
   recharts@3.10.1:
@@ -1527,7 +1527,7 @@ snapshots:
   '@napi-rs/lzma-linux-x64-gnu@1.5.1':
     optional: true
 
-  '@reduxjs/toolkit@2.12.0(react-redux@9.3.0(@types/react@19.3.0)(react@19.0.1)(redux@5.0.1))(react@19.0.1)':
+  '@reduxjs/toolkit@2.12.0(react-redux@9.3.0(@types/react@19.3.0)(react@19.3.0)(redux@5.0.1))(react@19.3.0)':
     dependencies:
       '@standard-schema/spec': 1.1.0
       '@standard-schema/utils': 0.3.0
@@ -1536,8 +1536,8 @@ snapshots:
       redux-thunk: 3.1.0(redux@5.0.1)
       reselect: 5.2.0
     optionalDependencies:
-      react: 19.0.1
-      react-redux: 9.3.0(@types/react@19.3.0)(react@19.0.1)(redux@5.0.1)
+      react: 19.3.0
+      react-redux: 9.3.0(@types/react@19.3.0)(react@19.3.0)(redux@5.0.1)
 
   '@rolldown/pluginutils@1.0.0-beta.38': {}
 
@@ -1684,12 +1684,12 @@ snapshots:
       '@tailwindcss/oxide-win32-arm64-msvc': 4.1.14
       '@tailwindcss/oxide-win32-x64-msvc': 4.1.14
 
-  '@tailwindcss/vite@4.1.14(vite@6.4.3(@types/node@22.20.4)(jiti@2.7.0)(lightningcss@1.30.1)(tsx@4.23.13))':
+  '@tailwindcss/vite@4.1.14(vite@6.4.3(@types/node@22.20.3)(jiti@2.7.0)(lightningcss@1.30.1)(tsx@4.23.13))':
     dependencies:
       '@tailwindcss/node': 4.1.14
       '@tailwindcss/oxide': 4.1.14
       tailwindcss: 4.1.14
-      vite: 6.4.3(@types/node@22.20.4)(jiti@2.7.0)(lightningcss@1.30.1)(tsx@4.23.13)
+      vite: 6.4.3(@types/node@22.20.3)(jiti@2.7.0)(lightningcss@1.30.1)(tsx@4.23.13)
 
   '@types/babel__core@7.20.5':
     dependencies:
@@ -1740,7 +1740,7 @@ snapshots:
 
   '@types/estree@1.0.9': {}
 
-  '@types/node@22.20.4':
+  '@types/node@22.20.3':
     dependencies:
       undici-types: 6.21.0
 
@@ -1754,7 +1754,7 @@ snapshots:
 
   '@types/use-sync-external-store@0.0.6': {}
 
-  '@vitejs/plugin-react@5.0.4(vite@6.4.3(@types/node@22.20.4)(jiti@2.7.0)(lightningcss@1.30.1)(tsx@4.23.13))':
+  '@vitejs/plugin-react@5.0.4(vite@6.4.3(@types/node@22.20.3)(jiti@2.7.0)(lightningcss@1.30.1)(tsx@4.23.13))':
     dependencies:
       '@babel/core': 7.29.7
       '@babel/plugin-transform-react-jsx-self': 7.29.7(@babel/core@7.29.7)
@@ -1762,7 +1762,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.38
       '@types/babel__core': 7.20.5
       react-refresh: 0.17.0
-      vite: 6.4.3(@types/node@22.20.4)(jiti@2.7.0)(lightningcss@1.30.1)(tsx@4.23.13)
+      vite: 6.4.3(@types/node@22.20.3)(jiti@2.7.0)(lightningcss@1.30.1)(tsx@4.23.13)
     transitivePeerDependencies:
       - supports-color
 
@@ -1977,9 +1977,9 @@ snapshots:
     dependencies:
       yallist: 3.1.1
 
-  lucide-react@0.546.0(react@19.0.1):
+  lucide-react@0.546.0(react@19.3.0):
     dependencies:
-      react: 19.0.1
+      react: 19.3.0
 
   magic-string@0.30.21:
     dependencies:
@@ -2007,41 +2007,41 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  react-dom@19.0.1(react@19.0.1):
+  react-dom@19.0.1(react@19.3.0):
     dependencies:
-      react: 19.0.1
+      react: 19.3.0
       scheduler: 0.25.0
 
   react-is@19.3.0: {}
 
-  react-redux@9.3.0(@types/react@19.3.0)(react@19.0.1)(redux@5.0.1):
+  react-redux@9.3.0(@types/react@19.3.0)(react@19.3.0)(redux@5.0.1):
     dependencies:
       '@types/use-sync-external-store': 0.0.6
-      react: 19.0.1
-      use-sync-external-store: 1.7.0(react@19.0.1)
+      react: 19.3.0
+      use-sync-external-store: 1.7.0(react@19.3.0)
     optionalDependencies:
       '@types/react': 19.3.0
       redux: 5.0.1
 
   react-refresh@0.17.0: {}
 
-  react@19.0.1: {}
+  react@19.3.0: {}
 
-  recharts@3.10.1(@types/react@19.3.0)(react-dom@19.0.1(react@19.0.1))(react-is@19.3.0)(react@19.0.1)(redux@5.0.1):
+  recharts@3.10.1(@types/react@19.3.0)(react-dom@19.0.1(react@19.3.0))(react-is@19.3.0)(react@19.3.0)(redux@5.0.1):
     dependencies:
-      '@reduxjs/toolkit': 2.12.0(react-redux@9.3.0(@types/react@19.3.0)(react@19.0.1)(redux@5.0.1))(react@19.0.1)
+      '@reduxjs/toolkit': 2.12.0(react-redux@9.3.0(@types/react@19.3.0)(react@19.3.0)(redux@5.0.1))(react@19.3.0)
       clsx: 2.1.1
       decimal.js-light: 2.5.1
       es-toolkit: 1.52.0
       eventemitter3: 5.0.4
       immer: 11.1.18
-      react: 19.0.1
-      react-dom: 19.0.1(react@19.0.1)
+      react: 19.3.0
+      react-dom: 19.0.1(react@19.3.0)
       react-is: 19.3.0
-      react-redux: 9.3.0(@types/react@19.3.0)(react@19.0.1)(redux@5.0.1)
+      react-redux: 9.3.0(@types/react@19.3.0)(react@19.3.0)(redux@5.0.1)
       reselect: 5.2.0
       tiny-invariant: 1.3.3
-      use-sync-external-store: 1.7.0(react@19.0.1)
+      use-sync-external-store: 1.7.0(react@19.3.0)
       victory-vendor: 37.3.6
     transitivePeerDependencies:
       - '@types/react'
@@ -2128,9 +2128,9 @@ snapshots:
       escalade: 3.2.0
       picocolors: 1.1.1
 
-  use-sync-external-store@1.7.0(react@19.0.1):
+  use-sync-external-store@1.7.0(react@19.3.0):
     dependencies:
-      react: 19.0.1
+      react: 19.3.0
 
   victory-vendor@37.3.6:
     dependencies:
@@ -2149,7 +2149,7 @@ snapshots:
       d3-time: 3.1.0
       d3-timer: 3.0.1
 
-  vite@6.4.3(@types/node@22.20.4)(jiti@2.7.0)(lightningcss@1.30.1)(tsx@4.23.13):
+  vite@6.4.3(@types/node@22.20.3)(jiti@2.7.0)(lightningcss@1.30.1)(tsx@4.23.13):
     dependencies:
       esbuild: 0.25.12
       fdir: 6.5.0(picomatch@4.0.7)
@@ -2158,7 +2158,7 @@ snapshots:
       rollup: 4.63.3
       tinyglobby: 0.2.17
     optionalDependencies:
-      '@types/node': 22.20.4
+      '@types/node': 22.20.3
       fsevents: 2.3.3
       jiti: 2.7.0
       lightningcss: 1.30.1
