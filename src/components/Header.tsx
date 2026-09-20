@@ -38,23 +38,28 @@ export const Header: React.FC<HeaderProps> = ({
   const isWhite = theme === 'white';
 
   return (
-    <header className={`border-b sticky top-0 z-40 px-4 py-2.5 transition-colors ${
+    <header className={`border-b sticky top-0 z-40 px-4 py-2.5 transition-colors shadow-[var(--brand-shadow)] ${
       isWhite
-        ? 'bg-white border-slate-200 text-slate-900'
-        : 'bg-slate-950 border-slate-800 text-slate-100'
+        ? 'bg-[var(--brand-surface-raised)] border-[var(--brand-border)] text-slate-900'
+        : 'bg-[var(--brand-surface-raised)] border-[var(--brand-border)] text-slate-100'
     }`}>
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-3">
         {/* Brand */}
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-cyan-600" />
-            <h1 className="text-base font-bold tracking-tight">
-              Conductor Vision
-            </h1>
-            <span className={`hidden sm:inline text-xs px-2 py-0.5 rounded-md ${
-              isWhite ? 'bg-slate-100 text-slate-600' : 'bg-slate-900 text-slate-400'
+            <span className="w-2.5 h-2.5 rounded-full bg-[var(--brand-gold)]" />
+            <div className="leading-tight">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--brand-forest)]">
+                Melody of Art
+              </p>
+              <h1 className="text-base font-bold tracking-tight text-[var(--brand-blue)] dark:text-slate-100">
+                Melody Motion
+              </h1>
+            </div>
+            <span className={`hidden lg:inline text-xs px-2 py-0.5 rounded-md ${
+              isWhite ? 'bg-[#f0eee4] text-slate-600' : 'bg-slate-900 text-slate-400'
             }`}>
-              Dirección Orquestal
+              Movimiento, sonido y aprendizaje
             </span>
           </div>
 
@@ -69,7 +74,7 @@ export const Header: React.FC<HeaderProps> = ({
         <nav className={`flex items-center p-1 rounded-xl border ${
           isWhite ? 'bg-slate-100 border-slate-200' : 'bg-slate-900 border-slate-800'
         }`} aria-label="Módulos de entrenamiento">
-          <button onClick={() => onSelectModule('instrument')} className={`px-3 py-1.5 rounded-lg text-xs font-medium ${activeModuleId === 'instrument' ? 'bg-cyan-600 text-white' : ''}`}>Instrumento</button>
+          <button onClick={() => onSelectModule('instrument')} className={`px-3 py-1.5 rounded-lg text-xs font-medium ${activeModuleId === 'instrument' ? 'bg-[var(--brand-forest)] text-white dark:text-slate-950' : ''}`}>Instrumento</button>
           {MODULES_LIST.map((mod) => {
             const isActive = mod.id === activeModuleId;
             return (
@@ -78,9 +83,7 @@ export const Header: React.FC<HeaderProps> = ({
                 onClick={() => onSelectModule(mod.id)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                   isActive
-                    ? isWhite
-                      ? 'bg-white text-slate-950 shadow-sm font-semibold'
-                      : 'bg-slate-800 text-slate-100 shadow-sm font-semibold'
+                    ? 'bg-[var(--brand-forest)] text-white dark:text-slate-950 shadow-sm font-semibold'
                     : isWhite
                     ? 'text-slate-600 hover:text-slate-950'
                     : 'text-slate-400 hover:text-slate-200'
@@ -117,7 +120,7 @@ export const Header: React.FC<HeaderProps> = ({
             }`}
             title={isSimulation ? 'Cambiar a cámara web' : 'Cambiar a simulación virtual'}
           >
-            {isSimulation ? <Sliders className="w-3.5 h-3.5 text-cyan-600" /> : <Camera className="w-3.5 h-3.5 text-cyan-600" />}
+            {isSimulation ? <Sliders className="w-3.5 h-3.5 text-[var(--brand-blue)]" /> : <Camera className="w-3.5 h-3.5 text-[var(--brand-blue)]" />}
             <span>{isSimulation ? 'Virtual' : 'Cámara'}</span>
           </button>
 

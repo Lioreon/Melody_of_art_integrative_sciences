@@ -1,3 +1,25 @@
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --brand-surface: #f7f5ed;
+  --brand-surface-raised: #fffdf7;
+  --brand-forest: #344a36;
+  --brand-forest-strong: #263a2a;
+  --brand-blue: #173b57;
+  --brand-gold: #b18436;
+  --brand-border: #ded9c9;
+  --brand-shadow: 0 8px 24px rgb(38 58 42 / 0.08);
+}
+
+.dark {
+  --brand-surface: #101713;
+  --brand-surface-raised: #172019;
+  --brand-forest: #91ad8d;
+  --brand-forest-strong: #b6c9b2;
+  --brand-blue: #9dbbd0;
+  --brand-gold: #d1aa62;
+  --brand-border: #334338;
+  --brand-shadow: 0 8px 24px rgb(0 0 0 / 0.2);
+}

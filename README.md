@@ -1,4 +1,8 @@
-# Melody of Art · Conductor Vision
+# Melody of Art · Melody Motion
+
+**Movimiento, sonido y aprendizaje**
+
+Melody Motion es un módulo educativo del ecosistema **Melody of Art**. La identidad anterior, **Conductor Vision**, corresponde a la versión histórica v0.1.0.
 
 Instrumento educativo: apertura horizontal → figura musical; altura promedio → nota de Do mayor (Do4–Do5).
 Aplicación React + TypeScript + Vite. La cámara, el seguimiento y el audio se procesan en el navegador.

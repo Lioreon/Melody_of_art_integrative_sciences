@@ -1,6 +1,6 @@
 {
-  "name": "Remix Conductor Vision - Entrenador de Tiempo de Reacción Maestro",
-  "description": "Herramienta de visión por computadora para rastrear la distancia entre las palmas de las manos y entrenar el tiempo de reacción en milisegundos con métricas de dirección orquestal y partitura interactiva.",
+  "name": "Melody Motion · Melody of Art",
+  "description": "Movimiento, sonido y aprendizaje musical mediante una experiencia interactiva de Melody of Art.",
   "requestFramePermissions": [
     "camera"
   ],

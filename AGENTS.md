@@ -1,4 +1,4 @@
-# Conductor Vision
+# Melody Motion
 
 Lee README.md y docs/DECISIONES.md antes de cambiar la arquitectura.
 Mantén el procesamiento de cámara y audio en el navegador. Evita añadir servicios de IA sin una necesidad explícita.

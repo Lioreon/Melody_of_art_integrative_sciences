@@ -15,6 +15,7 @@ const ReactionMetrics = lazy(() => import('./components/ReactionMetrics').then(m
 import { TrainingControls } from './components/TrainingControls';
 import { SessionReport } from './components/SessionReport';
 import { InfoModal } from './components/InfoModal';
+import { InstitutionalSignature } from './components/InstitutionalSignature';
 
 import { Module1FiguresView } from './components/Module1FiguresView';
 import { Module2PentagramView } from './components/Module2PentagramView';
@@ -372,8 +373,8 @@ export default function App() {
   return (
     <div className={`min-h-screen flex flex-col font-sans transition-colors duration-300 ${
       theme === 'white'
-        ? 'bg-slate-100 text-slate-800 selection:bg-cyan-600 selection:text-white'
-        : 'dark bg-slate-950 text-slate-100 selection:bg-cyan-500 selection:text-slate-950'
+        ? 'bg-[var(--brand-surface)] text-slate-800 selection:bg-[var(--brand-forest)] selection:text-white'
+        : 'dark bg-[var(--brand-surface)] text-slate-100 selection:bg-[var(--brand-gold)] selection:text-slate-950'
     }`}>
       {/* Top Header */}
       <Header
@@ -501,10 +502,7 @@ export default function App() {
         </div>
       </main>
 
-      {/* Minimal Footer */}
-      <footer className="border-t border-slate-200 dark:border-slate-800/80 py-4 px-6 text-center text-xs text-slate-400">
-        <p>Conductor Vision · Dirección orquestal interactiva por visión artificial</p>
-      </footer>
+      <InstitutionalSignature />
 
       {/* Info Methodology Modal */}
       {showInfoModal && (

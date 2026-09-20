@@ -24,7 +24,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ onClose }) => {
 
         {/* Modal Header */}
         <div className="flex items-center space-x-3">
-          <div className="p-2 rounded-xl bg-cyan-50 dark:bg-cyan-950/40 text-cyan-600">
+          <div className="p-2 rounded-xl bg-[#eef1e9] dark:bg-slate-800 text-[var(--brand-forest)]">
             <BookOpen className="w-5 h-5" />
           </div>
           <div>
@@ -32,7 +32,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ onClose }) => {
               Guía de Módulos Didácticos
             </h2>
             <p className="text-xs text-slate-500">
-              Conductor Vision · Visión artificial para el aprendizaje musical
+              Melody Motion · Movimiento, sonido y aprendizaje
             </p>
           </div>
         </div>
@@ -41,7 +41,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ onClose }) => {
         <div className="space-y-3">
           <div className="p-3.5 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 space-y-1">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-semibold text-cyan-600">Módulo 1: Figuras y Duración</span>
+              <span className="font-semibold text-[var(--brand-blue)]">Módulo 1: Figuras y Duración</span>
               <span className="text-slate-400 font-mono text-[11px]">Distancia (X)</span>
             </div>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -51,7 +51,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ onClose }) => {
 
           <div className="p-3.5 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 space-y-1">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-semibold text-cyan-600">Módulo 2: Pentagrama y Altura</span>
+              <span className="font-semibold text-[var(--brand-blue)]">Módulo 2: Pentagrama y Altura</span>
               <span className="text-slate-400 font-mono text-[11px]">Altura (Y)</span>
             </div>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -61,7 +61,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ onClose }) => {
 
           <div className="p-3.5 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 space-y-1">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-semibold text-cyan-600">Módulo 3: Partitura y Reacción</span>
+              <span className="font-semibold text-[var(--brand-blue)]">Módulo 3: Partitura y Reacción</span>
               <span className="text-slate-400 font-mono text-[11px]">Latencia (ms)</span>
             </div>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -76,14 +76,14 @@ export const InfoModal: React.FC<InfoModalProps> = ({ onClose }) => {
             Medición y precisión
           </div>
           <p className="text-[11px] leading-relaxed text-slate-500">
-            Los cálculos se realizan en tiempo real con MediaPipe Hands y marcas de tiempo de alta resolución (<code className="text-cyan-600 font-mono">performance.now()</code>).
+            Los cálculos se realizan en tiempo real con MediaPipe Hands y marcas de tiempo de alta resolución (<code className="text-[var(--brand-blue)] font-mono">performance.now()</code>).
           </p>
         </div>
 
         <div>
           <button
             onClick={onClose}
-            className="w-full py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-xs transition-colors"
+            className="w-full py-2.5 rounded-xl bg-[var(--brand-forest)] hover:bg-[var(--brand-forest-strong)] text-white dark:text-slate-950 font-semibold text-xs transition-colors"
           >
             Continuar práctica
           </button>
@@ -92,5 +92,3 @@ export const InfoModal: React.FC<InfoModalProps> = ({ onClose }) => {
     </div>
   );
 };
-
-
