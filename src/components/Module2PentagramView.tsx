@@ -146,9 +146,7 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
       )}
 
       {/* Main Pentagram Visualizer Card */}
-      <div className={`border rounded-2xl p-5 md:p-6 space-y-4 transition-colors ${
-        isWhite ? 'bg-white border-slate-200 text-slate-900' : 'bg-slate-900 border-slate-800 text-slate-100'
-      }`}>
+      <div className="rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-5 text-[var(--ui-text)] shadow-[var(--ui-shadow)] transition-colors space-y-4 md:p-6">
         {/* Header: Song Info & Target Note Summary */}
         <div className="flex flex-col items-center text-center gap-5 pb-5 border-b border-slate-100 dark:border-slate-800">
           <div>

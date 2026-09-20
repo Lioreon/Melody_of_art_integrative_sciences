@@ -16,6 +16,7 @@ import { TrainingControls } from './components/TrainingControls';
 import { SessionReport } from './components/SessionReport';
 import { InfoModal } from './components/InfoModal';
 import { InstitutionalSignature } from './components/InstitutionalSignature';
+import { WorkspaceHeader } from './components/WorkspaceHeader';
 
 import { Module1FiguresView } from './components/Module1FiguresView';
 import { Module2PentagramView } from './components/Module2PentagramView';
@@ -24,6 +25,25 @@ import { SCORE_PIECES, ScorePiece } from './data/scorePresets';
 import { AppTheme, DualPalmState, ReactionAttempt, ScoreCue, SessionStats, TempoPreset, TrainingMode } from './types';
 import { HandTracker } from './services/handTracker';
 import { audioSynthesizer } from './services/audioSynthesizer';
+
+const AREA_COPY: Record<string, { title: string; description: string }> = {
+  instrument: {
+    title: 'Instrumento',
+    description: 'Explora cómo la altura de tus manos define la nota y cómo su separación determina la figura musical.',
+  },
+  module_1_figures_duration: {
+    title: 'Ritmo',
+    description: 'Representa figuras y silencios con la separación de tus manos y mantén cada posición durante su duración.',
+  },
+  module_2_pentagram_height: {
+    title: 'Pentagrama',
+    description: 'Relaciona la altura y la apertura de tus manos con notas, figuras y secuencias musicales.',
+  },
+  module_3_orchestra_score: {
+    title: 'Compás',
+    description: 'Explora la dirección musical con partituras y feedback experimental sobre tu respuesta corporal.',
+  },
+};
 
 export default function App() {
   // Navigation & Modules
@@ -88,6 +108,7 @@ export default function App() {
     conductorGrade: 'A',
   });
   const [lastAttempt, setLastAttempt] = useState<ReactionAttempt | null>(null);
+  const activeArea = AREA_COPY[activeModuleId] ?? AREA_COPY.instrument;
 
   // References
   const handTrackerRef = useRef<HandTracker | null>(null);
@@ -373,8 +394,8 @@ export default function App() {
   return (
     <div className={`min-h-screen flex flex-col font-sans transition-colors duration-300 ${
       theme === 'white'
-        ? 'bg-[var(--brand-surface)] text-slate-800 selection:bg-[var(--brand-forest)] selection:text-white'
-        : 'dark bg-[var(--brand-surface)] text-slate-100 selection:bg-[var(--brand-gold)] selection:text-slate-950'
+        ? 'bg-[var(--ui-background)] text-[var(--ui-text)] selection:bg-[var(--ui-forest)] selection:text-white'
+        : 'dark bg-[var(--ui-background)] text-[var(--ui-text)] selection:bg-[var(--ui-gold)] selection:text-slate-950'
     }`}>
       {/* Top Header */}
       <Header
@@ -414,7 +435,7 @@ export default function App() {
               theme={theme}
             />
 
-            <details className="border border-slate-300 rounded-xl p-4 text-sm">
+            <details className="rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-4 text-sm shadow-[var(--ui-shadow)]">
               <summary className="cursor-pointer">Seguimiento y colores</summary>
               <div className="pt-4 space-y-3">
                 <label className="block">Modo de detección
@@ -457,6 +478,7 @@ export default function App() {
 
           {/* Right Column: Active Module View */}
           <div className="lg:col-span-8 min-w-0 space-y-6">
+            <WorkspaceHeader title={activeArea.title} description={activeArea.description} />
             {activeModuleId === 'instrument' && <InstrumentPanel palmState={palmState} theme={theme} />}
             {activeModuleId === 'module_1_figures_duration' && (
               <Module1FiguresView

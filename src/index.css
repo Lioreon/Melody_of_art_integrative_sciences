@@ -3,23 +3,39 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --brand-surface: #f7f5ed;
-  --brand-surface-raised: #fffdf7;
-  --brand-forest: #344a36;
-  --brand-forest-strong: #263a2a;
-  --brand-blue: #173b57;
-  --brand-gold: #b18436;
-  --brand-border: #ded9c9;
-  --brand-shadow: 0 8px 24px rgb(38 58 42 / 0.08);
+  --ui-background: #f7f5ed;
+  --ui-surface: #fffdf7;
+  --ui-surface-muted: #f0eee4;
+  --ui-border: #ded9c9;
+  --ui-text: #17231b;
+  --ui-text-muted: #647067;
+  --ui-forest: #344a36;
+  --ui-forest-strong: #263a2a;
+  --ui-blue: #173b57;
+  --ui-gold: #b18436;
+  --ui-jade: #247a63;
+  --ui-shadow: 0 8px 24px rgb(38 58 42 / 0.08);
+
+  --music-note-accent: #087f9b;
+  --music-rhythm-accent: #4f6ea8;
+  --feedback-success: #16805f;
 }
 
 .dark {
-  --brand-surface: #101713;
-  --brand-surface-raised: #172019;
-  --brand-forest: #91ad8d;
-  --brand-forest-strong: #b6c9b2;
-  --brand-blue: #9dbbd0;
-  --brand-gold: #d1aa62;
-  --brand-border: #334338;
-  --brand-shadow: 0 8px 24px rgb(0 0 0 / 0.2);
+  --ui-background: #0d2428;
+  --ui-surface: #123139;
+  --ui-surface-muted: #173b42;
+  --ui-border: #28515a;
+  --ui-text: #f6f1e5;
+  --ui-text-muted: #b2c2bd;
+  --ui-forest: #9bb494;
+  --ui-forest-strong: #c1d1bb;
+  --ui-blue: #a9c7d7;
+  --ui-gold: #d8b566;
+  --ui-jade: #64d6ad;
+  --ui-shadow: 0 8px 24px rgb(2 12 15 / 0.22);
+
+  --music-note-accent: #48c9de;
+  --music-rhythm-accent: #8aa7df;
+  --feedback-success: #55d6a4;
 }

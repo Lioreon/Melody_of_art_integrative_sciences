@@ -13,7 +13,7 @@ interface InfoModalProps {
 export const InfoModal: React.FC<InfoModalProps> = ({ onClose }) => {
   return (
     <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 md:p-7 max-w-xl w-full shadow-xl space-y-5 relative my-8">
+      <div className="relative my-8 w-full max-w-xl space-y-5 rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-6 text-[var(--ui-text)] shadow-xl md:p-7">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 p-2 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
@@ -24,12 +24,12 @@ export const InfoModal: React.FC<InfoModalProps> = ({ onClose }) => {
 
         {/* Modal Header */}
         <div className="flex items-center space-x-3">
-          <div className="p-2 rounded-xl bg-[#eef1e9] dark:bg-slate-800 text-[var(--brand-forest)]">
+          <div className="p-2 rounded-xl bg-[var(--ui-surface-muted)] text-[var(--ui-forest)]">
             <BookOpen className="w-5 h-5" />
           </div>
           <div>
             <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
-              Guía de Módulos Didácticos
+              Guía de Melody Motion
             </h2>
             <p className="text-xs text-slate-500">
               Melody Motion · Movimiento, sonido y aprendizaje
@@ -41,7 +41,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ onClose }) => {
         <div className="space-y-3">
           <div className="p-3.5 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 space-y-1">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-semibold text-[var(--brand-blue)]">Módulo 1: Figuras y Duración</span>
+              <span className="font-semibold text-[var(--ui-blue)]">Ritmo · Figuras y duración</span>
               <span className="text-slate-400 font-mono text-[11px]">Distancia (X)</span>
             </div>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -51,7 +51,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ onClose }) => {
 
           <div className="p-3.5 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 space-y-1">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-semibold text-[var(--brand-blue)]">Módulo 2: Pentagrama y Altura</span>
+              <span className="font-semibold text-[var(--ui-blue)]">Pentagrama · Altura y duración</span>
               <span className="text-slate-400 font-mono text-[11px]">Altura (Y)</span>
             </div>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -61,7 +61,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ onClose }) => {
 
           <div className="p-3.5 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 space-y-1">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-semibold text-[var(--brand-blue)]">Módulo 3: Partitura y Reacción</span>
+              <span className="font-semibold text-[var(--ui-blue)]">Compás · Dirección y respuesta</span>
               <span className="text-slate-400 font-mono text-[11px]">Latencia (ms)</span>
             </div>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -76,14 +76,14 @@ export const InfoModal: React.FC<InfoModalProps> = ({ onClose }) => {
             Medición y precisión
           </div>
           <p className="text-[11px] leading-relaxed text-slate-500">
-            Los cálculos se realizan en tiempo real con MediaPipe Hands y marcas de tiempo de alta resolución (<code className="text-[var(--brand-blue)] font-mono">performance.now()</code>).
+            Los cálculos se realizan en tiempo real con MediaPipe Hands y marcas de tiempo de alta resolución (<code className="text-[var(--ui-blue)] font-mono">performance.now()</code>).
           </p>
         </div>
 
         <div>
           <button
             onClick={onClose}
-            className="w-full py-2.5 rounded-xl bg-[var(--brand-forest)] hover:bg-[var(--brand-forest-strong)] text-white dark:text-slate-950 font-semibold text-xs transition-colors"
+            className="w-full py-3 rounded-xl bg-[var(--ui-forest)] hover:bg-[var(--ui-forest-strong)] text-white dark:text-slate-950 font-semibold text-sm transition-colors"
           >
             Continuar práctica
           </button>

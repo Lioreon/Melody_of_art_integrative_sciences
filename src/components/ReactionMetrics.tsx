@@ -24,7 +24,7 @@ export const ReactionMetrics: React.FC<ReactionMetricsProps> = ({ stats, lastAtt
   }));
 
   return (
-    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 space-y-4">
+    <div className="rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-5 shadow-[var(--ui-shadow)] space-y-4">
       <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
         <div>
           <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
@@ -126,4 +126,3 @@ export const ReactionMetrics: React.FC<ReactionMetricsProps> = ({ stats, lastAtt
     </div>
   );
 };
-

@@ -93,9 +93,7 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
   return (
     <div className="space-y-4">
       {/* Mode Navigation & Stats Bar */}
-      <div className={`border rounded-xl p-3 flex flex-col items-center justify-center gap-3 transition-colors ${
-        isWhite ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
-      }`}>
+      <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-3 shadow-[var(--ui-shadow)] transition-colors">
         <div className="flex items-center space-x-1.5" role="tablist">
           <button
             onClick={() => setSubMode('practice')}
@@ -126,9 +124,7 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
       </div>
 
       {/* Main Task Area (Figure Matching & Sustain Hold) */}
-      <div className={`border rounded-2xl p-5 md:p-6 space-y-5 transition-colors relative overflow-hidden ${
-        isWhite ? 'bg-white border-slate-200 text-slate-900' : 'bg-slate-900 border-slate-800 text-slate-100'
-      }`}>
+      <div className="relative overflow-hidden rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-5 text-[var(--ui-text)] shadow-[var(--ui-shadow)] transition-colors space-y-5 md:p-6">
         {/* Success notification banner */}
         {lastCompletedTitle && (
           <div className="p-2.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 rounded-xl text-xs font-semibold flex items-center justify-center space-x-1.5 animate-in fade-in">
@@ -147,9 +143,7 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
               {displayedFigure.type === 'note' ? 'Nota' : 'Silencio'}
             </span>
           </div>
-          <div aria-hidden="true" className={`w-40 h-40 sm:w-48 sm:h-48 rounded-3xl flex items-center justify-center text-[104px] sm:text-[128px] leading-none select-none ${
-            isWhite ? 'bg-slate-50 text-slate-900' : 'bg-slate-950 text-slate-100'
-          }`}>
+          <div aria-hidden="true" className="flex h-40 w-40 select-none items-center justify-center rounded-3xl bg-[var(--ui-surface-muted)] text-[104px] leading-none text-[var(--music-rhythm-accent)] sm:h-48 sm:w-48 sm:text-[128px]">
             {displayedFigure.symbol}
           </div>
           <h2 className="text-3xl sm:text-5xl font-bold leading-tight break-words max-w-full">{displayedFigure.name}</h2>
@@ -259,7 +253,7 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
                 <strong>Eje X (Apertura entre palmas):</strong> Regula la duración y valor rítmico de la figura musical (Redonda, Blanca, Negra, Corchea).
               </p>
               <p>
-                <strong>Eje Y (Altura vertical):</strong> Regula la entonación y posición en el pentagrama en el Módulo 2.
+                <strong>Eje Y (Altura vertical):</strong> Regula la entonación y posición en el área Pentagrama.
               </p>
             </div>
           )}

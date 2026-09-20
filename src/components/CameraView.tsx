@@ -136,9 +136,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
   }, [palmState, activeCue]);
 
   return (
-    <div className={`border rounded-2xl overflow-hidden transition-colors ${
-      isWhite ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
-    }`}>
+    <div className="overflow-hidden rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface)] shadow-[var(--ui-shadow)] transition-colors">
       {/* Video & Tracking Canvas Stage */}
       <div className="relative bg-slate-950 flex items-center justify-center aspect-[4/3] overflow-hidden">
         {/* Video feed */}

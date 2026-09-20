@@ -27,24 +27,34 @@ export function VideoSourceSelector({ selectedId, onSelect, active, busy, onTogg
   }, [refresh, refreshKey]);
   const missing = selectedId && !devices.some(device => device.deviceId === selectedId);
   const white = theme === 'white';
-  return <section aria-label="Fuente de video" className={`rounded-xl border p-4 space-y-3 ${white ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-700'}`}>
-    <label htmlFor="video-source" className="block text-sm font-semibold">Fuente de video</label>
-    <select id="video-source" value={selectedId} disabled={busy}
-      onChange={event => onSelect(event.target.value)}
-      className={`w-full border rounded-lg p-2 text-sm ${white ? 'bg-white text-slate-900' : 'bg-slate-800 text-slate-100'}`}>
-      <option value="">Cámara predeterminada del sistema</option>
-      {missing && <option value={selectedId}>Cámara seleccionada no disponible</option>}
-      {devices.map((device, index) => <option key={device.deviceId} value={device.deviceId}>
-        {device.label || `Cámara ${index + 1}`}
-      </option>)}
-    </select>
-    <div className="flex flex-wrap gap-2">
-      <button className="bg-cyan-700 text-white rounded-lg px-3 py-2 text-sm" onClick={onToggle}>
-        {active ? busy ? 'Cancelar conexión' : 'Detener cámara' : 'Activar cámara'}
-      </button>
-      <button className="border rounded-lg px-3 py-2 text-sm disabled:opacity-40" disabled={busy} onClick={() => void refresh()}>Actualizar lista</button>
+  return <section aria-label="Cámara" className="rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-4 space-y-3 shadow-[var(--ui-shadow)]">
+    <div className="flex items-center justify-between gap-3">
+      <h2 className="text-sm font-semibold">Cámara y seguimiento</h2>
+      <span className="flex items-center gap-2 text-xs font-medium text-[var(--ui-text-muted)]">
+        <span className={`h-2.5 w-2.5 rounded-full ${active ? 'bg-emerald-500' : 'bg-slate-400'}`} />
+        {busy ? 'Conectando' : active ? 'Activa' : 'Virtual'}
+      </span>
     </div>
-    <p className="text-xs text-slate-500">Puedes elegir una webcam, cámara USB o cámara virtual que tu navegador reconozca. Autoriza la cámara para ver todos los nombres.</p>
+    <button className="w-full rounded-xl bg-[var(--ui-blue)] px-4 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90 dark:text-slate-950" onClick={onToggle}>
+      {active ? busy ? 'Cancelar conexión' : 'Detener cámara' : 'Activar cámara'}
+    </button>
+    <details className="rounded-lg border border-[var(--ui-border)] bg-[var(--ui-surface-muted)] px-3 py-2">
+      <summary className="cursor-pointer text-sm font-medium">Cambiar cámara y opciones</summary>
+      <div className="pt-3 space-y-3">
+        <label htmlFor="video-source" className="block text-xs font-medium text-[var(--ui-text-muted)]">Fuente de video</label>
+        <select id="video-source" value={selectedId} disabled={busy}
+          onChange={event => onSelect(event.target.value)}
+          className={`w-full border rounded-lg p-2.5 text-sm ${white ? 'bg-white text-slate-900' : 'bg-[var(--ui-surface)] text-[var(--ui-text)]'}`}>
+          <option value="">Cámara predeterminada del sistema</option>
+          {missing && <option value={selectedId}>Cámara seleccionada no disponible</option>}
+          {devices.map((device, index) => <option key={device.deviceId} value={device.deviceId}>
+            {device.label || `Cámara ${index + 1}`}
+          </option>)}
+        </select>
+        <button className="rounded-lg border border-[var(--ui-border)] px-3 py-2 text-sm disabled:opacity-40" disabled={busy} onClick={() => void refresh()}>Actualizar lista</button>
+        <p className="text-xs text-[var(--ui-text-muted)]">Admite la cámara del sistema, webcams USB y cámaras virtuales reconocidas por el navegador.</p>
+      </div>
+    </details>
     {busy && <p role="status" className="text-sm">Conectando la fuente de video…</p>}
     {(error || listError) && <p role="alert" className="text-sm text-amber-700 dark:text-amber-400">{error || listError}</p>}
   </section>;

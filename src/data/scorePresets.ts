@@ -21,8 +21,8 @@ export const MODULES_LIST: ModuleInfo[] = [
   {
     id: 'module_1_figures_duration',
     number: 1,
-    title: 'Módulo 1: Figuras y Duración Musical',
-    subtitle: 'Relación Distancia entre Palmas y Tiempo de Sostenimiento',
+    title: 'Ritmo',
+    subtitle: 'Figuras, silencios y duración',
     description: 'Aprende a identificar figuras musicales (Redonda, Blanca, Negra, Corchea) y silencios vinculando la distancia entre tus palmas con su duración. Incluye Práctica Libre, Barra de Sostenimiento y Animación de Confeti por Logro.',
     active: true,
     iconName: 'Activity',
@@ -30,8 +30,8 @@ export const MODULES_LIST: ModuleInfo[] = [
   {
     id: 'module_2_pentagram_height',
     number: 2,
-    title: 'Módulo 2: Lectura en Pentagrama: Altura + Duración',
-    subtitle: 'Rastreo 2D de Palmas y Galería de Escalas / Canciones',
+    title: 'Pentagrama',
+    subtitle: 'Altura, duración y lectura musical',
     description: 'Control espacial simultáneo: Altura (Y) define la nota en el pentagrama con sonido en tiempo real, Distancia entre palmas define la duración. Explora una galería interactiva con escalas y canciones progresivas.',
     active: true,
     iconName: 'Sparkles',
@@ -39,8 +39,8 @@ export const MODULES_LIST: ModuleInfo[] = [
   {
     id: 'module_3_orchestra_score',
     number: 3,
-    title: 'Módulo 3: Dirección de Partitura Orquestal',
-    subtitle: 'Métricas de Reacción y Matices Dinámicos',
+    title: 'Compás',
+    subtitle: 'Dirección, pulso y respuesta corporal',
     description: 'Dirige obras sinfónicas clásicas controlando matices (Crescendo, Decrescendo, Staccato y Fermatas) con medición de tiempo de reacción en milisegundos.',
     active: true,
     iconName: 'Users',

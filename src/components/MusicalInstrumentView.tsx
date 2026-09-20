@@ -40,9 +40,7 @@ export const MusicalInstrumentView: React.FC<MusicalInstrumentViewProps> = ({
 
   return (
     <div
-      className={`rounded-2xl p-5 md:p-6 transition-colors flex flex-col justify-between space-y-6 border ${
-        isWhite ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
-      }`}
+      className="rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-5 shadow-[var(--ui-shadow)] transition-colors flex flex-col justify-between space-y-6 md:p-6"
     >
       {/* Top Status Header */}
       <div className="flex flex-wrap items-center justify-center gap-3 text-center">
@@ -87,7 +85,7 @@ export const MusicalInstrumentView: React.FC<MusicalInstrumentViewProps> = ({
             <span
               className={`text-6xl sm:text-7xl font-black tracking-tight ${
                 isPlaying
-                  ? 'text-cyan-600 dark:text-cyan-400 scale-105'
+                  ? 'text-[var(--music-note-accent)] scale-105'
                   : isWhite
                   ? 'text-slate-900'
                   : 'text-slate-100'
@@ -111,7 +109,7 @@ export const MusicalInstrumentView: React.FC<MusicalInstrumentViewProps> = ({
                     title={note.octaveName}
                     className={`h-1.5 rounded-full transition-all ${
                       isActive
-                        ? 'bg-cyan-600 dark:bg-cyan-400 h-2'
+                        ? 'bg-[var(--music-note-accent)] h-2'
                         : isWhite
                         ? 'bg-slate-200'
                         : 'bg-slate-800'
@@ -143,7 +141,7 @@ export const MusicalInstrumentView: React.FC<MusicalInstrumentViewProps> = ({
           </div>
 
           <div className="my-4 flex flex-col items-center gap-3 text-center min-w-0">
-            <span className="text-7xl leading-tight font-serif text-cyan-600 dark:text-cyan-400">
+            <span className="text-7xl leading-tight font-serif text-[var(--music-rhythm-accent)]">
               {selectedFigure.symbol}
             </span>
             <div>
@@ -171,7 +169,7 @@ export const MusicalInstrumentView: React.FC<MusicalInstrumentViewProps> = ({
                     title={fig.name}
                     className={`h-1.5 rounded-full transition-all ${
                       isActive
-                        ? 'bg-cyan-600 dark:bg-cyan-400 h-2'
+                        ? 'bg-[var(--music-rhythm-accent)] h-2'
                         : isWhite
                         ? 'bg-slate-200'
                         : 'bg-slate-800'
@@ -207,7 +205,7 @@ export const MusicalInstrumentView: React.FC<MusicalInstrumentViewProps> = ({
               ? 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed border border-slate-300 dark:border-slate-700'
               : isPlaying
               ? 'bg-cyan-600 text-white scale-[0.99]'
-              : 'bg-slate-900 dark:bg-cyan-600 hover:bg-slate-800 dark:hover:bg-cyan-500 text-white cursor-pointer active:scale-[0.98]'
+              : 'bg-[var(--ui-blue)] hover:opacity-90 text-white dark:text-slate-950 cursor-pointer active:scale-[0.98]'
           }`}
         >
           {/* Active progress bar during sound duration */}

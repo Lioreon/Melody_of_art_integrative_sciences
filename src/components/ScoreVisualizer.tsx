@@ -128,7 +128,7 @@ export const ScoreVisualizer: React.FC<ScoreVisualizerProps> = ({
   }, [activePiece, currentBeat, activeCue, palmState]);
 
   return (
-    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 space-y-4">
+    <div className="rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-5 shadow-[var(--ui-shadow)] space-y-4">
       {/* Top Controls & Piece Info */}
       <div className="flex flex-col items-center text-center gap-4 pb-5 border-b border-slate-100 dark:border-slate-800">
         <div>

@@ -35,7 +35,7 @@ export const ModulesOverview: React.FC<ModulesOverviewProps> = ({
           isWhite ? 'bg-slate-100 text-slate-600' : 'bg-slate-950 text-slate-400'
         }`}>
           <Layers className="w-4 h-4 text-cyan-600" />
-          <span>Módulos:</span>
+          <span>Áreas:</span>
         </div>
 
         {MODULES_LIST.map((mod) => {
@@ -78,11 +78,10 @@ export const ModulesOverview: React.FC<ModulesOverviewProps> = ({
           }`}
         >
           <Info className="w-4 h-4 text-amber-500" />
-          <span>Información de Módulos (1, 2 y 3)</span>
+          <span>Información de Ritmo, Pentagrama y Compás</span>
         </button>
       )}
     </div>
   );
 };
-
 
