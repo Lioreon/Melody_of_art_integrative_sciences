@@ -8,3 +8,5 @@ coverage/
 !.env.example
 
 /public/mediapipe/
+
+graphify-out/
