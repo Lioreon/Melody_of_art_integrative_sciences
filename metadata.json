@@ -1,0 +1,10 @@
+{
+  "name": "Remix Conductor Vision - Entrenador de Tiempo de Reacción Maestro",
+  "description": "Herramienta de visión por computadora para rastrear la distancia entre las palmas de las manos y entrenar el tiempo de reacción en milisegundos con métricas de dirección orquestal y partitura interactiva.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
