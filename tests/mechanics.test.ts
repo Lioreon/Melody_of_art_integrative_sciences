@@ -4,6 +4,9 @@ import { mapHeightToNote, mapSeparationToFigure, calculateRealDurationSec } from
 import { trackingState, palmAt } from '../src/services/trackingGeometry';
 import { ColorBlobDetector } from '../src/services/colorDetection';
 import { HoldTimer } from '../src/services/holdTimer';
+import { classifyGesture, type GestureLandmark } from '../src/services/gestureClassifier';
+import { advanceRhythmSequence, evaluateRhythmTarget, exploreRhythm } from '../src/services/rhythmEvaluation';
+import { MUSICAL_FIGURES } from '../src/data/scorePresets';
 
 test('hold uses elapsed time, completes once and resets when tracking is lost', () => {
   const timer = new HoldTimer();
@@ -34,6 +37,60 @@ test('vertical movement cannot change the opening control', () => {
   assert.equal(trackingState(a, b).distanceCm, 75);
   assert.equal(trackingState(a, palmAt({ x: 0.8, y: 0.9 })).distanceCm, 75);
   assert.equal(trackingState(a, null).distanceCm, 0);
+});
+function gestureLandmarks(fingerTipDistance: number, thumbTipDistance = fingerTipDistance): GestureLandmark[] {
+  const points = Array.from({ length: 21 }, () => ({ x: 0, y: 0 }));
+  points[0] = { x: 0, y: 0 };
+  points[5] = { x: 1, y: 0 }; points[9] = { x: 0, y: 1 };
+  points[13] = { x: -1, y: 0 }; points[17] = { x: 0, y: -1 };
+  points[4] = { x: thumbTipDistance, y: 0 };
+  points[8] = { x: fingerTipDistance, y: 0 };
+  points[12] = { x: 0, y: fingerTipDistance };
+  points[16] = { x: -fingerTipDistance, y: 0 };
+  points[20] = { x: 0, y: -fingerTipDistance };
+  return points;
+}
+test('classifies clearly open and closed hands without pixel thresholds', () => {
+  assert.equal(classifyGesture(gestureLandmarks(2, 2)), 'OPEN_HAND');
+  assert.equal(classifyGesture(gestureLandmarks(1, 1)), 'CLOSED_FIST');
+});
+test('classifies ambiguous and incomplete landmarks as unknown', () => {
+  assert.equal(classifyGesture(gestureLandmarks(1.25, 1.25)), 'UNKNOWN');
+  assert.equal(classifyGesture(gestureLandmarks(2).slice(0, 20)), 'UNKNOWN');
+  assert.equal(classifyGesture([{ x: Number.NaN, y: 0 }]), 'UNKNOWN');
+});
+test('synthetic palm tracking reports unknown gesture state', () => {
+  assert.equal(palmAt({ x: 0.5, y: 0.5 }).gestureState, 'UNKNOWN');
+});
+const rhythmFigures = MUSICAL_FIGURES.filter(figure => figure.type === 'note');
+test('rhythm target evaluation matches the detected figure', () => {
+  const target = rhythmFigures.find(figure => figure.id === 'negra')!;
+  assert.equal(evaluateRhythmTarget(target, target, true, target.targetDistanceIdealCm).status, 'correct');
+  assert.equal(evaluateRhythmTarget(target, target, true, target.targetDistanceMinCm).status, 'correct');
+  assert.equal(evaluateRhythmTarget(target, target, true, target.targetDistanceMaxCm).status, 'correct');
+});
+test('rhythm target evaluation gives directional guidance', () => {
+  const target = rhythmFigures.find(figure => figure.id === 'negra')!;
+  const closer = rhythmFigures.find(figure => figure.id === 'corchea')!;
+  const farther = rhythmFigures.find(figure => figure.id === 'blanca')!;
+  assert.match(evaluateRhythmTarget(target, closer, true, closer.targetDistanceIdealCm).feedback, /Separa/);
+  assert.match(evaluateRhythmTarget(target, farther, true, farther.targetDistanceIdealCm).feedback, /Acerca/);
+});
+test('tracking loss pauses rhythm evaluation without counting an error', () => {
+  const target = rhythmFigures[2];
+  const result = evaluateRhythmTarget(target, undefined, false, 0);
+  assert.equal(result.status, 'tracking-paused');
+});
+test('rhythm sequence advances only after a correct result', () => {
+  assert.equal(advanceRhythmSequence(0, 'incorrect', 3), 0);
+  assert.equal(advanceRhythmSequence(0, 'tracking-paused', 3), 0);
+  assert.equal(advanceRhythmSequence(0, 'correct', 3), 1);
+  assert.equal(advanceRhythmSequence(2, 'correct', 3), 2);
+});
+test('exploration evaluation has no failure condition', () => {
+  assert.equal(exploreRhythm().status, 'explore');
+  assert.equal(exploreRhythm(false).status, 'explore');
+  assert.match(exploreRhythm(false).feedback, /comenzar a explorar/);
 });
 function scene() {
   const width = 40, height = 30, pixels = new Uint8ClampedArray(width * height * 4);

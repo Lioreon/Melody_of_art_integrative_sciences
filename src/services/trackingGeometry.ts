@@ -3,7 +3,7 @@ import type { DualPalmState, HandPoint, PalmData } from '../types';
 // Legacy exercise thresholds use this virtual scale, not measured centimetres.
 export const SEPARATION_SCALE = 125;
 export function palmAt(center: HandPoint): PalmData {
-  return { present: true, center, wrist: center, indexMcp: center, pinkyMcp: center };
+  return { present: true, gestureState: 'UNKNOWN', center, wrist: center, indexMcp: center, pinkyMcp: center };
 }
 
 export function trackingState(leftPalm: PalmData | null, rightPalm: PalmData | null,

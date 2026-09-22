@@ -2,6 +2,7 @@
 import type { Hands, Results } from '@mediapipe/hands';
 import type { DualPalmState, PalmData, TrackingModeType } from '../types';
 import { ColorTracker } from './colorTracker';
+import { classifyGesture } from './gestureClassifier';
 import { palmAt, trackingState, SEPARATION_SCALE } from './trackingGeometry';
 
 export type HandTrackerCallback = (state: DualPalmState) => void;
@@ -123,6 +124,7 @@ export class HandTracker {
     const palms: PalmData[] = (results.multiHandLandmarks ?? []).slice(0, 2).map(points => {
       const anchors = [points[0], points[5], points[9], points[17]];
       return { present: true,
+        gestureState: classifyGesture(points),
         center: { x: anchors.reduce((sum, p) => sum + p.x, 0) / 4,
           y: anchors.reduce((sum, p) => sum + p.y, 0) / 4 },
         wrist: points[0], indexMcp: points[5], pinkyMcp: points[17] };

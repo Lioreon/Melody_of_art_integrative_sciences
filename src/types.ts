@@ -9,8 +9,11 @@ export interface HandPoint {
   z?: number;
 }
 
+export type GestureState = 'OPEN_HAND' | 'CLOSED_FIST' | 'UNKNOWN';
+
 export interface PalmData {
   present: boolean;
+  gestureState: GestureState;
   center: HandPoint;
   wrist: HandPoint;
   indexMcp: HandPoint;
