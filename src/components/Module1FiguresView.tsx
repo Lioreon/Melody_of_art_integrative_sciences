@@ -9,6 +9,8 @@ import confetti from 'canvas-confetti';
 import { MUSICAL_FIGURES } from '../data/scorePresets';
 import { DualPalmState, MusicalFigure, AppTheme } from '../types';
 import { audioSynthesizer } from '../services/audioSynthesizer';
+import { classifyRhythmGesture } from '../services/gestureClassifier';
+import { createRhythmEvaluation, evaluateRhythmGesture, getRhythmSequence, type RhythmEvaluation, type RhythmLevel } from '../services/rhythmEvaluation';
 import { Check, ChevronDown, ChevronUp, Trophy } from 'lucide-react';
 
 interface Module1FiguresViewProps {
@@ -29,6 +31,8 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
   const isWhite = theme === 'white';
   const [subMode, setSubMode] = useState<'practice' | 'challenge'>('practice');
   const [challengeIndex, setChallengeIndex] = useState<number>(0);
+  const [rhythmLevel, setRhythmLevel] = useState<RhythmLevel>(0);
+  const [rhythmEvaluation, setRhythmEvaluation] = useState<RhythmEvaluation>(() => createRhythmEvaluation(0));
   const [completedCount, setCompletedCount] = useState<number>(0);
   const [showCatalog, setShowCatalog] = useState<boolean>(false);
   const [showGuide, setShowGuide] = useState<boolean>(false);
@@ -37,6 +41,8 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
   const successTimerRef = useRef<number | null>(null);
   useEffect(() => () => { if (successTimerRef.current !== null) clearTimeout(successTimerRef.current); }, []);
   const targetFigure: MusicalFigure = MUSICAL_FIGURES[challengeIndex % MUSICAL_FIGURES.length];
+  const rhythmTargetId = rhythmEvaluation.sequence[rhythmEvaluation.position];
+  const rhythmTargetFigure = MUSICAL_FIGURES.find((figure) => figure.id === rhythmTargetId) ?? MUSICAL_FIGURES[2];
 
   const hasBothHands = Boolean(palmState.leftPalm?.present && palmState.rightPalm?.present);
 
@@ -47,8 +53,16 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
       palmState.distanceCm <= fig.targetDistanceMaxCm
   ) : undefined;
 
-  const activeFig = subMode === 'challenge' ? targetFigure : activeDetectedFigure;
-  const isHoldingCorrect = Boolean(hasBothHands && activeFig && palmState.distanceCm >= activeFig.targetDistanceMinCm && palmState.distanceCm <= activeFig.targetDistanceMaxCm);
+  const activeFig = subMode === 'challenge'
+    ? (rhythmLevel >= 0 ? rhythmTargetFigure : targetFigure)
+    : activeDetectedFigure;
+  const isHoldingCorrect = Boolean(
+    hasBothHands &&
+    activeFig &&
+    !rhythmEvaluation.completed &&
+    palmState.distanceCm >= activeFig.targetDistanceMinCm &&
+    palmState.distanceCm <= activeFig.targetDistanceMaxCm,
+  );
   const [holdProgress, setHoldProgress] = useHoldProgress(
     `${subMode}:${activeFig?.id}`, isHoldingCorrect && !lastCompletedTitle,
     (activeFig?.durationSeconds ?? 1) * 1000, () => { if (activeFig) triggerSuccess(activeFig); });
@@ -72,7 +86,7 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
       setLastCompletedTitle(null);
       setHoldProgress(0);
       if (subMode === 'challenge') {
-        setChallengeIndex((prev) => prev + 1);
+        setRhythmEvaluation((previous) => evaluateRhythmGesture(previous, classifyRhythmGesture(figure.targetDistanceIdealCm)));
       }
     }, 1400);
   };
@@ -85,7 +99,22 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
     }
   };
 
-  const displayedFigure = subMode === 'challenge' ? targetFigure : (activeDetectedFigure || targetFigure);
+  const handleLevelChange = (level: RhythmLevel) => {
+    setRhythmLevel(level);
+    setRhythmEvaluation(createRhythmEvaluation(level));
+    setLastCompletedTitle(null);
+    setHoldProgress(0);
+    if (isSimulation) onSimulatedDistanceChange(MUSICAL_FIGURES.find((figure) => figure.id === getRhythmSequence(level)[0])?.targetDistanceIdealCm ?? 35);
+  };
+
+  const handleRepeatSequence = () => {
+    setRhythmEvaluation(createRhythmEvaluation(rhythmLevel));
+    setLastCompletedTitle(null);
+    setHoldProgress(0);
+    if (isSimulation) onSimulatedDistanceChange(rhythmTargetFigure.targetDistanceIdealCm);
+  };
+
+  const displayedFigure = subMode === 'challenge' ? rhythmTargetFigure : (activeDetectedFigure || targetFigure);
   const isTargetWithinRange =
     palmState.distanceCm >= displayedFigure.targetDistanceMinCm &&
     palmState.distanceCm <= displayedFigure.targetDistanceMaxCm;
@@ -96,7 +125,10 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
       <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-3 shadow-[var(--ui-shadow)] transition-colors">
         <div className="flex items-center space-x-1.5" role="tablist">
           <button
-            onClick={() => setSubMode('practice')}
+            onClick={() => {
+              setSubMode('practice');
+              setLastCompletedTitle(null);
+            }}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
               subMode === 'practice'
                 ? isWhite ? 'bg-slate-100 text-slate-900 font-semibold' : 'bg-slate-800 text-slate-100 font-semibold'
@@ -106,7 +138,12 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
             Práctica libre
           </button>
           <button
-            onClick={() => setSubMode('challenge')}
+            onClick={() => {
+              setSubMode('challenge');
+              setRhythmEvaluation(createRhythmEvaluation(rhythmLevel));
+              setLastCompletedTitle(null);
+              setHoldProgress(0);
+            }}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
               subMode === 'challenge'
                 ? isWhite ? 'bg-slate-100 text-slate-900 font-semibold' : 'bg-slate-800 text-slate-100 font-semibold'
@@ -116,6 +153,24 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
             Desafíos
           </button>
         </div>
+
+        {subMode === 'challenge' && (
+          <div className="flex flex-wrap justify-center gap-1.5" aria-label="Niveles de ritmo">
+            {[0, 1, 2].map((level) => (
+              <button
+                key={level}
+                onClick={() => handleLevelChange(level as RhythmLevel)}
+                className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
+                  rhythmLevel === level
+                    ? isWhite ? 'bg-cyan-100 text-cyan-900 font-semibold' : 'bg-cyan-900/60 text-cyan-100 font-semibold'
+                    : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                }`}
+              >
+                Nivel {level}
+              </button>
+            ))}
+          </div>
+        )}
 
         <div className="flex items-center space-x-1 text-xs text-slate-500">
           <Trophy className="w-3.5 h-3.5 text-cyan-600" />
@@ -137,7 +192,9 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
         <div className="flex flex-col items-center text-center gap-5 py-5 sm:py-8">
           <div className="flex flex-wrap justify-center items-center gap-2 text-sm">
             <span className="text-slate-500 uppercase tracking-wide font-semibold">
-              {subMode === 'challenge' ? `Desafío ${challengeIndex + 1}/${MUSICAL_FIGURES.length}` : 'Figura detectada'}
+              {subMode === 'challenge'
+                ? `${rhythmEvaluation.position}/${rhythmEvaluation.sequence.length}`
+                : 'Figura detectada'}
             </span>
             <span className="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
               {displayedFigure.type === 'note' ? 'Nota' : 'Silencio'}
@@ -180,13 +237,24 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
           </div>
 
           {/* Quick simulation helper if virtual */}
-          {isSimulation && subMode === 'challenge' && (
+          {isSimulation && subMode === 'challenge' && !rhythmEvaluation.completed && (
             <div className="flex justify-center pt-1">
               <button
                 onClick={() => onSimulatedDistanceChange(displayedFigure.targetDistanceIdealCm)}
                 className="text-xs text-cyan-600 hover:underline font-medium"
               >
                 Ajustar simulación a {displayedFigure.targetDistanceIdealCm} cm
+              </button>
+            </div>
+          )}
+          {subMode === 'challenge' && rhythmEvaluation.completed && (
+            <div className="space-y-2 text-center">
+              <p className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">Secuencia completada</p>
+              <button
+                onClick={handleRepeatSequence}
+                className="text-xs font-medium text-cyan-600 hover:underline"
+              >
+                Repetir secuencia
               </button>
             </div>
           )}
@@ -262,4 +330,3 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
     </div>
   );
 };
-

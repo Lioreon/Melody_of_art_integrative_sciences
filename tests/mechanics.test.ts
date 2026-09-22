@@ -4,6 +4,8 @@ import { mapHeightToNote, mapSeparationToFigure, calculateRealDurationSec } from
 import { trackingState, palmAt } from '../src/services/trackingGeometry';
 import { ColorBlobDetector } from '../src/services/colorDetection';
 import { HoldTimer } from '../src/services/holdTimer';
+import { classifyRhythmGesture } from '../src/services/gestureClassifier';
+import { createRhythmEvaluation, evaluateRhythmGesture, getRhythmSequence } from '../src/services/rhythmEvaluation';
 
 test('hold uses elapsed time, completes once and resets when tracking is lost', () => {
   const timer = new HoldTimer();
@@ -13,6 +15,27 @@ test('hold uses elapsed time, completes once and resets when tracking is lost', 
   assert.equal(timer.update(true, 1200, 1000).justCompleted, false);
   assert.equal(timer.update(false, 1250, 1000).progress, 0);
   assert.equal(timer.update(true, 1300, 1000).progress, 0);
+});
+test('classifies rhythm gestures from the virtual opening scale', () => {
+  assert.equal(classifyRhythmGesture(35), 'negra');
+  assert.equal(classifyRhythmGesture(55), 'blanca');
+  assert.equal(classifyRhythmGesture(75), 'redonda');
+  assert.equal(classifyRhythmGesture(10), null);
+});
+test('evaluates the three-step rhythm sequence and supports restart', () => {
+  assert.deepEqual(getRhythmSequence(2), ['negra', 'blanca', 'negra']);
+  let evaluation = createRhythmEvaluation(2);
+  evaluation = evaluateRhythmGesture(evaluation, 'negra');
+  assert.equal(evaluation.position, 1);
+  evaluation = evaluateRhythmGesture(evaluation, 'blanca');
+  evaluation = evaluateRhythmGesture(evaluation, 'negra');
+  assert.equal(evaluation.completed, true);
+  assert.deepEqual(createRhythmEvaluation(2), {
+    level: 2,
+    sequence: ['negra', 'blanca', 'negra'],
+    position: 0,
+    completed: false,
+  });
 });
 
 test('height increases pitch and opening increases duration', () => {
