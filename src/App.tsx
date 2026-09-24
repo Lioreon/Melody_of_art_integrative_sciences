@@ -20,12 +20,15 @@ import { WorkspaceHeader } from './components/WorkspaceHeader';
 
 import { Module1FiguresView } from './components/Module1FiguresView';
 import { Module2PentagramView } from './components/Module2PentagramView';
+import { CompasAccordionView } from './components/CompasAccordionView';
 
 import { SCORE_PIECES, ScorePiece } from './data/scorePresets';
 import { AppTheme, DualPalmState, ReactionAttempt, ScoreCue, SessionStats, TempoPreset, TrainingMode } from './types';
 import { HandTracker } from './services/handTracker';
 import { audioSynthesizer } from './services/audioSynthesizer';
 import type { InstrumentTimbre } from './services/instrumentSamples';
+
+type CompasExperience = 'accordion' | 'direction';
 
 const AREA_COPY: Record<string, { title: string; description: string }> = {
   instrument: {
@@ -42,7 +45,7 @@ const AREA_COPY: Record<string, { title: string; description: string }> = {
   },
   module_3_orchestra_score: {
     title: 'Compás',
-    description: 'Explora la dirección musical con partituras y feedback experimental sobre tu respuesta corporal.',
+    description: 'Integra apertura, duración y pulso en un acordeón corporal; conserva la dirección experimental como nivel posterior.',
   },
 };
 
@@ -52,6 +55,7 @@ export default function App() {
   const [theme, setTheme] = useState<AppTheme>('white');
   const [showInfoModal, setShowInfoModal] = useState<boolean>(false);
   const [showReportModal, setShowReportModal] = useState<boolean>(false);
+  const [compasExperience, setCompasExperience] = useState<CompasExperience>('accordion');
 
   const handleToggleTheme = () => {
     setTheme((prev) => (prev === 'white' ? 'dark_cyan' : 'white'));
@@ -463,7 +467,7 @@ export default function App() {
               </div>
             </details>
 
-            {activeModuleId === 'module_3_orchestra_score' && (
+            {activeModuleId === 'module_3_orchestra_score' && compasExperience === 'direction' && (
               <TrainingControls
                 selectedPiece={selectedPiece}
                 onSelectPiece={handleSelectPiece}
@@ -513,22 +517,72 @@ export default function App() {
 
             {activeModuleId === 'module_3_orchestra_score' && (
               <>
-                <ScoreVisualizer
-                  activePiece={selectedPiece}
-                  currentBeat={currentBeat}
-                  currentMeasure={currentMeasure}
-                  activeCue={activeCue}
-                  palmState={palmState}
-                  isPlaying={isPlaying}
-                  onTogglePlay={() => setIsPlaying(!isPlaying)}
-                  onResetScore={handleResetScore}
-                  msToNextCue={msToNextCue}
-                />
+                <section className="rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-3 shadow-[var(--ui-shadow)]">
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        handleResetScore();
+                        setCompasExperience('accordion');
+                      }}
+                      aria-pressed={compasExperience === 'accordion'}
+                      className={`rounded-xl px-3 py-3 text-left transition-colors ${
+                        compasExperience === 'accordion'
+                          ? 'bg-cyan-600 text-white'
+                          : 'bg-[var(--ui-background)] text-[var(--ui-text)]'
+                      }`}
+                    >
+                      <div className="text-xs font-semibold uppercase tracking-wide opacity-75">Compás · Nivel 1</div>
+                      <div className="mt-1 font-bold">Acordeón corporal</div>
+                      <div className="mt-1 text-xs opacity-80">Apertura + figura + pulso dentro de una frase de 4/4.</div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        handleResetScore();
+                        setCompasExperience('direction');
+                      }}
+                      aria-pressed={compasExperience === 'direction'}
+                      className={`rounded-xl px-3 py-3 text-left transition-colors ${
+                        compasExperience === 'direction'
+                          ? 'bg-cyan-600 text-white'
+                          : 'bg-[var(--ui-background)] text-[var(--ui-text)]'
+                      }`}
+                    >
+                      <div className="text-xs font-semibold uppercase tracking-wide opacity-75">Compás · Nivel 2</div>
+                      <div className="mt-1 font-bold">Dirección experimental</div>
+                      <div className="mt-1 text-xs opacity-80">Partitura, cues y métricas de respuesta corporal.</div>
+                    </button>
+                  </div>
+                </section>
 
-                <Suspense fallback={<p>Cargando métricas…</p>}><ReactionMetrics
-                  stats={stats}
-                  lastAttempt={lastAttempt}
-                /></Suspense>
+                {compasExperience === 'accordion' ? (
+                  <CompasAccordionView
+                    palmState={palmState}
+                    isSimulation={isSimulation}
+                    onSimulatedDistanceChange={handleSimulatedDistanceChange}
+                    theme={theme}
+                  />
+                ) : (
+                  <>
+                    <ScoreVisualizer
+                      activePiece={selectedPiece}
+                      currentBeat={currentBeat}
+                      currentMeasure={currentMeasure}
+                      activeCue={activeCue}
+                      palmState={palmState}
+                      isPlaying={isPlaying}
+                      onTogglePlay={() => setIsPlaying(!isPlaying)}
+                      onResetScore={handleResetScore}
+                      msToNextCue={msToNextCue}
+                    />
+
+                    <Suspense fallback={<p>Cargando métricas…</p>}><ReactionMetrics
+                      stats={stats}
+                      lastAttempt={lastAttempt}
+                    /></Suspense>
+                  </>
+                )}
               </>
             )}
           </div>
