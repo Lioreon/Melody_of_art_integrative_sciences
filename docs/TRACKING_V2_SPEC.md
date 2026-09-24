@@ -352,9 +352,11 @@ Estas propiedades pertenecen a interpretación corporal. Cada módulo decidirá 
 
 # Gramática musical derivada de la forma de las manos
 
-La semántica musical se implementa **después** de la percepción corporal y no forma parte de MediaPipe.
+**Estado: investigación futura; no conectada a los módulos de la primera demostración pública.**
 
-Regla experimental actual:
+La semántica musical, si se retoma, debe implementarse **después** de la percepción corporal y no formar parte de MediaPipe.
+
+Hipótesis experimental registrada:
 
 ```text
 ambas manos abiertas  → sonido / natural
@@ -365,12 +367,7 @@ slot A abierto + B cerrado → bemol ♭
 
 La distancia entre centros de palma sigue determinando la duración. Por tanto, una Negra y su Silencio de Negra comparten el mismo rango espacial; lo que cambia es el estado de apertura/cierre.
 
-Aplicación por módulo:
-
-- **Instrumento**: natural, sostenido, bemol y silencio visual/sonoro.
-- **Ritmo**: nuevo nivel Sonido / silencio.
-- **Pentagrama**: nuevo nivel Alteraciones ♯ / ♭.
-- **Compás**: patrón Sonido y silencio dentro del playhead temporal.
+La primera demostración pública **no aplica estas reglas a Instrumento, Ritmo, Pentagrama ni Compás**. OPEN/CLOSED permanece disponible únicamente como observación de la mano y apoyo técnico/visual del tracking.
 
 Limitación actual importante:
 
