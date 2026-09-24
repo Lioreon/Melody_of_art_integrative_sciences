@@ -5,10 +5,8 @@
 
 import React from 'react';
 import {
-  Building2,
   Camera,
   HelpCircle,
-  MapPin,
   Moon,
   Music2,
   Sliders,
@@ -42,6 +40,29 @@ const LEARNING_AREAS = [
   })),
 ];
 
+const PROJECT_STORIES = [
+  {
+    eyebrow: 'Melody Motion',
+    title: 'Instrumento · Ritmo · Pentagrama · Compás',
+    description: 'Cuatro áreas de aprendizaje dentro de una misma interfaz responsiva.',
+  },
+  {
+    eyebrow: 'Diseño y desarrollo',
+    title: 'A. Owsky',
+    description: 'Ciencias Integrativas · Bolívar · Ecuador.',
+  },
+  {
+    eyebrow: 'Territorio',
+    title: 'Salinas · Bolívar · Ecuador',
+    description: 'Desarrollado para su exploración pedagógica en la Escuela de Música Matiaví.',
+  },
+  {
+    eyebrow: 'Estado del proyecto',
+    title: 'Primera fase demostrativa · 2026',
+    description: 'Herramienta educativa en desarrollo y validación progresiva.',
+  },
+] as const;
+
 export const Header: React.FC<HeaderProps> = ({
   activeModuleId,
   onSelectModule,
@@ -54,6 +75,23 @@ export const Header: React.FC<HeaderProps> = ({
   onToggleTheme,
 }) => {
   const isWhite = theme === 'white';
+  const [storyIndex, setStoryIndex] = React.useState(0);
+  const [storyPaused, setStoryPaused] = React.useState(false);
+
+  React.useEffect(() => {
+    if (storyPaused) return undefined;
+
+    const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return undefined;
+
+    const timer = window.setInterval(() => {
+      setStoryIndex((current) => (current + 1) % PROJECT_STORIES.length);
+    }, 5200);
+
+    return () => window.clearInterval(timer);
+  }, [storyPaused]);
+
+  const currentStory = PROJECT_STORIES[storyIndex];
 
   const utilityButtonClass = `touch-target inline-flex min-h-10 min-w-10 items-center justify-center rounded-xl border transition-colors ${
     isWhite
@@ -63,58 +101,80 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="border-b border-[var(--ui-border)] bg-[var(--ui-surface)] text-[var(--ui-text)] shadow-[var(--ui-shadow)] transition-colors">
-      <div className="mx-auto max-w-[1500px] px-3 pt-[max(0.7rem,env(safe-area-inset-top))] sm:px-4 lg:px-6">
-        <section
-          className="grid gap-3 border-b border-[var(--ui-border)]/70 pb-3 md:grid-cols-[minmax(0,1fr)_1px_minmax(0,1fr)] md:items-center md:gap-5 md:pb-4"
-          aria-label="Identidad institucional y del proyecto"
-        >
-          <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3 rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface-muted)] px-3 py-3 md:border-0 md:bg-transparent md:px-0 md:py-1">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[var(--ui-gold)]/30 bg-[var(--ui-surface)] text-[var(--ui-gold)] shadow-sm sm:h-12 sm:w-12">
-              <Building2 className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
+      <div className="mx-auto max-w-[1500px] px-3 pt-[max(0.65rem,env(safe-area-inset-top))] sm:px-4 lg:px-6">
+        <section className="border-b border-[var(--ui-border)]/70 pb-3 text-center sm:pb-4" aria-label="Identidad institucional y del proyecto">
+          <div className="mx-auto flex max-w-4xl flex-col items-center">
+            <span className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[var(--ui-gold)]/30 bg-[var(--ui-surface-muted)] text-[var(--ui-blue)] shadow-sm sm:h-11 sm:w-11">
+              <Music2 className="h-5 w-5" aria-hidden="true" />
             </span>
 
-            <div className="min-w-0">
-              <p className="text-[8px] font-bold uppercase tracking-[0.2em] text-[var(--ui-gold)] sm:text-[9px]">
-                Proyecto pedagógico para
-              </p>
-              <h1 className="mt-0.5 text-[clamp(1.2rem,4vw,2rem)] font-extrabold leading-none tracking-[-0.025em] text-[var(--ui-text)]">
-                Escuela de Música
-              </h1>
-              <p className="mt-1 text-[clamp(0.95rem,3.2vw,1.4rem)] font-extrabold uppercase tracking-[0.06em] text-[var(--ui-jade)]">
-                Matiaví · Salinas
-              </p>
-              <p className="mt-1 flex items-center gap-1 text-[9px] text-[var(--ui-text-muted)] sm:text-[10px]">
-                <MapPin className="h-3 w-3 shrink-0 text-[var(--ui-jade)]" aria-hidden="true" />
-                Salinas · Bolívar · Ecuador
-              </p>
+            <p className="mt-2 text-[8px] font-bold uppercase tracking-[0.24em] text-[var(--ui-gold)] sm:text-[9px]">
+              Proyecto pedagógico para
+            </p>
+
+            <h1 className="mt-0.5 text-[clamp(1.45rem,5vw,2.4rem)] font-extrabold leading-none tracking-[-0.035em] text-[var(--ui-text)]">
+              Escuela de Música
+            </h1>
+            <p className="mt-1 text-[clamp(1.1rem,4vw,1.75rem)] font-extrabold uppercase tracking-[0.07em] text-[var(--ui-jade)]">
+              Matiaví · Salinas
+            </p>
+
+            <div className="mt-2 flex items-center gap-2 text-[10px] text-[var(--ui-text-muted)] sm:text-xs">
+              <span className="h-px w-7 bg-[var(--ui-gold)]/40" aria-hidden="true" />
+              <span className="font-semibold uppercase tracking-[0.16em] text-[var(--ui-gold)]">Melody of Art</span>
+              <span aria-hidden="true">·</span>
+              <strong className="text-sm tracking-tight text-[var(--ui-blue)] dark:text-[var(--ui-text)] sm:text-base">Melody Motion</strong>
+              <span className="h-px w-7 bg-[var(--ui-gold)]/40" aria-hidden="true" />
             </div>
-          </div>
 
-          <div className="hidden h-full min-h-20 bg-[var(--ui-border)] md:block" aria-hidden="true" />
+            <section
+              className="mt-3 w-full max-w-3xl"
+              aria-label="Aspectos del proyecto"
+              aria-roledescription="carrusel"
+              onMouseEnter={() => setStoryPaused(true)}
+              onMouseLeave={() => setStoryPaused(false)}
+              onFocusCapture={() => setStoryPaused(true)}
+              onBlurCapture={(event) => {
+                if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+                  setStoryPaused(false);
+                }
+              }}
+            >
+              <div
+                key={storyIndex}
+                className="mm-story-panel grid min-h-[68px] place-items-center rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface-muted)] px-3 py-2.5 sm:min-h-[72px] sm:px-5"
+                aria-live="off"
+              >
+                <div>
+                  <p className="text-[8px] font-bold uppercase tracking-[0.19em] text-[var(--ui-gold)] sm:text-[9px]">
+                    {currentStory.eyebrow}
+                  </p>
+                  <p className="mt-0.5 text-sm font-bold leading-tight text-[var(--ui-text)] sm:text-base">
+                    {currentStory.title}
+                  </p>
+                  <p className="mx-auto mt-1 max-w-2xl text-[10px] leading-relaxed text-[var(--ui-text-muted)] sm:text-xs">
+                    {currentStory.description}
+                  </p>
+                </div>
+              </div>
 
-          <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3 rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface-muted)] px-3 py-3 md:border-0 md:bg-transparent md:px-0 md:py-1">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[var(--ui-jade)]/30 bg-[var(--ui-surface)] text-[var(--ui-blue)] shadow-sm sm:h-12 sm:w-12">
-              <Music2 className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
-            </span>
-
-            <div className="min-w-0">
-              <p className="text-[8px] font-bold uppercase tracking-[0.2em] text-[var(--ui-gold)] sm:text-[9px]">
-                Melody of Art
-              </p>
-              <h2 className="mt-0.5 text-[clamp(1.2rem,4vw,2rem)] font-extrabold leading-none tracking-[-0.025em] text-[var(--ui-blue)] dark:text-[var(--ui-text)]">
-                Melody Motion
-              </h2>
-              <p className="mt-1 max-w-xl text-[10px] leading-relaxed text-[var(--ui-text-muted)] sm:text-xs">
-                Interfaz pedagógica musical basada en movimiento, sonido, representación y aprendizaje.
-              </p>
-              <p className="mt-1 text-[9px] leading-relaxed text-[var(--ui-text-muted)] sm:text-[10px]">
-                <span className="font-semibold uppercase tracking-[0.12em] text-[var(--ui-gold)]">Diseño y desarrollo</span>
-                <span className="mx-1">·</span>
-                <strong className="text-[var(--ui-blue)] dark:text-[var(--ui-text)]">A. Owsky</strong>
-                <span className="mx-1">·</span>
-                Ciencias Integrativas
-              </p>
-            </div>
+              <div className="mt-1.5 flex items-center justify-center gap-1.5" aria-label="Seleccionar aspecto del proyecto">
+                {PROJECT_STORIES.map((story, index) => (
+                  <button
+                    key={story.eyebrow}
+                    type="button"
+                    onClick={() => setStoryIndex(index)}
+                    className={`h-2 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ui-gold)] ${
+                      storyIndex === index
+                        ? 'w-6 bg-[var(--ui-jade)]'
+                        : 'w-2 bg-[var(--ui-border)] hover:bg-[var(--ui-text-muted)]/50'
+                    }`}
+                    aria-label={`Mostrar: ${story.eyebrow}`}
+                    aria-pressed={storyIndex === index}
+                  />
+                ))}
+              </div>
+            </section>
           </div>
         </section>
 

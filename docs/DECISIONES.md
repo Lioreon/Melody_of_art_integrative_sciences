@@ -27,7 +27,7 @@ Mantener separadas las capas:
 
 La pérdida de tracking es incertidumbre perceptiva y no debe penalizarse como error del aprendiz.
 
-`GestureState` pertenece a percepción corporal. La equivalencia musical se aplica en una capa posterior mediante una gramática bimanual explícita; MediaPipe nunca decide por sí mismo que un gesto sea una nota, silencio o alteración.
+`GestureState` pertenece a percepción corporal. En la primera versión demostrativa pública, OPEN/CLOSED se conserva como **reconocimiento de la forma de la mano y diagnóstico de tracking**, sin asignar automáticamente silencio, sostenido o bemol a los módulos musicales.
 
 ## Arquitectura pedagógica
 
@@ -109,22 +109,20 @@ No conservar código obsoleto en `main` únicamente por valor histórico.
 
 Ver [TRACKING_V2_SPEC.md](./TRACKING_V2_SPEC.md).
 
-## Gramática bimanual experimental
+## Gramática bimanual — investigación futura
 
-Reglas actuales:
+Se conserva como hipótesis experimental, **fuera de la primera versión demostrativa pública**:
 
 - ambas manos abiertas → sonido natural;
-- ambos puños cerrados → silencio equivalente;
-- slot A cerrado + slot B abierto → sostenido ♯;
-- slot A abierto + slot B cerrado → bemol ♭.
+- ambos puños cerrados → posible silencio equivalente;
+- estados asimétricos → posibles alteraciones.
 
-La distancia de centros de palma conserva la duración. Una figura y su silencio equivalente usan el mismo rango espacial.
+Estas relaciones necesitan validación pedagógica y una identidad estable de manos antes de volver a conectarse con Instrumento, Ritmo, Pentagrama o Compás.
 
-La clasificación OPEN/CLOSED usa información de fingertips y geometría de falanges, y se estabiliza durante varios frames antes de cambiar el estado musical.
-
-Limitación: los slots A/B siguen vinculados al orden espacial del tracker. No se consideran todavía identidades anatómicas permanentes. T5 deberá resolver identidad estable antes de fijar semántica corporal izquierda/derecha definitiva.
-
-Marcadores de color y simulador no contienen landmarks de dedos y conservan únicamente la semántica posicional natural.
+La versión pública mantiene:
+- centro de palma ↔ centro de palma para posición/apertura;
+- OPEN/CLOSED como estado perceptivo y visual;
+- módulos musicales sobre el baseline previamente validado.
 
 ## Próximos experimentos técnicos
 

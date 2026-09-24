@@ -54,15 +54,6 @@ Este roadmap separa lo implementado de la experiencia objetivo. No constituye un
   - overlay opcional de esqueleto de 21 puntos con sombreado suave por estado;
   - sin cambiar todavía el backend `@mediapipe/hands`;
   - “Pelotas de colores” pasa conceptualmente a **Marcadores de color**.
-- **Gramática musical gestual experimental**:
-  - abiertas + abiertas → sonido natural;
-  - puño + puño → silencio equivalente con la misma distancia;
-  - slot A cerrado + B abierto → sostenido ♯;
-  - slot A abierto + B cerrado → bemol ♭;
-  - Ritmo añade Nivel 3 Sonido / silencio;
-  - Pentagrama añade Nivel 3 Alteraciones;
-  - Compás añade patrón Sonido y silencio;
-  - Instrumento refleja natural / alteración / silencio.
 
 ## Fase 3 — aprendizaje musical multimodal
 
@@ -145,6 +136,13 @@ T0 y T1 se implementan antes de migrar de modelo:
 - **T4 — benchmark/migración a MediaPipe Tasks HandLandmarker.**
 - **T5 — identidad estable de manos.**
 - **T6 — gestos derivados por dedo**, sin significado musical automático.
+
+### Gramática gestual futura
+La relación entre puños, silencios y alteraciones se conserva como investigación. No forma parte de la primera versión demostrativa pública. Antes de reactivarla se requiere:
+- validación física del reconocimiento OPEN/CLOSED;
+- identidad estable de manos (T5);
+- pruebas separadas por módulo;
+- definición pedagógica inequívoca de silencios y alteraciones.
 
 Marcadores de color siguen una rama paralela C0–C4: renombrado, calibración desde cámara, confianza/bbox, identidad por color y benchmark frente a tracking.js/OpenCV.js.
 
