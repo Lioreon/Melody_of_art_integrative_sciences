@@ -1,6 +1,6 @@
 # Fuentes de audio de instrumentos
 
-Melody Motion puede usar dos capas de sonido en el módulo **Instrumento**:
+Melody Motion puede usar dos capas de sonido compartidas por los módulos **Instrumento** y **Pentagrama**:
 
 1. **Sintetizador interno** — generado con Web Audio API y disponible sin conexión externa.
 2. **Timbres muestreados** — piano, guitarra nylon y violín, cargados bajo demanda desde un repositorio público fijado a un commit concreto.
@@ -17,7 +17,7 @@ Licencias declaradas por el repositorio original:
 - código: MIT;
 - muestras: Creative Commons Attribution 3.0 (CC BY 3.0).
 
-Melody Motion no incorpora actualmente el banco completo dentro del repositorio. El navegador solicita únicamente las muestras necesarias cuando el usuario selecciona un timbre.
+Melody Motion no incorpora actualmente el banco completo dentro del repositorio. El navegador solicita únicamente las muestras necesarias cuando el usuario selecciona un timbre. La selección se conserva al cambiar entre Instrumento y Pentagrama durante la sesión.
 
 ## Procedencia declarada por el repositorio original
 
@@ -32,11 +32,11 @@ La atribución completa y las condiciones de las fuentes originales deben conser
 ## Arquitectura
 
 ```text
-evento musical
+evento musical (Instrumento o Pentagrama)
       ↓
 frecuencia objetivo
       ↓
-timbre elegido
+timbre compartido
       ↓
 ┌─────────────────────┐
 │ sintetizador local  │
