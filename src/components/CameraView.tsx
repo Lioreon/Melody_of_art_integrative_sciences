@@ -81,8 +81,26 @@ export const CameraView: React.FC<CameraViewProps> = ({
         const landmarks = palm?.landmarks;
         if (!landmarks || landmarks.length < 21) continue;
 
-        ctx.strokeStyle = 'rgba(34, 211, 238, 0.72)';
-        ctx.lineWidth = 1.4;
+        const handColor = palm.gestureState === 'OPEN_HAND'
+          ? { line: 'rgba(34, 211, 238, 0.82)', fill: 'rgba(34, 211, 238, 0.12)', tip: '#67e8f9' }
+          : palm.gestureState === 'CLOSED_FIST'
+          ? { line: 'rgba(244, 201, 93, 0.88)', fill: 'rgba(244, 201, 93, 0.16)', tip: '#f4c95d' }
+          : { line: 'rgba(148, 163, 184, 0.72)', fill: 'rgba(148, 163, 184, 0.10)', tip: '#cbd5e1' };
+
+        // Sombreado leve de la palma usando los puntos estructurales
+        // wrist → index MCP → middle MCP → ring MCP → pinky MCP.
+        ctx.beginPath();
+        [0, 5, 9, 13, 17].forEach((index, pointIndex) => {
+          const point = landmarks[index];
+          if (pointIndex === 0) ctx.moveTo(point.x * width, point.y * height);
+          else ctx.lineTo(point.x * width, point.y * height);
+        });
+        ctx.closePath();
+        ctx.fillStyle = handColor.fill;
+        ctx.fill();
+
+        ctx.strokeStyle = handColor.line;
+        ctx.lineWidth = 2;
         for (const [from, to] of HAND_CONNECTIONS) {
           const a = landmarks[from];
           const b = landmarks[to];
@@ -94,10 +112,23 @@ export const CameraView: React.FC<CameraViewProps> = ({
 
         for (let index = 0; index < landmarks.length; index += 1) {
           const point = landmarks[index];
+          const isTip = [4, 8, 12, 16, 20].includes(index);
           ctx.beginPath();
-          ctx.arc(point.x * width, point.y * height, index % 4 === 0 ? 3.2 : 2.2, 0, Math.PI * 2);
-          ctx.fillStyle = index % 4 === 0 ? '#f4c95d' : '#67e8f9';
+          ctx.arc(point.x * width, point.y * height, isTip ? 3.6 : 2.3, 0, Math.PI * 2);
+          ctx.fillStyle = isTip ? handColor.tip : handColor.line;
           ctx.fill();
+        }
+
+        if (palm.geometry) {
+          ctx.font = '600 10px ui-sans-serif, system-ui';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillStyle = handColor.tip;
+          ctx.fillText(
+            `${Math.round(palm.geometry.opennessScore * 100)}% abierta`,
+            palm.center.x * width,
+            palm.center.y * height + 24,
+          );
         }
       }
     }
