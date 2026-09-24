@@ -108,3 +108,16 @@ La geometría de mano OPEN/CLOSED se mantiene disponible como información perce
 Los módulos **Instrumento** y **Pentagrama** comparten el sintetizador Web Audio interno o timbres muestreados de **piano, guitarra nylon, violín con arco y violín pizzicato**. El timbre seleccionado se mantiene al cambiar entre ambos módulos durante la sesión. Las muestras se cargan bajo demanda desde fuentes públicas fijadas a commits concretos; cada una conserva su atribución y licencia. Si la carga externa falla, Melody Motion vuelve al sintetizador interno. Consulte [docs/AUDIO_SOURCES.md](docs/AUDIO_SOURCES.md).
 
 Pentagrama mantiene los submódulos validados **Guiado · dos notas** y **Desafío · una meta**. Ritmo conserva Exploración, Una figura y Secuencia variable. Compás mantiene los patrones posicionales validados; las reglas de silencio y alteraciones permanecen como investigación futura.
+
+
+## Modo juego de aprendizaje
+
+Ritmo y Pentagrama incluyen un modo juego **opcional**. La práctica normal no depende de la puntuación.
+
+- Ritmo: 25 pts por objetivo de una figura; en secuencias, 30 pts por paso y 60 pts adicionales al completar la secuencia.
+- Pentagrama: 30 pts por nota mantenida y 100 pts adicionales al completar la obra.
+- Ranking se desbloquea al alcanzar 300 pts.
+
+El Ranking de esta primera versión es local a la sesión y compara el progreso entre áreas, no entre estudiantes. Los puntos no se almacenan en un servidor ni requieren una cuenta.
+
+Los pentagramas principales aumentan área útil y contraste en móvil/tableta para distinguir con más claridad líneas, espacios y líneas adicionales en los temas claro y oscuro.
