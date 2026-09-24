@@ -12,7 +12,8 @@ import confetti from 'canvas-confetti';
 import { GALLERY_ITEMS } from '../data/scorePresets';
 import { DualPalmState, GalleryItem, PentagramNoteItem, AppTheme } from '../types';
 import { audioSynthesizer } from '../services/audioSynthesizer';
-import { Music, Check, ChevronDown, ChevronUp, RotateCcw } from 'lucide-react';
+import { Music, Check, ChevronDown, ChevronUp, Gamepad2, RotateCcw, Trophy } from 'lucide-react';
+import { pentagramGameAward } from '../services/learningGame';
 import type { InstrumentTimbre } from '../services/instrumentSamples';
 import { InstrumentTimbreSelector } from './InstrumentTimbreSelector';
 
@@ -45,6 +46,9 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
   const [lastSoundFrequency, setLastSoundFrequency] = useState<number>(0);
   const [showGallery, setShowGallery] = useState<boolean>(false);
   const [learningMode, setLearningMode] = useState<PentagramLearningMode>('guided');
+  const [gameMode, setGameMode] = useState(false);
+  const [lastAward, setLastAward] = useState(0);
+  const targetCueRef = useRef<string | null>(null);
 
   const activeTargetNote: PentagramNoteItem = selectedGalleryItem.notes[noteStepIndex % selectedGalleryItem.notes.length];
 
@@ -72,11 +76,33 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
 
   // Sound feedback on note change
   useEffect(() => {
-    if (hasBothHands && currentDetectedNote.frequency !== lastSoundFrequency) {
+    if (!gameMode && hasBothHands && currentDetectedNote.frequency !== lastSoundFrequency) {
       void audioSynthesizer.playInstrumentNote(currentDetectedNote.frequency, 0.3, timbre);
       setLastSoundFrequency(currentDetectedNote.frequency);
     }
-  }, [currentDetectedNote.frequency, lastSoundFrequency, hasBothHands, timbre]);
+  }, [currentDetectedNote.frequency, lastSoundFrequency, hasBothHands, timbre, gameMode]);
+
+  useEffect(() => {
+    const cueKey = `${selectedGalleryItem.id}:${noteStepIndex}`;
+    if (gameMode && isTargetMatched && targetCueRef.current !== cueKey) {
+      targetCueRef.current = cueKey;
+      const holdDurationSec = Math.min(
+        0.8,
+        Math.max(0.22, activeTargetNote.durationBeats * 60 / selectedGalleryItem.bpm),
+      );
+      void audioSynthesizer.playInstrumentNote(targetScaleNote.frequency, holdDurationSec, timbre);
+    }
+    if (!isTargetMatched) targetCueRef.current = null;
+  }, [
+    gameMode,
+    isTargetMatched,
+    selectedGalleryItem.id,
+    selectedGalleryItem.bpm,
+    noteStepIndex,
+    activeTargetNote.durationBeats,
+    targetScaleNote.frequency,
+    timbre,
+  ]);
 
   const [holdProgress, setHoldProgress] = useHoldProgress(
     `${selectedGalleryItem.id}:${noteStepIndex}`, isTargetMatched && !showItemVictoryModal,
@@ -85,12 +111,19 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
 
   const advanceToNextNote = () => {
     audioSynthesizer.playHitSound(95);
-    onScoreGain(50);
 
     const nextIndex = noteStepIndex + 1;
     if (nextIndex >= selectedGalleryItem.notes.length) {
+      const awarded = gameMode
+        ? pentagramGameAward('note') + pentagramGameAward('piece')
+        : 0;
+      if (awarded > 0) onScoreGain(awarded);
+      setLastAward(awarded);
       triggerFullGalleryCompletion();
     } else {
+      const awarded = gameMode ? pentagramGameAward('note') : 0;
+      if (awarded > 0) onScoreGain(awarded);
+      setLastAward(awarded);
       setNoteStepIndex(nextIndex);
       setHoldProgress(0);
       if (isSimulation && onSimulatedPositionChange) {
@@ -101,7 +134,7 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
   };
 
   const triggerFullGalleryCompletion = () => {
-    try {
+    if (gameMode) try {
       confetti({
         particleCount: 80,
         spread: 70,
@@ -110,7 +143,6 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
     } catch (e) {}
 
     audioSynthesizer.playHitSound(100);
-    onScoreGain(300);
 
     if (!completedGalleryItems.includes(selectedGalleryItem.id)) {
       setCompletedGalleryItems((prev) => [...prev, selectedGalleryItem.id]);
@@ -124,6 +156,8 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
     setNoteStepIndex(0);
     setHoldProgress(0);
     setShowItemVictoryModal(false);
+    setLastAward(0);
+    targetCueRef.current = null;
     if (isSimulation && onSimulatedPositionChange && item.notes.length > 0) {
       onSimulatedPositionChange(noteHeightForId(item.notes[0].noteName), item.notes[0].targetDistanceCm);
     }
@@ -131,6 +165,36 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
 
   return (
     <div className="space-y-4">
+      <section className="rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-3 shadow-[var(--ui-shadow)]">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <Gamepad2 className="h-4 w-4 text-[var(--ui-jade)]" aria-hidden="true" />
+              Modo juego
+            </div>
+            <p className="mt-1 text-xs text-slate-500">
+              Mantén nota + figura hasta completar su duración: 30 pts por nota y +100 al terminar la obra.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setGameMode((enabled) => !enabled);
+              setLastAward(0);
+              targetCueRef.current = null;
+            }}
+            aria-pressed={gameMode}
+            className={`touch-target rounded-xl border px-4 py-2 text-xs font-semibold transition-colors ${
+              gameMode
+                ? 'border-[var(--ui-jade)] bg-[var(--ui-jade)] text-white'
+                : 'border-[var(--ui-border)] bg-[var(--ui-background)] text-[var(--ui-text)]'
+            }`}
+          >
+            {gameMode ? 'Juego activado' : 'Activar juego'}
+          </button>
+        </div>
+      </section>
+
       <section className="rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-3 shadow-[var(--ui-shadow)]">
         <div className="grid grid-cols-2 gap-2">
           <button
@@ -169,7 +233,10 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
         <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 flex items-center justify-between gap-3 animate-in fade-in">
           <div className="flex items-center space-x-2 text-xs">
             <Check className="w-4 h-4 text-emerald-500" />
-            <span>¡Obra completada: <strong>{selectedGalleryItem.title}</strong>! +300 pts</span>
+            <span>
+              ¡Obra completada: <strong>{selectedGalleryItem.title}</strong>!
+              {lastAward > 0 ? ` +${lastAward} pts` : ''}
+            </span>
           </div>
           <button
             onClick={() => {
@@ -186,7 +253,7 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
       )}
 
       {/* Main Pentagram Visualizer Card */}
-      <div className="rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-5 text-[var(--ui-text)] shadow-[var(--ui-shadow)] transition-colors space-y-4 md:p-6">
+      <div className="space-y-4 rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-3 text-[var(--ui-text)] shadow-[var(--ui-shadow)] transition-colors sm:p-4 md:p-6">
         {/* Header: Song Info & Target Note Summary */}
         <div className="flex flex-col items-center text-center gap-5 pb-5 border-b border-slate-100 dark:border-slate-800">
           <div>
@@ -234,7 +301,8 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
               ? `Lleva la nota TÚ hasta META (${activeTargetNote.spanishNote}) y ajusta la apertura al objetivo.`
               : `Busca ${activeTargetNote.spanishNote} con la altura y ajusta palmas a ${activeTargetNote.targetDistanceCm} cm`}
           </span>
-          <span className="font-mono font-bold text-cyan-600">
+          <span className="flex items-center gap-1.5 font-mono font-bold text-cyan-600">
+            {gameMode && lastAward > 0 && <Trophy className="h-3.5 w-3.5 text-[var(--ui-gold)]" aria-hidden="true" />}
             {Math.round(holdProgress)}%
           </span>
         </div>
