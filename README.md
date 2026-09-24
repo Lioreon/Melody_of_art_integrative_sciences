@@ -4,7 +4,7 @@
 
 Melody Motion es un módulo educativo del ecosistema **Melody of Art**. La identidad anterior, **Conductor Vision**, corresponde a la versión histórica v0.1.0.
 
-Instrumento educativo: apertura horizontal → figura musical; altura promedio → nota de Do mayor (Do4–Do5).
+Instrumento educativo: apertura horizontal → figura musical; altura promedio del par de manos → registro diatónico extendido en clave de Sol (Sol3–Si5), incluyendo líneas adicionales inferiores y superiores.
 Aplicación React + TypeScript + Vite. La cámara, el seguimiento y el audio se procesan en el navegador.
 No requiere una clave de Gemini ni un servidor de IA. Esta copia procede del ZIP entregado; el original no se modificó.
 
@@ -44,7 +44,7 @@ Esto no convierte por sí solo la web publicada en una PWA disponible sin conexi
 5. En **Fuente de video**, elige la cámara predeterminada o una cámara específica y pulsa **Activar cámara**. Permite el acceso en el navegador para ver los nombres completos. **Actualizar lista** vuelve a consultar las fuentes; la lista también se actualiza al conectar o retirar dispositivos. Al cambiar la selección con la cámara activa, la fuente anterior se cierra y se abre la elegida. Puedes detenerla con **Detener cámara**. Se admiten cámaras físicas y virtuales expuestas como entradas de video por el navegador; archivos de video y direcciones de cámaras IP no están implementados.
 6. En **Seguimiento y colores**, elige manos libres o pelotas. Para pelotas, usa dos colores saturados claramente distintos y ajusta los selectores y la tolerancia. Es selección manual de color; aún no hay cuentagotas.
 
-La separación es una escala relativa de 0 a 125 unidades, proporcional al ancho de la imagen; no mide centímetros reales ni profundidad.
+La separación es una escala relativa de 0 a 125 unidades, proporcional al ancho de la imagen; no mide centímetros reales ni profundidad. La altura musical usa el centro vertical promedio de las dos manos y se calibra de forma independiente a la apertura horizontal.
 Los módulos heredados conservan algunos textos y nombres internos `distanceCm`, que corresponden a esa misma escala virtual. Mantén estable la distancia del cuerpo a la cámara.
 La vista Instrumento no emite nuevas notas si falta un punto. Una nota ya iniciada termina su duración programada.
 Las pelotas se distinguen por color, aunque se crucen; las manos libres se ordenan por posición horizontal, no por identidad anatómica.

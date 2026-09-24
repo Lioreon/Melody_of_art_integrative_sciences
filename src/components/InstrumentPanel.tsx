@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { AppTheme, DualPalmState } from '../types';
 import { MusicalInstrumentView } from './MusicalInstrumentView';
-import { C_MAJOR_SCALE, MUSICAL_FIGURES, mapHeightToNote, mapSeparationToFigure, calculateRealDurationSec } from '../data/musicalScaleData';
+import { TREBLE_TRAINING_RANGE, MUSICAL_FIGURES, mapHeightToNote, mapSeparationToFigure, calculateRealDurationSec, DEFAULT_PITCH_Y_MIN, DEFAULT_PITCH_Y_MAX } from '../data/musicalScaleData';
 import { audioSynthesizer } from '../services/audioSynthesizer';
 
 export function InstrumentPanel({ palmState, theme }: { palmState: DualPalmState; theme: AppTheme }) {
   const [bpm, setBpm] = useState(120);
-  const [note, setNote] = useState(C_MAJOR_SCALE[3]);
+  const [note, setNote] = useState(TREBLE_TRAINING_RANGE.find((item) => item.id === 'sol4') ?? TREBLE_TRAINING_RANGE[0]);
   const [figure, setFigure] = useState(MUSICAL_FIGURES[2]);
-  const [range, setRange] = useState({ top: 0.2, bottom: 0.8, close: 15, far: 85 });
+  const [range, setRange] = useState({ top: DEFAULT_PITCH_Y_MIN, bottom: DEFAULT_PITCH_Y_MAX, close: 15, far: 85 });
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const frame = useRef<number | null>(null);
@@ -71,7 +71,7 @@ export function InstrumentPanel({ palmState, theme }: { palmState: DualPalmState
             onClick={() => setRange(r => ({ ...r, close: palmState.distanceCm }))}>Guardar apertura mínima</button>
           <button className="border rounded px-3 py-2 disabled:opacity-40" disabled={trackingLost || palmState.distanceCm <= range.close + 10}
             onClick={() => setRange(r => ({ ...r, far: palmState.distanceCm }))}>Guardar apertura máxima</button>
-          <button className="border rounded px-3 py-2" onClick={() => setRange({ top: 0.2, bottom: 0.8, close: 15, far: 85 })}>Restablecer rango</button>
+          <button className="border rounded px-3 py-2" onClick={() => setRange({ top: DEFAULT_PITCH_Y_MIN, bottom: DEFAULT_PITCH_Y_MAX, close: 15, far: 85 })}>Restablecer rango</button>
         </div>
       </div>
     </details>

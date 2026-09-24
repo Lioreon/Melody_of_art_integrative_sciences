@@ -6,7 +6,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useHoldProgress } from '../hooks/useHoldProgress';
 import { SimpleStaffView } from './SimpleStaffView';
-import { C_MAJOR_SCALE, MUSICAL_FIGURES as INSTRUMENT_FIGURES } from '../data/musicalScaleData';
+import { TREBLE_TRAINING_RANGE, MUSICAL_FIGURES as INSTRUMENT_FIGURES, mapHeightToNote, noteHeightForId, ledgerLineStepsForStaffStep } from '../data/musicalScaleData';
 import confetti from 'canvas-confetti';
 import { GALLERY_ITEMS } from '../data/scorePresets';
 import { DualPalmState, GalleryItem, PentagramNoteItem, AppTheme } from '../types';
@@ -43,33 +43,23 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
     ? (palmState.leftPalm.center.y + palmState.rightPalm.center.y) / 2
     : 0.5;
 
-  // Map Y-position (0.1 to 0.85) to standard 8 musical notes
-  const mapYToNoteName = (y: number): { noteName: string; spanishNote: string; freq: number; yNorm: number } => {
-    if (y < 0.25) return { noteName: 'Do5', spanishNote: 'Do5', freq: 523.25, yNorm: 0.18 };
-    if (y < 0.33) return { noteName: 'Si4', spanishNote: 'Si4', freq: 493.88, yNorm: 0.28 };
-    if (y < 0.41) return { noteName: 'La4', spanishNote: 'La4', freq: 440.00, yNorm: 0.37 };
-    if (y < 0.50) return { noteName: 'Sol4', spanishNote: 'Sol4', freq: 392.00, yNorm: 0.46 };
-    if (y < 0.59) return { noteName: 'Fa4', spanishNote: 'Fa4', freq: 349.23, yNorm: 0.55 };
-    if (y < 0.68) return { noteName: 'Mi4', spanishNote: 'Mi4', freq: 329.63, yNorm: 0.64 };
-    if (y < 0.77) return { noteName: 'Re4', spanishNote: 'Re4', freq: 293.66, yNorm: 0.73 };
-    return { noteName: 'Do4', spanishNote: 'Do4', freq: 261.63, yNorm: 0.82 };
-  };
-
-  const currentDetectedNote = mapYToNoteName(averageYNorm);
+  // El centro vertical del par de manos recorre el registro Sol3–Si5.
+  // La apertura horizontal permanece como un segundo eje independiente para la figura/duración.
+  const currentDetectedNote = mapHeightToNote(averageYNorm);
 
   // Check alignment with active target note in scale/song
-  const isPitchMatched = currentDetectedNote.noteName === activeTargetNote.noteName;
+  const isPitchMatched = currentDetectedNote.id === activeTargetNote.noteName.toLowerCase();
   const isDistanceMatched = Math.abs(palmState.distanceCm - activeTargetNote.targetDistanceCm) <= 12;
   const hasBothHands = Boolean(palmState.leftPalm?.present && palmState.rightPalm?.present);
   const isTargetMatched = hasBothHands && isPitchMatched && isDistanceMatched;
 
   // Sound feedback on note change
   useEffect(() => {
-    if (hasBothHands && currentDetectedNote.freq !== lastSoundFrequency) {
-      audioSynthesizer.playPitchNote(currentDetectedNote.freq, 0.3);
-      setLastSoundFrequency(currentDetectedNote.freq);
+    if (hasBothHands && currentDetectedNote.frequency !== lastSoundFrequency) {
+      audioSynthesizer.playPitchNote(currentDetectedNote.frequency, 0.3);
+      setLastSoundFrequency(currentDetectedNote.frequency);
     }
-  }, [currentDetectedNote.freq, lastSoundFrequency, hasBothHands]);
+  }, [currentDetectedNote.frequency, lastSoundFrequency, hasBothHands]);
 
   const [holdProgress, setHoldProgress] = useHoldProgress(
     `${selectedGalleryItem.id}:${noteStepIndex}`, isTargetMatched && !showItemVictoryModal,
@@ -88,7 +78,7 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
       setHoldProgress(0);
       if (isSimulation && onSimulatedPositionChange) {
         const nextNote = selectedGalleryItem.notes[nextIndex];
-        onSimulatedPositionChange(nextNote.targetHeightYNorm, nextNote.targetDistanceCm);
+        onSimulatedPositionChange(noteHeightForId(nextNote.noteName), nextNote.targetDistanceCm);
       }
     }
   };
@@ -118,7 +108,7 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
     setHoldProgress(0);
     setShowItemVictoryModal(false);
     if (isSimulation && onSimulatedPositionChange && item.notes.length > 0) {
-      onSimulatedPositionChange(item.notes[0].targetHeightYNorm, item.notes[0].targetDistanceCm);
+      onSimulatedPositionChange(noteHeightForId(item.notes[0].noteName), item.notes[0].targetDistanceCm);
     }
   };
 
@@ -198,7 +188,7 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
         </div>
 
         <SimpleStaffView
-          note={C_MAJOR_SCALE.find(note => note.id === activeTargetNote.noteName.toLowerCase()) ?? C_MAJOR_SCALE[0]}
+          note={TREBLE_TRAINING_RANGE.find(note => note.id === activeTargetNote.noteName.toLowerCase()) ?? TREBLE_TRAINING_RANGE[0]}
           figure={INSTRUMENT_FIGURES.find(figure => figure.name === activeTargetNote.figureName) ?? INSTRUMENT_FIGURES[2]}
           isPlaying={isTargetMatched} theme={theme} />
         <p className="text-center text-lg text-slate-600 dark:text-slate-300">
@@ -210,9 +200,9 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
         <div className={`w-full h-64 rounded-xl border relative flex items-center px-4 overflow-x-auto ${
           isWhite ? 'bg-slate-50/50 border-slate-200' : 'bg-slate-950 border-slate-800'
         }`}>
-          <svg role="img" aria-label="Secuencia de notas de la obra" className="h-[240px] shrink-0 overflow-visible" style={{ width: Math.max(820, selectedGalleryItem.notes.length * 70 + 210) }} viewBox={`0 0 ${Math.max(820, selectedGalleryItem.notes.length * 70 + 210)} 200`}>
-            {/* 5 Standard Staff Lines (y = 44, 68, 92, 116, 140) */}
-            {[44, 68, 92, 116, 140].map((y, idx) => {
+          <svg role="img" aria-label="Secuencia de notas de la obra" className="h-[260px] shrink-0 overflow-visible" style={{ width: Math.max(820, selectedGalleryItem.notes.length * 70 + 210) }} viewBox={`0 0 ${Math.max(820, selectedGalleryItem.notes.length * 70 + 210)} 230`}>
+            {/* 5 líneas normales: Mi4, Sol4, Si4, Re5, Fa5 */}
+            {[74, 94, 114, 134, 154].map((y, idx) => {
               const lineNum = 5 - idx;
               const isSolLine = lineNum === 2;
               return (
@@ -233,22 +223,25 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
             })}
 
             {/* Clef indicator */}
-            <text x="12" y="128" fill={isWhite ? '#0284c7' : '#38bdf8'} fontSize="52" fontFamily="serif" fontWeight="bold">
+            <text x="12" y="144" fill={isWhite ? '#0284c7' : '#38bdf8'} fontSize="52" fontFamily="serif" fontWeight="bold">
               𝄞
             </text>
 
             {/* Melody Sequence Notes on Staff */}
             {selectedGalleryItem.notes.map((n, idx) => {
-              const targetY = 164 - n.staffLineIndex * 12;
+              const targetY = 174 - n.staffLineIndex * 10;
               const cx = 110 + idx * 70;
               const isCurrentStep = idx === noteStepIndex;
 
               return (
                 <g key={n.id}>
-                  {/* Ledger Line for Do4 */}
-                  {n.staffLineIndex === 0 && (
-                    <line x1={cx - 18} y1={targetY} x2={cx + 18} y2={targetY} stroke={isWhite ? '#64748b' : '#94a3b8'} strokeWidth="2" />
-                  )}
+                  {ledgerLineStepsForStaffStep(n.staffLineIndex).map((step) => {
+                    const ledgerY = 174 - step * 10;
+                    return (
+                      <line key={step} x1={cx - 18} y1={ledgerY} x2={cx + 18} y2={ledgerY}
+                        stroke={isWhite ? '#64748b' : '#94a3b8'} strokeWidth="2" />
+                    );
+                  })}
 
                   <circle
                     cx={cx}
@@ -272,14 +265,15 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
 
             {/* User Live Pitch Hand Cursor */}
             {(() => {
-              const liveLineIdx = Math.max(0, Math.min(7, 7 - Math.round(averageYNorm * 7)));
-              const liveY = 164 - liveLineIdx * 12;
+              const liveLineIdx = currentDetectedNote.staffLineIndex;
+              const liveY = 174 - liveLineIdx * 10;
 
               return (
                 <g transform={`translate(${Math.max(820, selectedGalleryItem.notes.length * 70 + 210) - 60}, ${liveY})`}>
-                  {liveLineIdx === 0 && (
-                    <line x1="-20" y1="0" x2="20" y2="0" stroke="#0ea5e9" strokeWidth="2" />
-                  )}
+                  {ledgerLineStepsForStaffStep(liveLineIdx).map((step) => (
+                    <line key={step} x1="-20" y1={174 - step * 10 - liveY} x2="20" y2={174 - step * 10 - liveY}
+                      stroke="#0ea5e9" strokeWidth="2" />
+                  ))}
                   <circle
                     r="16"
                     fill={isTargetMatched ? '#10b981' : '#0ea5e9'}
@@ -290,7 +284,7 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
                     Tú
                   </text>
                   <text y="-20" textAnchor="middle" fill={isTargetMatched ? '#10b981' : '#0ea5e9'} fontSize="11" fontWeight="bold">
-                    {currentDetectedNote.spanishNote}
+                    {currentDetectedNote.octaveName}
                   </text>
                 </g>
               );
@@ -313,7 +307,7 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
         {/* Live Detected Values Summary (compact) */}
         <div className="flex flex-wrap justify-center gap-3 text-center text-sm text-slate-500 pt-1">
           <div>
-            Entonación actual: <strong className={isPitchMatched ? 'text-emerald-500' : 'text-slate-800 dark:text-slate-200'}>{currentDetectedNote.spanishNote}</strong> ({Math.round(currentDetectedNote.freq)} Hz)
+            Entonación actual: <strong className={isPitchMatched ? 'text-emerald-500' : 'text-slate-800 dark:text-slate-200'}>{currentDetectedNote.octaveName}</strong> ({Math.round(currentDetectedNote.frequency)} Hz)
           </div>
           <div>
             Apertura actual: <strong className={isDistanceMatched ? 'text-emerald-500' : 'text-slate-800 dark:text-slate-200'}>{palmState.distanceCm} cm</strong> (Meta: {activeTargetNote.targetDistanceCm} cm)
@@ -324,7 +318,7 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
         {isSimulation && onSimulatedPositionChange && (
           <div className="flex justify-center pt-1">
             <button
-              onClick={() => onSimulatedPositionChange(activeTargetNote.targetHeightYNorm, activeTargetNote.targetDistanceCm)}
+              onClick={() => onSimulatedPositionChange(noteHeightForId(activeTargetNote.noteName), activeTargetNote.targetDistanceCm)}
               className="text-xs text-cyan-600 hover:underline font-medium"
             >
               Alinear simulación a {activeTargetNote.spanishNote} ({activeTargetNote.targetDistanceCm} cm)
