@@ -18,6 +18,7 @@ import { MUSICAL_FIGURES } from '../src/data/scorePresets';
 import { midiToFrequency, nearestInstrumentSample, noteNameToMidi } from '../src/services/instrumentSamples';
 import { beatDurationMs, buildCompasTimeline, compasGuidance, COMPAS_PATTERNS, getCompasFrame } from '../src/services/compasAccordion';
 import { TrackingDiagnosticsRecorder } from '../src/services/trackingDiagnostics';
+import { palmDataFromLandmarks } from '../src/services/handObservation';
 
 test('hold uses elapsed time, completes once and resets when tracking is lost', () => {
   const timer = new HoldTimer();
@@ -282,4 +283,26 @@ test('Tracking v2 diagnostics reset when perception backend changes', () => {
   assert.equal(snapshot.backend, 'color-markers');
   assert.equal(snapshot.totalFrames, 1);
   assert.equal(snapshot.confidence, null);
+});
+
+
+test('Tracking v2 T1 persists all 21 landmarks with handedness and confidence', () => {
+  const landmarks = Array.from({ length: 21 }, (_, index) => ({
+    x: 0.1 + index * 0.01,
+    y: 0.2 + index * 0.005,
+    z: -index * 0.001,
+  }));
+  const palm = palmDataFromLandmarks(landmarks, { label: 'Right', score: 0.92 });
+  assert.ok(palm);
+  assert.equal(palm.landmarks?.length, 21);
+  assert.equal(palm.handedness, 'Right');
+  assert.equal(palm.confidence, 0.92);
+  assert.deepEqual(palm.wrist, landmarks[0]);
+  assert.deepEqual(palm.indexMcp, landmarks[5]);
+  assert.deepEqual(palm.pinkyMcp, landmarks[17]);
+});
+
+test('Tracking v2 T1 rejects incomplete landmark frames', () => {
+  const incomplete = Array.from({ length: 20 }, () => ({ x: 0.4, y: 0.4 }));
+  assert.equal(palmDataFromLandmarks(incomplete, { label: 'Left', score: 0.9 }), null);
 });
