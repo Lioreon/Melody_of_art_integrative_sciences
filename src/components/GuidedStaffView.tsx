@@ -4,7 +4,8 @@
  */
 
 import React from 'react';
-import type { AppTheme, FigureDuration, ScaleNote } from '../types';
+import type { AppTheme, FigureDuration, MusicalAccidental, ScaleNote } from '../types';
+import { accidentalSymbol } from '../services/musicalGesture';
 import { ledgerLineStepsForStaffStep } from '../data/musicalScaleData';
 
 interface GuidedStaffViewProps {
@@ -13,6 +14,9 @@ interface GuidedStaffViewProps {
   currentNote: ScaleNote;
   currentFigure: FigureDuration;
   matched: boolean;
+  targetAccidental?: MusicalAccidental;
+  currentAccidental?: MusicalAccidental;
+  currentSilent?: boolean;
   theme?: AppTheme;
 }
 
@@ -22,6 +26,9 @@ export const GuidedStaffView: React.FC<GuidedStaffViewProps> = ({
   currentNote,
   currentFigure,
   matched,
+  targetAccidental = 'natural',
+  currentAccidental = 'natural',
+  currentSilent = false,
   theme = 'white',
 }) => {
   const isWhite = theme === 'white';
@@ -40,8 +47,18 @@ export const GuidedStaffView: React.FC<GuidedStaffViewProps> = ({
     color: string,
     label: string,
     strong = false,
+    accidental: MusicalAccidental = 'natural',
+    silent = false,
   ) => {
     const y = c4Y - note.staffLineIndex * stepSpacing;
+    const accidentalMark = accidentalSymbol(accidental);
+    const restSymbolByFigure: Record<string, string> = {
+      semicorchea: '𝄿',
+      corchea: '𝄾',
+      negra: '𝄽',
+      blanca: '𝄼',
+      redonda: '𝄻',
+    };
     const openHead = figure.id === 'blanca' || figure.id === 'redonda';
     const hasStem = figure.id !== 'redonda';
     const stemDown = note.staffLineIndex >= 6;
@@ -71,7 +88,19 @@ export const GuidedStaffView: React.FC<GuidedStaffViewProps> = ({
           <circle cx={x} cy={y} r="18" fill={matched ? 'rgba(16,185,129,0.20)' : 'rgba(14,165,233,0.16)'} />
         )}
 
-        {hasStem && (
+        {!silent && accidentalMark && (
+          <text x={x - 19} y={y + 7} textAnchor="middle" fontSize="22" fontFamily="serif" fill={color}>
+            {accidentalMark}
+          </text>
+        )}
+
+        {silent && (
+          <text x={x} y="108" textAnchor="middle" fontSize="42" fontFamily="serif" fill={color}>
+            {restSymbolByFigure[figure.id] ?? '𝄽'}
+          </text>
+        )}
+
+        {!silent && hasStem && (
           <line
             x1={stemX}
             y1={y}
@@ -83,7 +112,7 @@ export const GuidedStaffView: React.FC<GuidedStaffViewProps> = ({
           />
         )}
 
-        {(figure.id === 'corchea' || figure.id === 'semicorchea') && (
+        {!silent && (figure.id === 'corchea' || figure.id === 'semicorchea') && (
           <>
             <path
               d={
@@ -112,22 +141,24 @@ export const GuidedStaffView: React.FC<GuidedStaffViewProps> = ({
           </>
         )}
 
-        <ellipse
-          cx={x}
-          cy={y}
-          rx="8"
-          ry="6"
-          transform={`rotate(-22 ${x} ${y})`}
-          fill={openHead ? (isWhite ? '#ffffff' : '#0f172a') : color}
-          stroke={color}
-          strokeWidth={openHead ? 2.6 : 1.5}
-        />
+        {!silent && (
+                  <ellipse
+                    cx={x}
+                    cy={y}
+                    rx="8"
+                    ry="6"
+                    transform={`rotate(-22 ${x} ${y})`}
+                    fill={openHead ? (isWhite ? '#ffffff' : '#0f172a') : color}
+                    stroke={color}
+                    strokeWidth={openHead ? 2.6 : 1.5}
+                  />
+        )}
 
         <text x={x} y="25" textAnchor="middle" fontSize="10" fontWeight="700" fill={color}>
           {label}
         </text>
         <text x={x} y="39" textAnchor="middle" fontSize="10" fontWeight="600" fill={color}>
-          {note.octaveName}
+          {silent ? 'Silencio' : `${note.octaveName}${accidentalMark}`}
         </text>
       </g>
     );
@@ -195,14 +226,16 @@ export const GuidedStaffView: React.FC<GuidedStaffViewProps> = ({
           strokeDasharray="4 5"
         />
 
-        {renderNote(targetNote, targetFigure, targetX, targetColor, 'META')}
-        {renderNote(currentNote, currentFigure, currentX, currentColor, 'TÚ', true)}
+        {renderNote(targetNote, targetFigure, targetX, targetColor, 'META', false, targetAccidental, false)}
+        {renderNote(currentNote, currentFigure, currentX, currentColor, 'TÚ', true, currentAccidental, currentSilent)}
       </svg>
 
       <div className="mt-2 grid grid-cols-2 gap-3 text-center text-xs sm:text-sm">
         <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 px-3 py-2">
           <span className="font-semibold text-amber-600 dark:text-amber-300">Meta:</span>{' '}
-          <span className="text-slate-600 dark:text-slate-300">{targetNote.octaveName} · {targetFigure.name}</span>
+          <span className="text-slate-600 dark:text-slate-300">
+            {targetNote.octaveName}{accidentalSymbol(targetAccidental)} · {targetFigure.name}
+          </span>
         </div>
         <div className={`rounded-lg border px-3 py-2 ${
           matched
@@ -212,7 +245,9 @@ export const GuidedStaffView: React.FC<GuidedStaffViewProps> = ({
           <span className={`font-semibold ${matched ? 'text-emerald-600 dark:text-emerald-300' : 'text-cyan-600 dark:text-cyan-300'}`}>
             Tú:
           </span>{' '}
-          <span className="text-slate-600 dark:text-slate-300">{currentNote.octaveName} · {currentFigure.name}</span>
+          <span className="text-slate-600 dark:text-slate-300">
+            {currentSilent ? 'Silencio' : `${currentNote.octaveName}${accidentalSymbol(currentAccidental)}`} · {currentFigure.name}
+          </span>
         </div>
       </div>
     </div>

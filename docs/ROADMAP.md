@@ -45,13 +45,24 @@ Este roadmap separa lo implementado de la experiencia objetivo. No constituye un
   - metrónomo estable;
   - congelación automática del tiempo ante pérdida de tracking;
   - la dirección experimental se conserva como Nivel 2.
-- **Tracking v2 · T0/T1**:
+- **Tracking v2 · T0/T1/T2 inicial**:
   - diagnóstico local de FPS, intervalo de frame, inferencia, jitter aproximado, disponibilidad y recuperaciones;
   - persistencia de los 21 landmarks de cada mano;
   - handedness y confidence conservados cuando MediaPipe los entrega;
-  - overlay opcional de esqueleto de 21 puntos para validación técnica;
+  - geometría derivada por dedo: straightness, extension ratio, estado extendido, openness score y palm span;
+  - estabilización temporal OPEN/CLOSED;
+  - overlay opcional de esqueleto de 21 puntos con sombreado suave por estado;
   - sin cambiar todavía el backend `@mediapipe/hands`;
   - “Pelotas de colores” pasa conceptualmente a **Marcadores de color**.
+- **Gramática musical gestual experimental**:
+  - abiertas + abiertas → sonido natural;
+  - puño + puño → silencio equivalente con la misma distancia;
+  - slot A cerrado + B abierto → sostenido ♯;
+  - slot A abierto + B cerrado → bemol ♭;
+  - Ritmo añade Nivel 3 Sonido / silencio;
+  - Pentagrama añade Nivel 3 Alteraciones;
+  - Compás añade patrón Sonido y silencio;
+  - Instrumento refleja natural / alteración / silencio.
 
 ## Fase 3 — aprendizaje musical multimodal
 
@@ -129,7 +140,7 @@ T0 y T1 se implementan antes de migrar de modelo:
 
 - **T0 — baseline medible:** métricas locales de rendimiento y estabilidad.
 - **T1 — 21 landmarks persistentes:** la mano deja de reducirse únicamente a centro, muñeca e MCPs.
-- **T2 — geometría completa:** dedos, falanges, curl, dirección, span y estabilidad.
+- **T2 — geometría completa:** implementación inicial activa; faltan dirección angular, métricas avanzadas y validación física.
 - **T3 — adaptador de backends.**
 - **T4 — benchmark/migración a MediaPipe Tasks HandLandmarker.**
 - **T5 — identidad estable de manos.**
@@ -164,7 +175,6 @@ Variables futuras de investigación:
 - gamificación genérica;
 - ranking de estudiantes;
 - vidas / XP / streaks;
-- gesto → sonido/silencio como equivalencia automática;
 - dificultad adaptativa opaca;
 - arquitectura genérica de aprendizaje antes de que al menos dos módulos requieran la misma abstracción;
 - cambios grandes de MediaPipe/cámara sin medición base;

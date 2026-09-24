@@ -15,6 +15,10 @@ import {
   COMPAS_PATTERNS,
   getCompasFrame,
 } from '../services/compasAccordion';
+import {
+  equivalentRestForFigure,
+  interpretBimanualMusicalGesture,
+} from '../services/musicalGesture';
 
 interface CompasAccordionViewProps {
   palmState: DualPalmState;
@@ -50,10 +54,18 @@ export const CompasAccordionView: React.FC<CompasAccordionViewProps> = ({
   const frame = getCompasFrame(timeline, elapsedBeats);
 
   const hasTracking = Boolean(palmState.leftPalm?.present && palmState.rightPalm?.present);
-  const detectedFigure: MusicalFigure | undefined = hasTracking
+  const bimanualGesture = interpretBimanualMusicalGesture(palmState);
+  const detectedNoteFigure: MusicalFigure | undefined = hasTracking
     ? rhythmFigures.find((figure) =>
       palmState.distanceCm >= figure.targetDistanceMinCm
       && palmState.distanceCm <= figure.targetDistanceMaxCm)
+    : undefined;
+  const detectedFigure: MusicalFigure | undefined = !detectedNoteFigure
+    ? undefined
+    : bimanualGesture.mode === 'rest'
+    ? equivalentRestForFigure(detectedNoteFigure, MUSICAL_FIGURES)
+    : bimanualGesture.mode === 'sound'
+    ? detectedNoteFigure
     : undefined;
 
   const guidance = compasGuidance(
@@ -170,7 +182,7 @@ export const CompasAccordionView: React.FC<CompasAccordionViewProps> = ({
           </p>
         </div>
 
-        <div className="grid gap-2 sm:grid-cols-3">
+        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
           {COMPAS_PATTERNS.map((candidate) => (
             <button
               key={candidate.id}
@@ -286,7 +298,7 @@ export const CompasAccordionView: React.FC<CompasAccordionViewProps> = ({
             </div>
             <div className="text-xl font-bold">{detectedFigure?.name ?? 'Sin figura'}</div>
             <div className="mt-1 text-xs text-slate-500">
-              Apertura: {palmState.distanceCm} u.
+              Apertura: {palmState.distanceCm} u. · {bimanualGesture.label}
             </div>
           </section>
 
@@ -354,7 +366,7 @@ export const CompasAccordionView: React.FC<CompasAccordionViewProps> = ({
         </div>
 
         <p className="text-center text-[11px] text-slate-400">
-          Nivel 1 integra Ritmo dentro del tiempo. La altura musical se incorporará en una etapa posterior.
+          Nivel 1 integra figura, silencio y tiempo. Las alteraciones ♯/♭ pertenecen a los módulos de altura.
         </p>
       </section>
     </div>

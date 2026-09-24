@@ -10,13 +10,19 @@ import { GuidedStaffView } from './GuidedStaffView';
 import { TREBLE_TRAINING_RANGE, MUSICAL_FIGURES as INSTRUMENT_FIGURES, mapHeightToNote, mapSeparationToFigure, noteHeightForId, ledgerLineStepsForStaffStep } from '../data/musicalScaleData';
 import confetti from 'canvas-confetti';
 import { GALLERY_ITEMS } from '../data/scorePresets';
-import { DualPalmState, GalleryItem, PentagramNoteItem, AppTheme } from '../types';
+import { DualPalmState, GalleryItem, PentagramNoteItem, AppTheme, MusicalAccidental } from '../types';
 import { audioSynthesizer } from '../services/audioSynthesizer';
 import { Music, Check, ChevronDown, ChevronUp, RotateCcw } from 'lucide-react';
 import type { InstrumentTimbre } from '../services/instrumentSamples';
 import { InstrumentTimbreSelector } from './InstrumentTimbreSelector';
+import {
+  accidentalSymbol,
+  applyAccidentalToFrequency,
+  interpretBimanualMusicalGesture,
+} from '../services/musicalGesture';
 
-type PentagramLearningMode = 'guided' | 'challenge';
+type PentagramLearningMode = 'guided' | 'challenge' | 'accidentals';
+const ACCIDENTAL_SEQUENCE: MusicalAccidental[] = ['natural', 'sharp', 'flat'];
 
 interface Module2PentagramViewProps {
   palmState: DualPalmState;
@@ -57,6 +63,15 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
   // La apertura horizontal permanece como un segundo eje independiente para la figura/duración.
   const currentDetectedNote = mapHeightToNote(averageYNorm);
   const currentDetectedFigure = mapSeparationToFigure(palmState.distanceCm);
+  const bimanualGesture = interpretBimanualMusicalGesture(palmState);
+  const currentAccidental = bimanualGesture.accidental;
+  const targetAccidental: MusicalAccidental = learningMode === 'accidentals'
+    ? ACCIDENTAL_SEQUENCE[noteStepIndex % ACCIDENTAL_SEQUENCE.length]
+    : 'natural';
+  const effectiveDetectedFrequency = applyAccidentalToFrequency(
+    currentDetectedNote.frequency,
+    currentAccidental,
+  );
   const targetScaleNote = TREBLE_TRAINING_RANGE.find(
     (note) => note.id === activeTargetNote.noteName.toLowerCase(),
   ) ?? TREBLE_TRAINING_RANGE[0];
@@ -68,15 +83,34 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
   const isPitchMatched = currentDetectedNote.id === activeTargetNote.noteName.toLowerCase();
   const isDistanceMatched = Math.abs(palmState.distanceCm - activeTargetNote.targetDistanceCm) <= 12;
   const hasBothHands = Boolean(palmState.leftPalm?.present && palmState.rightPalm?.present);
-  const isTargetMatched = hasBothHands && isPitchMatched && isDistanceMatched;
+  const isAccidentalMatched = learningMode !== 'accidentals'
+    || (
+      bimanualGesture.mode !== 'rest'
+      && bimanualGesture.mode !== 'unknown'
+      && currentAccidental === targetAccidental
+    );
+  const isTargetMatched = hasBothHands && isPitchMatched && isDistanceMatched && isAccidentalMatched;
+
+  useEffect(() => {
+    if (learningMode === 'accidentals' && !bimanualGesture.supportsHandShape) {
+      setLearningMode('guided');
+    }
+  }, [learningMode, bimanualGesture.supportsHandShape]);
 
   // Sound feedback on note change
   useEffect(() => {
-    if (hasBothHands && currentDetectedNote.frequency !== lastSoundFrequency) {
-      void audioSynthesizer.playInstrumentNote(currentDetectedNote.frequency, 0.3, timbre);
-      setLastSoundFrequency(currentDetectedNote.frequency);
+    if (bimanualGesture.mode === 'rest' || bimanualGesture.mode === 'unknown') {
+      if (lastSoundFrequency !== 0) setLastSoundFrequency(0);
+      return;
     }
-  }, [currentDetectedNote.frequency, lastSoundFrequency, hasBothHands, timbre]);
+    if (
+      hasBothHands
+      && effectiveDetectedFrequency !== lastSoundFrequency
+    ) {
+      void audioSynthesizer.playInstrumentNote(effectiveDetectedFrequency, 0.3, timbre);
+      setLastSoundFrequency(effectiveDetectedFrequency);
+    }
+  }, [effectiveDetectedFrequency, lastSoundFrequency, hasBothHands, timbre, bimanualGesture.mode]);
 
   const [holdProgress, setHoldProgress] = useHoldProgress(
     `${selectedGalleryItem.id}:${noteStepIndex}`, isTargetMatched && !showItemVictoryModal,
@@ -132,7 +166,7 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
   return (
     <div className="space-y-4">
       <section className="rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-3 shadow-[var(--ui-shadow)]">
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid gap-2 sm:grid-cols-3">
           <button
             type="button"
             onClick={() => setLearningMode('guided')}
@@ -160,6 +194,21 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
             <div className="text-xs font-semibold uppercase tracking-wide opacity-75">Pentagrama · Nivel 2</div>
             <div className="mt-1 font-bold">Desafío · una meta</div>
             <div className="mt-1 text-xs opacity-80">Conserva la modalidad actual con menos referencia visual.</div>
+          </button>
+          <button
+            type="button"
+            onClick={() => setLearningMode('accidentals')}
+            aria-pressed={learningMode === 'accidentals'}
+            disabled={!bimanualGesture.supportsHandShape}
+            className={`rounded-xl px-3 py-3 text-left transition-colors disabled:cursor-not-allowed disabled:opacity-45 ${
+              learningMode === 'accidentals'
+                ? 'bg-cyan-600 text-white'
+                : 'bg-[var(--ui-background)] text-[var(--ui-text)]'
+            }`}
+          >
+            <div className="text-xs font-semibold uppercase tracking-wide opacity-75">Pentagrama · Nivel 3</div>
+            <div className="mt-1 font-bold">Alteraciones · ♯ / ♭</div>
+            <div className="mt-1 text-xs opacity-80">Gesto mixto modifica la nota; requiere Manos libres.</div>
           </button>
         </div>
       </section>
@@ -211,7 +260,9 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
                 : isWhite ? 'bg-slate-50 border-slate-200' : 'bg-slate-950 border-slate-800'
             }`}>
               <div className="text-[10px] text-slate-400 uppercase font-semibold">Nota meta</div>
-              <div className="text-4xl sm:text-5xl font-bold mt-2">{activeTargetNote.spanishNote}</div>
+              <div className="text-4xl sm:text-5xl font-bold mt-2">
+                {activeTargetNote.spanishNote}{learningMode === 'accidentals' ? accidentalSymbol(targetAccidental) : ''}
+              </div>
             </div>
 
             <div className={`px-5 py-4 rounded-xl border text-center min-w-0 ${
@@ -232,6 +283,8 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
               ? '¡Alineación correcta! Sosteniendo nota...'
               : learningMode === 'guided'
               ? `Lleva la nota TÚ hasta META (${activeTargetNote.spanishNote}) y ajusta la apertura al objetivo.`
+              : learningMode === 'accidentals'
+              ? `Busca ${activeTargetNote.spanishNote}${accidentalSymbol(targetAccidental)}. Natural = ambas abiertas; ♯ = slot A cerrado/B abierto; ♭ = slot A abierto/B cerrado. La identidad anatómica estable llegará en T5.`
               : `Busca ${activeTargetNote.spanishNote} con la altura y ajusta palmas a ${activeTargetNote.targetDistanceCm} cm`}
           </span>
           <span className="font-mono font-bold text-cyan-600">
@@ -239,12 +292,15 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
           </span>
         </div>
 
-        {learningMode === 'guided' ? (
+        {learningMode === 'guided' || learningMode === 'accidentals' ? (
           <GuidedStaffView
             targetNote={targetScaleNote}
             targetFigure={targetFigure}
             currentNote={currentDetectedNote}
             currentFigure={currentDetectedFigure}
+            targetAccidental={learningMode === 'accidentals' ? targetAccidental : 'natural'}
+            currentAccidental={currentAccidental}
+            currentSilent={bimanualGesture.mode === 'rest'}
             matched={isTargetMatched}
             theme={theme}
           />
@@ -349,7 +405,7 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
                     Tú
                   </text>
                   <text y="-20" textAnchor="middle" fill={isTargetMatched ? '#10b981' : '#0ea5e9'} fontSize="11" fontWeight="bold">
-                    {currentDetectedNote.octaveName}
+                    {currentDetectedNote.octaveName}{accidentalSymbol(currentAccidental)}
                   </text>
                 </g>
               );
@@ -372,7 +428,9 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
         {/* Live Detected Values Summary (compact) */}
         <div className="flex flex-wrap justify-center gap-3 text-center text-sm text-slate-500 pt-1">
           <div>
-            Entonación actual: <strong className={isPitchMatched ? 'text-emerald-500' : 'text-slate-800 dark:text-slate-200'}>{currentDetectedNote.octaveName}</strong> ({Math.round(currentDetectedNote.frequency)} Hz)
+            Entonación actual: <strong className={isPitchMatched ? 'text-emerald-500' : 'text-slate-800 dark:text-slate-200'}>
+              {bimanualGesture.mode === 'rest' ? 'Silencio' : `${currentDetectedNote.octaveName}${accidentalSymbol(currentAccidental)}`}
+            </strong> ({bimanualGesture.mode === 'rest' ? 'sin emisión' : `${Math.round(effectiveDetectedFrequency)} Hz`})
           </div>
           <div>
             Apertura actual: <strong className={isDistanceMatched ? 'text-emerald-500' : 'text-slate-800 dark:text-slate-200'}>{palmState.distanceCm} cm</strong> (Meta: {activeTargetNote.targetDistanceCm} cm)
@@ -386,11 +444,11 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
               setLastSoundFrequency(0);
               onTimbreChange(next);
             }}
-            currentFrequency={currentDetectedNote.frequency}
+            currentFrequency={effectiveDetectedFrequency}
             compact
           />
           <p className="mt-2 text-xs text-slate-500">
-            El timbre se comparte con Instrumento. La nota detectada en Pentagrama usa la misma voz sonora seleccionada.
+            El timbre se comparte con Instrumento. {bimanualGesture.label}: {bimanualGesture.description}
           </p>
         </section>
 

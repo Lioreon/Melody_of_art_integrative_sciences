@@ -5,6 +5,7 @@ import { ColorTracker } from './colorTracker';
 import { palmDataFromLandmarks, type HandednessObservation } from './handObservation';
 import { palmAt, trackingState, SEPARATION_SCALE } from './trackingGeometry';
 import { TrackingDiagnosticsRecorder, type TrackingBackendId } from './trackingDiagnostics';
+import { GestureStateStabilizer } from './gestureStability';
 
 export type HandTrackerCallback = (state: DualPalmState) => void;
 
@@ -30,6 +31,10 @@ export class HandTracker {
   private currentBackend: TrackingBackendId = 'simulation';
   private lastState: DualPalmState | undefined;
   private diagnostics = new TrackingDiagnosticsRecorder();
+  private gestureStabilizers = [
+    new GestureStateStabilizer(3, 5),
+    new GestureStateStabilizer(3, 5),
+  ];
 
   public async initialize(
     video: HTMLVideoElement,
@@ -42,6 +47,7 @@ export class HandTracker {
     this.lastError = '';
     this.currentBackend = mode === 'colored_balls' ? 'color-markers' : 'mediapipe-hands';
     this.diagnostics.reset(this.currentBackend);
+    this.gestureStabilizers.forEach((stabilizer) => stabilizer.reset());
 
     const generation = this.generation;
     this.callback = onResults;
@@ -176,9 +182,17 @@ export class HandTracker {
     // The model-provided handedness is persisted separately for future identity work (T5).
     palms.sort((a, b) => a.center.x - b.center.x);
 
+    const stabilizedPalms = palms.map((palm, index) => ({
+      ...palm,
+      gestureState: this.gestureStabilizers[index].update(palm.gestureState),
+    }));
+    for (let index = stabilizedPalms.length; index < 2; index += 1) {
+      this.gestureStabilizers[index].update('UNKNOWN');
+    }
+
     const state = trackingState(
-      palms[0] ?? null,
-      palms[1] ?? null,
+      stabilizedPalms[0] ?? null,
+      stabilizedPalms[1] ?? null,
       this.videoElement?.videoWidth || 640,
       this.videoElement?.videoHeight || 480,
     );
@@ -268,6 +282,7 @@ export class HandTracker {
     this.pending = null;
     this.lastFrameTime = -1;
     this.lastVideoTime = -1;
+    this.gestureStabilizers.forEach((stabilizer) => stabilizer.reset());
   }
 
   public getDiagnostics(): TrackingDiagnostics {

@@ -1,4 +1,5 @@
 import type { GestureState } from '../types';
+import { analyzeHandGeometry, countExtendedFingers } from './handGeometry';
 
 export interface GestureLandmark {
   x: number;
@@ -45,12 +46,22 @@ export function classifyGesture(landmarks: readonly GestureLandmark[]): GestureS
   const extensionRatios = LONG_FINGER_INDICES.map(({ mcp, tip }) =>
     distance(wrist, landmarks[tip]) / distance(wrist, landmarks[mcp]));
   const thumbRatio = distance(wrist, landmarks[4]) / distance(wrist, landmarks[5]);
+  const geometry = analyzeHandGeometry(landmarks);
+  const extendedFingers = countExtendedFingers(geometry ?? undefined);
 
-  if (extensionRatios.every(ratio => ratio >= 1.35) && thumbRatio >= 1.25) {
+  const ratioOpen = extensionRatios.every(ratio => ratio >= 1.35) && thumbRatio >= 1.25;
+  const ratioClosed = extensionRatios.every(ratio => ratio <= 1.15) && thumbRatio <= 1.2;
+
+  // Prefer agreement between fingertip reach and phalange geometry when the
+  // latter is informative. Fall back to the legacy ratio classifier for
+  // synthetic/incomplete-shape fixtures that still contain 21 valid points.
+  if (geometry && extendedFingers >= 4 && geometry.opennessScore >= 0.62 && ratioOpen) {
     return 'OPEN_HAND';
   }
-  if (extensionRatios.every(ratio => ratio <= 1.15) && thumbRatio <= 1.2) {
+  if (geometry && extendedFingers <= 1 && geometry.opennessScore <= 0.48 && ratioClosed) {
     return 'CLOSED_FIST';
   }
+  if (ratioOpen) return 'OPEN_HAND';
+  if (ratioClosed) return 'CLOSED_FIST';
   return 'UNKNOWN';
 }

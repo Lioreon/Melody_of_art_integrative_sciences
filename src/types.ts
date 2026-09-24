@@ -11,6 +11,24 @@ export interface HandPoint {
 
 export type GestureState = 'OPEN_HAND' | 'CLOSED_FIST' | 'UNKNOWN';
 
+export type FingerName = 'thumb' | 'index' | 'middle' | 'ring' | 'pinky';
+
+export interface FingerGeometry {
+  name: FingerName;
+  straightness: number; // 0..1, where 1 approximates a straight finger
+  extensionRatio: number; // fingertip distance from wrist relative to MCP distance
+  extended: boolean;
+}
+
+export interface HandGeometry {
+  opennessScore: number; // 0..1 summary across fingers
+  palmSpan: number; // normalized thumb-tip ↔ pinky-tip span
+  fingers: Record<FingerName, FingerGeometry>;
+}
+
+export type MusicalAccidental = 'natural' | 'sharp' | 'flat';
+export type BimanualMusicalMode = 'sound' | 'rest' | 'sharp' | 'flat' | 'unknown';
+
 export interface PalmData {
   present: boolean;
   gestureState: GestureState;
@@ -21,6 +39,7 @@ export interface PalmData {
   landmarks?: HandPoint[];
   handedness?: 'Left' | 'Right' | 'Unknown';
   confidence?: number;
+  geometry?: HandGeometry;
   bbox?: { x: number; y: number; width: number; height: number };
 }
 

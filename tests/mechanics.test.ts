@@ -19,6 +19,13 @@ import { midiToFrequency, nearestInstrumentSample, noteNameToMidi } from '../src
 import { beatDurationMs, buildCompasTimeline, compasGuidance, COMPAS_PATTERNS, getCompasFrame } from '../src/services/compasAccordion';
 import { TrackingDiagnosticsRecorder } from '../src/services/trackingDiagnostics';
 import { palmDataFromLandmarks } from '../src/services/handObservation';
+import { GestureStateStabilizer } from '../src/services/gestureStability';
+import { analyzeHandGeometry } from '../src/services/handGeometry';
+import {
+  applyAccidentalToFrequency,
+  equivalentRestForFigure,
+  interpretBimanualMusicalGesture,
+} from '../src/services/musicalGesture';
 
 test('hold uses elapsed time, completes once and resets when tracking is lost', () => {
   const timer = new HoldTimer();
@@ -305,4 +312,125 @@ test('Tracking v2 T1 persists all 21 landmarks with handedness and confidence', 
 test('Tracking v2 T1 rejects incomplete landmark frames', () => {
   const incomplete = Array.from({ length: 20 }, () => ({ x: 0.4, y: 0.4 }));
   assert.equal(palmDataFromLandmarks(incomplete, { label: 'Left', score: 0.9 }), null);
+});
+
+
+function realisticHandLandmarks(open: boolean) {
+  const points = Array.from({ length: 21 }, () => ({ x: 0, y: 0, z: 0 }));
+  points[0] = { x: 0, y: 0, z: 0 };
+
+  const chains: Array<[number, number, number, number, number, number]> = [
+    [1, 2, 3, 4, 0.28, 0.02],
+    [5, 6, 7, 8, 0.20, -0.12],
+    [9, 10, 11, 12, 0.02, -0.15],
+    [13, 14, 15, 16, -0.16, -0.12],
+    [17, 18, 19, 20, -0.30, -0.06],
+  ];
+
+  for (const [a, b, d, tip, baseX, baseY] of chains) {
+    points[a] = { x: baseX, y: baseY, z: 0 };
+    if (open) {
+      const dx = baseX * 0.18;
+      points[b] = { x: baseX + dx, y: baseY - 0.20, z: 0 };
+      points[d] = { x: baseX + dx * 2, y: baseY - 0.40, z: 0 };
+      points[tip] = { x: baseX + dx * 3, y: baseY - 0.62, z: 0 };
+    } else {
+      points[b] = { x: baseX + 0.05, y: baseY - 0.08, z: 0 };
+      points[d] = { x: baseX + 0.02, y: baseY + 0.02, z: 0 };
+      points[tip] = { x: baseX + 0.01, y: baseY + 0.01, z: 0 };
+    }
+  }
+  return points;
+}
+
+test('Tracking v2 T2 derives per-finger geometry from all phalanges', () => {
+  const open = analyzeHandGeometry(realisticHandLandmarks(true));
+  const closed = analyzeHandGeometry(realisticHandLandmarks(false));
+  assert.ok(open && closed);
+  assert.ok(open.opennessScore > closed.opennessScore);
+  assert.ok(Object.values(open.fingers).filter((finger) => finger.extended).length >= 4);
+  assert.ok(Object.values(closed.fingers).filter((finger) => finger.extended).length <= 1);
+  assert.ok(open.palmSpan > 0);
+});
+
+function musicalPalm(x: number, gestureState: 'OPEN_HAND' | 'CLOSED_FIST') {
+  const palm = palmAt({ x, y: 0.5 });
+  palm.gestureState = gestureState;
+  palm.landmarks = realisticHandLandmarks(gestureState === 'OPEN_HAND');
+  return palm;
+}
+
+test('bimanual musical grammar maps open, closed, sharp and flat states', () => {
+  const natural = trackingState(musicalPalm(0.25, 'OPEN_HAND'), musicalPalm(0.75, 'OPEN_HAND'));
+  const rest = trackingState(musicalPalm(0.25, 'CLOSED_FIST'), musicalPalm(0.75, 'CLOSED_FIST'));
+  const sharp = trackingState(musicalPalm(0.25, 'CLOSED_FIST'), musicalPalm(0.75, 'OPEN_HAND'));
+  const flat = trackingState(musicalPalm(0.25, 'OPEN_HAND'), musicalPalm(0.75, 'CLOSED_FIST'));
+
+  assert.equal(interpretBimanualMusicalGesture(natural).mode, 'sound');
+  assert.equal(interpretBimanualMusicalGesture(rest).mode, 'rest');
+  assert.equal(interpretBimanualMusicalGesture(sharp).accidental, 'sharp');
+  assert.equal(interpretBimanualMusicalGesture(flat).accidental, 'flat');
+});
+
+test('position-only backends remain natural and do not pretend to know finger shape', () => {
+  const state = trackingState(palmAt({ x: 0.25, y: 0.5 }), palmAt({ x: 0.75, y: 0.5 }));
+  const result = interpretBimanualMusicalGesture(state);
+  assert.equal(result.mode, 'sound');
+  assert.equal(result.supportsHandShape, false);
+});
+
+test('rest equivalents preserve the same spatial duration as their sounding figure', () => {
+  for (const note of MUSICAL_FIGURES.filter((figure) => figure.type === 'note')) {
+    const rest = equivalentRestForFigure(note, MUSICAL_FIGURES);
+    assert.ok(rest);
+    assert.equal(rest.durationBeats, note.durationBeats);
+    assert.equal(rest.targetDistanceMinCm, note.targetDistanceMinCm);
+    assert.equal(rest.targetDistanceMaxCm, note.targetDistanceMaxCm);
+    assert.equal(rest.targetDistanceIdealCm, note.targetDistanceIdealCm);
+  }
+});
+
+test('sharp and flat gestures transpose exactly one semitone', () => {
+  const sharpA4 = applyAccidentalToFrequency(440, 'sharp');
+  const flatA4 = applyAccidentalToFrequency(440, 'flat');
+  assert.ok(Math.abs(sharpA4 - 466.1637615) < 0.001);
+  assert.ok(Math.abs(flatA4 - 415.3046976) < 0.001);
+  assert.equal(applyAccidentalToFrequency(440, 'natural'), 440);
+});
+
+test('rhythm feedback distinguishes a rest from its sounding equivalent at the same distance', () => {
+  const note = MUSICAL_FIGURES.find((figure) => figure.id === 'negra')!;
+  const rest = MUSICAL_FIGURES.find((figure) => figure.id === 'silencio_negra')!;
+  const result = evaluateRhythmTarget(rest, note, true, rest.targetDistanceIdealCm);
+  assert.equal(result.status, 'incorrect');
+  assert.match(result.feedback, /cierra ambos puños/);
+});
+
+
+test('gesture stabilization requires consecutive frames before changing musical state', () => {
+  const stabilizer = new GestureStateStabilizer(3, 5);
+  assert.equal(stabilizer.update('OPEN_HAND'), 'UNKNOWN');
+  assert.equal(stabilizer.update('OPEN_HAND'), 'UNKNOWN');
+  assert.equal(stabilizer.update('OPEN_HAND'), 'OPEN_HAND');
+  assert.equal(stabilizer.update('CLOSED_FIST'), 'OPEN_HAND');
+  assert.equal(stabilizer.update('CLOSED_FIST'), 'OPEN_HAND');
+  assert.equal(stabilizer.update('CLOSED_FIST'), 'CLOSED_FIST');
+  assert.equal(stabilizer.update('UNKNOWN'), 'CLOSED_FIST');
+});
+
+test('Compás includes a complete sound-rest pattern using the same spatial durations', () => {
+  const pattern = COMPAS_PATTERNS.find((candidate) => candidate.id === 'sonido_silencio');
+  assert.ok(pattern);
+  const timeline = buildCompasTimeline(pattern, MUSICAL_FIGURES);
+  assert.deepEqual(
+    timeline.map((step) => step.figure.id),
+    ['negra', 'silencio_negra', 'negra', 'silencio_negra'],
+  );
+  assert.equal(timeline[timeline.length - 1].endBeat, 4);
+
+  const note = MUSICAL_FIGURES.find((figure) => figure.id === 'negra')!;
+  const rest = MUSICAL_FIGURES.find((figure) => figure.id === 'silencio_negra')!;
+  const restMismatch = compasGuidance(rest, note, true, rest.targetDistanceIdealCm);
+  assert.equal(restMismatch.status, 'adjust');
+  assert.match(restMismatch.feedback, /cierra ambos puños/);
 });

@@ -218,19 +218,22 @@ Mantener temporalmente compatibilidad con `PalmData` para no reescribir Instrume
 
 ## T2 — Geometría completa de mano
 
-A partir de los 21 landmarks calcular, como datos derivados:
+**Implementación inicial realizada en la rama de gramática musical.**
 
-- longitud estimada de cada dedo en coordenadas normalizadas;
-- extensión/curl por dedo;
+A partir de los 21 landmarks se calculan ya como datos derivados:
+
+- straightness por dedo a partir de la cadena de falanges;
+- extension ratio respecto de muñeca/MCP;
+- estado extendido por dedo;
+- openness score agregado;
+- span pulgar ↔ meñique.
+
+Pendiente dentro de T2:
 - dirección por dedo;
 - apertura angular entre dedos;
-- ancho de palma;
-- alto de palma;
-- span pulgar ↔ meñique;
-- centroides de palma;
-- posición de cada fingertip;
-- distancias entre fingertips de una misma mano;
-- velocidad y estabilidad temporal de puntos seleccionados.
+- ancho/alto de palma;
+- distancias adicionales entre fingertips;
+- velocidad por punto y estabilidad temporal detallada.
 
 Esto permite que Melody Motion deje de conocer únicamente un “punto palma”.
 
@@ -324,6 +327,8 @@ La handedness del modelo puede ayudar, pero no debe ser la única señal. Se rec
 
 ## T6 — Gestos y dedos como segunda capa
 
+La clasificación básica OPEN/CLOSED ya combina alcance de fingertips con geometría de falanges y usa estabilización temporal antes de llegar al dominio musical.
+
 Con landmarks completos:
 
 - mantener `OPEN_HAND / CLOSED_FIST / UNKNOWN`;
@@ -342,6 +347,36 @@ finger_spread
 ```
 
 Estas propiedades pertenecen a interpretación corporal. Cada módulo decidirá después si alguna tiene significado pedagógico.
+
+---
+
+# Gramática musical derivada de la forma de las manos
+
+La semántica musical se implementa **después** de la percepción corporal y no forma parte de MediaPipe.
+
+Regla experimental actual:
+
+```text
+ambas manos abiertas  → sonido / natural
+ambos puños cerrados  → silencio equivalente
+slot A cerrado + B abierto → sostenido ♯
+slot A abierto + B cerrado → bemol ♭
+```
+
+La distancia entre centros de palma sigue determinando la duración. Por tanto, una Negra y su Silencio de Negra comparten el mismo rango espacial; lo que cambia es el estado de apertura/cierre.
+
+Aplicación por módulo:
+
+- **Instrumento**: natural, sostenido, bemol y silencio visual/sonoro.
+- **Ritmo**: nuevo nivel Sonido / silencio.
+- **Pentagrama**: nuevo nivel Alteraciones ♯ / ♭.
+- **Compás**: patrón Sonido y silencio dentro del playhead temporal.
+
+Limitación actual importante:
+
+Los dos slots continúan ordenados por posición horizontal para compatibilidad. La regla asimétrica A/B **no debe interpretarse todavía como identidad anatómica permanente izquierda/derecha**. T5 resolverá identidad estable antes de convertir esta convención en una regla corporal anatómica definitiva.
+
+Los backends sin landmarks de dedos, como Marcadores de color o Simulador, conservan el comportamiento posicional natural y no pretenden inferir silencios ni alteraciones.
 
 ---
 
