@@ -2,16 +2,11 @@
 import type { Hands, Results } from '@mediapipe/hands';
 import type { DualPalmState, PalmData, TrackingDiagnostics, TrackingModeType } from '../types';
 import { ColorTracker } from './colorTracker';
-import { classifyGesture } from './gestureClassifier';
+import { palmDataFromLandmarks, type HandednessObservation } from './handObservation';
 import { palmAt, trackingState, SEPARATION_SCALE } from './trackingGeometry';
 import { TrackingDiagnosticsRecorder, type TrackingBackendId } from './trackingDiagnostics';
 
 export type HandTrackerCallback = (state: DualPalmState) => void;
-
-type LegacyHandedness = {
-  label?: string;
-  score?: number;
-};
 
 export class HandTracker {
   public readonly colors = new ColorTracker();
@@ -170,32 +165,12 @@ export class HandTracker {
   };
 
   private processResults(results: Results) {
-    const handedness = (results.multiHandedness ?? []) as LegacyHandedness[];
+    const handedness = (results.multiHandedness ?? []) as HandednessObservation[];
 
     const palms: PalmData[] = (results.multiHandLandmarks ?? [])
       .slice(0, 2)
-      .map((points, index) => {
-        const anchors = [points[0], points[5], points[9], points[17]];
-        const classification = handedness[index];
-        const label = classification?.label;
-        const normalizedHandedness: PalmData['handedness'] =
-          label === 'Left' || label === 'Right' ? label : 'Unknown';
-
-        return {
-          present: true,
-          gestureState: classifyGesture(points),
-          center: {
-            x: anchors.reduce((sum, point) => sum + point.x, 0) / anchors.length,
-            y: anchors.reduce((sum, point) => sum + point.y, 0) / anchors.length,
-          },
-          wrist: { ...points[0] },
-          indexMcp: { ...points[5] },
-          pinkyMcp: { ...points[17] },
-          landmarks: points.map(point => ({ x: point.x, y: point.y, z: point.z })),
-          handedness: normalizedHandedness,
-          confidence: Number.isFinite(classification?.score) ? classification?.score : undefined,
-        };
-      });
+      .map((points, index) => palmDataFromLandmarks(points, handedness[index]))
+      .filter((palm): palm is PalmData => palm !== null);
 
     // Phase T1 keeps the current spatial slots for backward compatibility.
     // The model-provided handedness is persisted separately for future identity work (T5).
