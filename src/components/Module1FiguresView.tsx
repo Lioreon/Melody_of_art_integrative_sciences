@@ -455,15 +455,14 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
           </button>
           {showCatalog && (
             <div className="grid grid-cols-2 gap-2 pt-3 sm:grid-cols-4">
-              {MUSICAL_FIGURES.map(figure => (
+              {rhythmFigures.map(figure => (
                 <button
                   key={figure.id}
-                  disabled={figure.type !== 'note'}
                   onClick={() => {
                     const index = rhythmFigures.findIndex(candidate => candidate.id === figure.id);
                     if (index >= 0) selectFigure(index);
                   }}
-                  className={`rounded-xl border p-2.5 text-center disabled:cursor-not-allowed disabled:opacity-50 ${
+                  className={`rounded-xl border p-2.5 text-center ${
                     displayedFigure.id === figure.id
                       ? 'border-cyan-600 bg-cyan-50/50 dark:bg-cyan-950/30'
                       : isWhite
