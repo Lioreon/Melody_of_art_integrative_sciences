@@ -9,13 +9,13 @@
 
 ## Arquitectura de interacción
 
-- Objetivo: instrumento educativo visual y minimalista controlado con dos manos o dos pelotas.
+- Objetivo: instrumento educativo visual y minimalista controlado con dos manos o dos **marcadores de color**.
 - Mapeo base: apertura horizontal → duración/figura; altura promedio → nota.
 - Procesamiento local en navegador. GitHub conserva código, dependencias y decisiones; Pages distribuye archivos.
 - No se necesita un modelo generativo para interpretar cada fotograma.
 - Escala de apertura virtual: ancho relativo de imagen multiplicado por 125. No presentar como medición física.
 - Detector de manos heredado @mediapipe/hands, recursos locales y modelo ligero. Modernizar solo después de comparar calidad y latencia.
-- Detector de pelotas sin OpenCV: HSV y mayor componente conectado, análisis 160×120 y hasta 30 Hz.
+- Detector de marcadores de color sin OpenCV: HSV y mayor componente conectado, análisis 160×120 y hasta 30 Hz. El identificador interno histórico `colored_balls` se conserva temporalmente para evitar una migración innecesaria en el mismo incremento.
 - La cámara no guarda ni envía imágenes en esta versión. Configuración y calibración viven en memoria durante la sesión.
 - Sesiones, cuentas, almacenamiento persistente y sincronización entre dispositivos no están implementados.
 
@@ -94,6 +94,20 @@ La memoria se conserva en tres capas:
 3. Artefactos visuales — slides y diseños objetivo usados como referencia para implementación.
 
 No conservar código obsoleto en `main` únicamente por valor histórico.
+
+## Tracking v2 — T0/T1
+
+- El callback heredado de MediaPipe ya entrega 21 landmarks; ahora se persisten los 21 en cada `PalmData`.
+- Se conservan handedness y confidence cuando están disponibles.
+- Para compatibilidad, los dos slots principales siguen ordenados por X; la identidad anatómica estable queda para T5.
+- La apertura musical base continúa usando centro de palma ↔ centro de palma. Los fingertips no redefinen automáticamente figura/duración.
+- T0 añade métricas locales de sesión: FPS, intervalo medio, tiempo de inferencia, jitter aproximado, frames con 0/1/2 puntos y recuperaciones.
+- El overlay de 21 landmarks es técnico y opcional; no forma parte de la tarea pedagógica.
+- No se almacena video ni se envían frames para producir estas métricas.
+- MediaPipe Tasks HandLandmarker sigue como candidato T4; no se añade aún.
+- Colaboración A/B por marcadores permanece como investigación futura y no aparece como capacidad implementada.
+
+Ver [TRACKING_V2_SPEC.md](./TRACKING_V2_SPEC.md).
 
 ## Próximos experimentos técnicos
 
