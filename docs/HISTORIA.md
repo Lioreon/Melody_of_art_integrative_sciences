@@ -79,6 +79,17 @@ La hipótesis de diseño no afirma efectos clínicos ni cognitivos demostrados. 
 
 ### 8. Formalización editorial e identidad institucional
 
+#### Carrusel narrativo institucional
+La primera fase demostrativa del encabezado evolucionó hacia una composición centrada que prioriza la **Escuela de Música Matiaví · Salinas** como destino pedagógico y mantiene **Melody Motion** como subtítulo de la herramienta. Para evitar saturar el encabezado con todas las referencias a la vez, se añadió un carrusel narrativo compacto que alterna cinco aspectos:
+
+1. proyecto educativo;
+2. Melody Motion y sus cuatro áreas;
+3. autoría y desarrollo;
+4. territorio;
+5. mensaje pedagógico.
+
+La rotación automática se detiene cuando el usuario interactúa con el carrusel y respeta la preferencia del sistema `prefers-reduced-motion`. Los indicadores permiten navegación manual.
+
 La interfaz alcanzó además una **primera fase demostrativa pública**: la jerarquía de presentación se consolidó como *Melody of Art → Melody Motion → proyecto pedagógico para Escuela de Música Matiaví · Salinas → diseño y desarrollo A. Owsky*. La misma relación se conserva en el pie de página para dar cierre institucional sin desplazar la experiencia pedagógica.
 
 El 24 de septiembre de 2026 se consolidaron dos líneas complementarias de presentación.
