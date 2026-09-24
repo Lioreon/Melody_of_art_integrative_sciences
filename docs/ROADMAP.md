@@ -102,6 +102,30 @@ La asistencia debe poder reducirse por módulo y por relación aprendida:
 
 La tecnología actúa como andamio. El objetivo final es que parte del aprendizaje pueda ejecutarse fuera de la pantalla.
 
+## Tracking v2
+
+Secuencia aprobada para investigación e implementación incremental:
+
+1. **T0 — baseline medible**: FPS, jitter, recuperación, identidad y memoria.
+2. **T1 — 21 landmarks persistentes** sin cambiar todavía el backend.
+3. **T2 — geometría completa de mano**: dedos, falanges, fingertips, span y estabilidad.
+4. **T3 — adaptador de backends** para desacoplar MediaPipe de los módulos musicales.
+5. **T4 — benchmark/migración a MediaPipe Tasks HandLandmarker**.
+6. **T5 — identidad estable de manos** usando handedness + continuidad temporal.
+7. **T6 — gestos derivados por dedo**, sin asignar significado musical automático.
+
+En paralelo para color:
+
+1. **C0 — nombre conceptual: Marcadores de color**.
+2. **C1 — calibración desde cámara / cuentagotas**.
+3. **C2 — bbox, área, confianza y morfología ligera**.
+4. **C3 — identidad estable por color**.
+5. **C4 — benchmark tracking.js / OpenCV.js** antes de añadir dependencias pesadas.
+
+Especificación completa: [TRACKING_V2_SPEC.md](./TRACKING_V2_SPEC.md).
+
+La colaboración multiusuario A/B queda registrada como **línea de investigación futura**, sin selector ni exposición en la interfaz actual.
+
 ## Cámara y UX
 Visión futura:
 - calibración: cámara amplia;
@@ -128,4 +152,5 @@ Variables futuras de investigación:
 - gesto → sonido/silencio como equivalencia automática;
 - dificultad adaptativa opaca;
 - arquitectura genérica de aprendizaje antes de que al menos dos módulos requieran la misma abstracción;
-- cambios grandes de MediaPipe/cámara sin medición base.
+- cambios grandes de MediaPipe/cámara sin medición base;
+- exponer colaboración multiusuario antes de contar con identidad, consentimiento y validación pedagógica específicos.
