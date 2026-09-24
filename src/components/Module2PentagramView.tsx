@@ -12,6 +12,8 @@ import { GALLERY_ITEMS } from '../data/scorePresets';
 import { DualPalmState, GalleryItem, PentagramNoteItem, AppTheme } from '../types';
 import { audioSynthesizer } from '../services/audioSynthesizer';
 import { Music, Check, ChevronDown, ChevronUp, RotateCcw } from 'lucide-react';
+import type { InstrumentTimbre } from '../services/instrumentSamples';
+import { InstrumentTimbreSelector } from './InstrumentTimbreSelector';
 
 interface Module2PentagramViewProps {
   palmState: DualPalmState;
@@ -19,6 +21,8 @@ interface Module2PentagramViewProps {
   isSimulation: boolean;
   onSimulatedPositionChange?: (yNorm: number, distCm: number) => void;
   theme?: AppTheme;
+  timbre: InstrumentTimbre;
+  onTimbreChange: (timbre: InstrumentTimbre) => void;
 }
 
 export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
@@ -27,6 +31,8 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
   isSimulation,
   onSimulatedPositionChange,
   theme = 'dark_cyan',
+  timbre,
+  onTimbreChange,
 }) => {
   const isWhite = theme === 'white';
   const [selectedGalleryItem, setSelectedGalleryItem] = useState<GalleryItem>(GALLERY_ITEMS[0]);
@@ -56,10 +62,10 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
   // Sound feedback on note change
   useEffect(() => {
     if (hasBothHands && currentDetectedNote.frequency !== lastSoundFrequency) {
-      audioSynthesizer.playPitchNote(currentDetectedNote.frequency, 0.3);
+      void audioSynthesizer.playInstrumentNote(currentDetectedNote.frequency, 0.3, timbre);
       setLastSoundFrequency(currentDetectedNote.frequency);
     }
-  }, [currentDetectedNote.frequency, lastSoundFrequency, hasBothHands]);
+  }, [currentDetectedNote.frequency, lastSoundFrequency, hasBothHands, timbre]);
 
   const [holdProgress, setHoldProgress] = useHoldProgress(
     `${selectedGalleryItem.id}:${noteStepIndex}`, isTargetMatched && !showItemVictoryModal,
@@ -313,6 +319,21 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
             Apertura actual: <strong className={isDistanceMatched ? 'text-emerald-500' : 'text-slate-800 dark:text-slate-200'}>{palmState.distanceCm} cm</strong> (Meta: {activeTargetNote.targetDistanceCm} cm)
           </div>
         </div>
+
+        <section className="rounded-xl border border-[var(--ui-border)] bg-[var(--ui-background)]/40 p-4">
+          <InstrumentTimbreSelector
+            timbre={timbre}
+            onChange={(next) => {
+              setLastSoundFrequency(0);
+              onTimbreChange(next);
+            }}
+            currentFrequency={currentDetectedNote.frequency}
+            compact
+          />
+          <p className="mt-2 text-xs text-slate-500">
+            El timbre se comparte con Instrumento. La nota detectada en Pentagrama usa la misma voz sonora seleccionada.
+          </p>
+        </section>
 
         {/* Quick simulation align helper */}
         {isSimulation && onSimulatedPositionChange && (

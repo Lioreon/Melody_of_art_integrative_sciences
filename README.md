@@ -103,4 +103,4 @@ La migración a MediaPipe Tasks/Web Worker queda como siguiente fase, después d
 
 ## Timbres de instrumento
 
-El módulo **Instrumento** puede usar el sintetizador Web Audio interno o timbres muestreados de **piano, guitarra nylon y violín**. Las muestras se cargan bajo demanda desde una revisión fijada de `nbrosowsky/tonejs-instruments` y conservan su atribución CC BY 3.0. Si la carga externa falla, Melody Motion vuelve al sintetizador interno. Consulte [docs/AUDIO_SOURCES.md](docs/AUDIO_SOURCES.md).
+Los módulos **Instrumento** y **Pentagrama** comparten el sintetizador Web Audio interno o timbres muestreados de **piano, guitarra nylon y violín**. El timbre seleccionado se mantiene al cambiar entre ambos módulos durante la sesión. Las muestras se cargan bajo demanda desde una revisión fijada de `nbrosowsky/tonejs-instruments` y conservan su atribución CC BY 3.0. Si la carga externa falla, Melody Motion vuelve al sintetizador interno. Consulte [docs/AUDIO_SOURCES.md](docs/AUDIO_SOURCES.md).

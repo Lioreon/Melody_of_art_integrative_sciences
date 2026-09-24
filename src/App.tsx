@@ -25,6 +25,7 @@ import { SCORE_PIECES, ScorePiece } from './data/scorePresets';
 import { AppTheme, DualPalmState, ReactionAttempt, ScoreCue, SessionStats, TempoPreset, TrainingMode } from './types';
 import { HandTracker } from './services/handTracker';
 import { audioSynthesizer } from './services/audioSynthesizer';
+import type { InstrumentTimbre } from './services/instrumentSamples';
 
 const AREA_COPY: Record<string, { title: string; description: string }> = {
   instrument: {
@@ -59,6 +60,7 @@ export default function App() {
 
   // Audio & Camera Mode
   const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [instrumentTimbre, setInstrumentTimbre] = useState<InstrumentTimbre>('synth');
   const [isSimulation, setIsSimulation] = useState<boolean>(true);
   const [trackingMode, setTrackingMode] = useState<TrackingModeType>('hands');
   const [colors, setColors] = useState({ color1Hex: '#ef4444', color2Hex: '#06b6d4', tolerance: 50 });
@@ -479,7 +481,14 @@ export default function App() {
           {/* Right Column: Active Module View */}
           <div className="lg:col-span-8 min-w-0 space-y-6">
             <WorkspaceHeader title={activeArea.title} description={activeArea.description} />
-            {activeModuleId === 'instrument' && <InstrumentPanel palmState={palmState} theme={theme} />}
+            {activeModuleId === 'instrument' && (
+              <InstrumentPanel
+                palmState={palmState}
+                theme={theme}
+                timbre={instrumentTimbre}
+                onTimbreChange={setInstrumentTimbre}
+              />
+            )}
             {activeModuleId === 'module_1_figures_duration' && (
               <Module1FiguresView
                 palmState={palmState}
@@ -497,6 +506,8 @@ export default function App() {
                 isSimulation={isSimulation}
                 onSimulatedPositionChange={handleSimulatedPositionChange}
                 theme={theme}
+                timbre={instrumentTimbre}
+                onTimbreChange={setInstrumentTimbre}
               />
             )}
 
