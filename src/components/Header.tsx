@@ -56,81 +56,54 @@ export const Header: React.FC<HeaderProps> = ({
 
   const utilityButtonClass = `touch-target inline-flex min-h-10 min-w-10 items-center justify-center rounded-xl border transition-colors ${
     isWhite
-      ? 'border-slate-200 bg-white/70 text-slate-700 hover:bg-slate-100'
+      ? 'border-slate-200 bg-white/75 text-slate-700 hover:bg-slate-100'
       : 'border-slate-700 bg-slate-950/30 text-slate-200 hover:bg-slate-900'
   }`;
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--ui-border)] bg-[color:var(--ui-surface)]/95 text-[var(--ui-text)] shadow-[var(--ui-shadow)] backdrop-blur-md transition-colors">
-      <div className="mx-auto max-w-[1500px] px-3 pt-[max(0.7rem,env(safe-area-inset-top))] sm:px-4 lg:px-6">
-        <div className="flex flex-col gap-3 border-b border-[var(--ui-border)]/70 pb-3 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex min-w-0 items-center gap-3">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-[var(--ui-gold)]/30 bg-[var(--ui-surface-muted)] text-[var(--ui-blue)] shadow-sm">
-              <Music2 className="h-5 w-5" aria-hidden="true" />
+    <header className="border-b border-[var(--ui-border)] bg-[var(--ui-surface)] text-[var(--ui-text)] shadow-[var(--ui-shadow)] transition-colors">
+      <div className="mx-auto max-w-[1500px] px-3 pt-[max(0.85rem,env(safe-area-inset-top))] sm:px-4 lg:px-6">
+        <section className="mm-masthead border-b border-[var(--ui-border)]/70 pb-4 text-center sm:pb-5">
+          <div className="mx-auto flex max-w-4xl flex-col items-center">
+            <span className="flex h-11 w-11 items-center justify-center rounded-2xl border border-[var(--ui-gold)]/30 bg-[var(--ui-surface-muted)] text-[var(--ui-blue)] shadow-sm sm:h-12 sm:w-12">
+              <Music2 className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
             </span>
-            <div className="min-w-0 leading-tight">
-              <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-[var(--ui-gold)] sm:text-[10px]">
-                Melody of Art
-              </p>
-              <h1 className="truncate text-xl font-bold tracking-tight text-[var(--ui-blue)] dark:text-[var(--ui-text)] sm:text-2xl">
-                Melody Motion
-              </h1>
-              <p className="mt-1 hidden text-[11px] text-[var(--ui-text-muted)] sm:block">
-                Movimiento · sonido · representación · aprendizaje
-              </p>
+
+            <p className="mt-2 text-[9px] font-bold uppercase tracking-[0.28em] text-[var(--ui-gold)] sm:text-[10px]">
+              Melody of Art
+            </p>
+
+            <h1 className="mt-0.5 text-[clamp(1.65rem,6vw,2.65rem)] font-extrabold leading-none tracking-[-0.03em] text-[var(--ui-blue)] dark:text-[var(--ui-text)]">
+              Melody Motion
+            </h1>
+
+            <p className="mt-2 max-w-2xl text-[11px] leading-relaxed text-[var(--ui-text-muted)] sm:text-sm">
+              Interfaz pedagógica musical basada en movimiento, sonido, representación y aprendizaje.
+            </p>
+
+            <div className="mt-3 flex items-center gap-1.5 text-[8px] font-bold uppercase tracking-[0.2em] text-[var(--ui-gold)] sm:text-[9px]">
+              <MapPin className="h-3.5 w-3.5 text-[var(--ui-jade)]" aria-hidden="true" />
+              Proyecto pedagógico para
             </div>
+
+            <h2 className="mt-1 text-[clamp(0.95rem,3.4vw,1.35rem)] font-semibold leading-tight text-[var(--ui-text)]">
+              Escuela de Música
+            </h2>
+            <p className="mt-0.5 text-[clamp(1.1rem,4vw,1.6rem)] font-extrabold uppercase tracking-[0.06em] text-[var(--ui-jade)]">
+              Matiaví · Salinas
+            </p>
+
+            <div className="mt-3 h-px w-20 bg-[var(--ui-gold)]/40" />
+
+            <p className="mt-2 text-[9px] leading-relaxed text-[var(--ui-text-muted)] sm:text-[10px]">
+              <span className="font-semibold uppercase tracking-[0.14em] text-[var(--ui-gold)]">Diseño y desarrollo</span>
+              <span className="mx-1.5">·</span>
+              <strong className="text-[var(--ui-blue)] dark:text-[var(--ui-text)]">A. Owsky</strong>
+              <span className="mx-1.5">·</span>
+              Ciencias Integrativas · Bolívar · Ecuador
+            </p>
           </div>
-
-          <section className="grid grid-cols-[1fr_auto] items-center gap-3 rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface-muted)] px-3 py-2.5 sm:hidden">
-            <div className="min-w-0">
-              <p className="text-[8px] font-semibold uppercase tracking-[0.18em] text-[var(--ui-gold)]">
-                Proyecto pedagógico para
-              </p>
-              <div className="mt-1 flex items-start gap-2">
-                <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--ui-jade)]" aria-hidden="true" />
-                <div className="min-w-0 leading-tight">
-                  <p className="text-[10px] font-semibold text-[var(--ui-text-muted)]">Escuela de Música</p>
-                  <p className="text-sm font-bold tracking-wide text-[var(--ui-jade)]">
-                    Matiaví · Salinas
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="border-l border-[var(--ui-border)] pl-3 text-right leading-tight">
-              <p className="text-[8px] font-semibold uppercase tracking-[0.14em] text-[var(--ui-gold)]">
-                Desarrollo
-              </p>
-              <p className="mt-1 text-xs font-bold text-[var(--ui-blue)] dark:text-[var(--ui-text)]">
-                A. Owsky
-              </p>
-            </div>
-          </section>
-
-          <div className="hidden gap-2 sm:grid sm:grid-cols-2 lg:flex lg:items-stretch">
-            <section className="rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface-muted)] px-3 py-2 lg:min-w-[235px]">
-              <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[var(--ui-gold)]">
-                Proyecto pedagógico para
-              </p>
-              <div className="mt-1 flex items-start gap-2">
-                <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--ui-jade)]" aria-hidden="true" />
-                <div className="leading-tight">
-                  <p className="text-xs font-semibold text-[var(--ui-text)]">Escuela de Música</p>
-                  <p className="text-sm font-bold tracking-wide text-[var(--ui-jade)]">Matiaví · Salinas</p>
-                </div>
-              </div>
-            </section>
-
-            <section className="rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] px-3 py-2 lg:min-w-[245px]">
-              <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[var(--ui-gold)]">
-                Diseño y desarrollo
-              </p>
-              <p className="mt-1 text-sm font-bold text-[var(--ui-blue)] dark:text-[var(--ui-text)]">A. Owsky</p>
-              <p className="mt-0.5 text-[10px] leading-tight text-[var(--ui-text-muted)]">
-                Ciencias Integrativas · Bolívar · Ecuador
-              </p>
-            </section>
-          </div>
-        </div>
+        </section>
 
         <div className="flex flex-col gap-2 py-2.5 lg:flex-row lg:items-center lg:justify-between">
           <nav
@@ -160,60 +133,58 @@ export const Header: React.FC<HeaderProps> = ({
             })}
           </nav>
 
-          <div className="flex items-center justify-end gap-2">
-            <div className="flex items-center gap-1.5">
-              <button
-                type="button"
-                onClick={onToggleSimulation}
-                className={`touch-target inline-flex min-h-10 items-center gap-1.5 rounded-xl border px-3 text-xs font-semibold transition-colors ${
-                  isSimulation
-                    ? 'border-[var(--ui-blue)]/20 bg-[var(--ui-blue)]/8 text-[var(--ui-blue)] dark:text-[var(--ui-text)]'
-                    : isWhite
-                    ? 'border-slate-200 bg-white/70 text-slate-700 hover:bg-slate-100'
-                    : 'border-slate-700 bg-slate-950/30 text-slate-200 hover:bg-slate-900'
-                }`}
-                title={isSimulation ? 'Cambiar a cámara web' : 'Cambiar a simulación virtual'}
-              >
-                {isSimulation
-                  ? <Sliders className="h-4 w-4" aria-hidden="true" />
-                  : <Camera className="h-4 w-4" aria-hidden="true" />}
-                <span>{isSimulation ? 'Virtual' : 'Cámara'}</span>
-              </button>
+          <div className="flex items-center justify-end gap-1.5">
+            <button
+              type="button"
+              onClick={onToggleSimulation}
+              className={`touch-target inline-flex min-h-10 items-center gap-1.5 rounded-xl border px-3 text-xs font-semibold transition-colors ${
+                isSimulation
+                  ? 'border-[var(--ui-blue)]/20 bg-[var(--ui-blue)]/8 text-[var(--ui-blue)] dark:text-[var(--ui-text)]'
+                  : isWhite
+                  ? 'border-slate-200 bg-white/75 text-slate-700 hover:bg-slate-100'
+                  : 'border-slate-700 bg-slate-950/30 text-slate-200 hover:bg-slate-900'
+              }`}
+              title={isSimulation ? 'Cambiar a cámara web' : 'Cambiar a simulación virtual'}
+            >
+              {isSimulation
+                ? <Sliders className="h-4 w-4" aria-hidden="true" />
+                : <Camera className="h-4 w-4" aria-hidden="true" />}
+              <span>{isSimulation ? 'Virtual' : 'Cámara'}</span>
+            </button>
 
-              <button
-                type="button"
-                onClick={onToggleMute}
-                className={utilityButtonClass}
-                title={isMuted ? 'Activar sonido' : 'Silenciar sonido'}
-                aria-label={isMuted ? 'Activar sonido' : 'Silenciar sonido'}
-              >
-                {isMuted
-                  ? <VolumeX className="h-4 w-4" aria-hidden="true" />
-                  : <Volume2 className="h-4 w-4" aria-hidden="true" />}
-              </button>
+            <button
+              type="button"
+              onClick={onToggleMute}
+              className={utilityButtonClass}
+              title={isMuted ? 'Activar sonido' : 'Silenciar sonido'}
+              aria-label={isMuted ? 'Activar sonido' : 'Silenciar sonido'}
+            >
+              {isMuted
+                ? <VolumeX className="h-4 w-4" aria-hidden="true" />
+                : <Volume2 className="h-4 w-4" aria-hidden="true" />}
+            </button>
 
-              <button
-                type="button"
-                onClick={onToggleTheme}
-                className={utilityButtonClass}
-                title={isWhite ? 'Modo oscuro' : 'Modo claro'}
-                aria-label={isWhite ? 'Modo oscuro' : 'Modo claro'}
-              >
-                {isWhite
-                  ? <Moon className="h-4 w-4" aria-hidden="true" />
-                  : <Sun className="h-4 w-4" aria-hidden="true" />}
-              </button>
+            <button
+              type="button"
+              onClick={onToggleTheme}
+              className={utilityButtonClass}
+              title={isWhite ? 'Modo oscuro' : 'Modo claro'}
+              aria-label={isWhite ? 'Modo oscuro' : 'Modo claro'}
+            >
+              {isWhite
+                ? <Moon className="h-4 w-4" aria-hidden="true" />
+                : <Sun className="h-4 w-4" aria-hidden="true" />}
+            </button>
 
-              <button
-                type="button"
-                onClick={onShowInfo}
-                className={utilityButtonClass}
-                title="Guía de uso y metodología"
-                aria-label="Guía de uso y metodología"
-              >
-                <HelpCircle className="h-4 w-4" aria-hidden="true" />
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={onShowInfo}
+              className={utilityButtonClass}
+              title="Guía de uso y metodología"
+              aria-label="Guía de uso y metodología"
+            >
+              <HelpCircle className="h-4 w-4" aria-hidden="true" />
+            </button>
           </div>
         </div>
       </div>
