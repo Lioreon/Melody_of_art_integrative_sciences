@@ -4,7 +4,8 @@
  */
 
 import React from 'react';
-import { FigureDuration, ScaleNote, AppTheme } from '../types';
+import { FigureDuration, ScaleNote, AppTheme, MusicalAccidental } from '../types';
+import { accidentalSymbol } from '../services/musicalGesture';
 import { ledgerLineStepsForStaffStep } from '../data/musicalScaleData';
 
 interface SimpleStaffViewProps {
@@ -12,6 +13,8 @@ interface SimpleStaffViewProps {
   figure: FigureDuration;
   isPlaying: boolean;
   theme?: AppTheme;
+  accidental?: MusicalAccidental;
+  isSilent?: boolean;
 }
 
 export const SimpleStaffView: React.FC<SimpleStaffViewProps> = ({
@@ -19,6 +22,8 @@ export const SimpleStaffView: React.FC<SimpleStaffViewProps> = ({
   figure,
   isPlaying,
   theme = 'white',
+  accidental = 'natural',
+  isSilent = false,
 }) => {
   const isWhite = theme === 'white';
 
@@ -33,6 +38,14 @@ export const SimpleStaffView: React.FC<SimpleStaffViewProps> = ({
   const ledgerSteps = ledgerLineStepsForStaffStep(note.staffLineIndex);
 
   const isOpenHead = figure.id === 'blanca' || figure.id === 'redonda';
+  const restSymbolByFigure: Record<string, string> = {
+    semicorchea: '𝄿',
+    corchea: '𝄾',
+    negra: '𝄽',
+    blanca: '𝄼',
+    redonda: '𝄻',
+  };
+  const accidentalMark = accidentalSymbol(accidental);
   const hasStem = figure.id !== 'redonda';
   const stemDown = note.staffLineIndex >= 6;
   const stemLength = 34;
@@ -111,7 +124,33 @@ export const SimpleStaffView: React.FC<SimpleStaffViewProps> = ({
           />
         )}
 
-        {hasStem && (
+        {!isSilent && accidentalMark && (
+          <text
+            x={noteX - 20}
+            y={noteY + 7}
+            fontSize="24"
+            fontFamily="serif"
+            fill={isPlaying ? '#0284c7' : isWhite ? '#0f172a' : '#f8fafc'}
+            textAnchor="middle"
+          >
+            {accidentalMark}
+          </text>
+        )}
+
+        {isSilent && (
+          <text
+            x={noteX}
+            y="102"
+            fontSize="48"
+            fontFamily="serif"
+            fill={isPlaying ? '#0284c7' : isWhite ? '#0f172a' : '#f8fafc'}
+            textAnchor="middle"
+          >
+            {restSymbolByFigure[figure.id] ?? '𝄽'}
+          </text>
+        )}
+
+        {!isSilent && hasStem && (
           <line
             x1={stemX}
             y1={stemY1}
@@ -123,7 +162,7 @@ export const SimpleStaffView: React.FC<SimpleStaffViewProps> = ({
           />
         )}
 
-        {figure.id === 'corchea' && (
+        {!isSilent && figure.id === 'corchea' && (
           <path
             d={
               stemDown
@@ -137,7 +176,7 @@ export const SimpleStaffView: React.FC<SimpleStaffViewProps> = ({
           />
         )}
 
-        {figure.id === 'semicorchea' && (
+        {!isSilent && figure.id === 'semicorchea' && (
           <>
             <path
               d={
@@ -164,33 +203,37 @@ export const SimpleStaffView: React.FC<SimpleStaffViewProps> = ({
           </>
         )}
 
-        <ellipse
-          cx={noteX}
-          cy={noteY}
-          rx="8"
-          ry="6"
-          transform={`rotate(-22 ${noteX} ${noteY})`}
-          fill={
-            isOpenHead
-              ? isWhite
-                ? '#ffffff'
-                : '#0f172a'
-              : isPlaying
-              ? '#0284c7'
-              : isWhite
-              ? '#0f172a'
-              : '#f8fafc'
-          }
-          stroke={isPlaying ? '#0284c7' : isWhite ? '#0f172a' : '#f8fafc'}
-          strokeWidth={isOpenHead ? '2.5' : '1.5'}
-        />
+        {!isSilent && (
+                  <ellipse
+                    cx={noteX}
+                    cy={noteY}
+                    rx="8"
+                    ry="6"
+                    transform={`rotate(-22 ${noteX} ${noteY})`}
+                    fill={
+                      isOpenHead
+                        ? isWhite
+                          ? '#ffffff'
+                          : '#0f172a'
+                        : isPlaying
+                        ? '#0284c7'
+                        : isWhite
+                        ? '#0f172a'
+                        : '#f8fafc'
+                    }
+                    stroke={isPlaying ? '#0284c7' : isWhite ? '#0f172a' : '#f8fafc'}
+                    strokeWidth={isOpenHead ? '2.5' : '1.5'}
+                  />
+        )}
       </svg>
 
       <div className="flex flex-wrap justify-center items-center gap-2 text-sm sm:text-base text-slate-500 mt-2">
         <span>Clave de Sol</span>
         <span>•</span>
         <span className="font-mono font-medium text-slate-700 dark:text-slate-300">
-          {note.octaveName} ({Math.round(note.frequency)} Hz)
+          {isSilent
+            ? `Silencio de ${figure.name}`
+            : `${note.octaveName}${accidentalMark} (${Math.round(note.frequency)} Hz base)`}
         </span>
       </div>
     </div>
