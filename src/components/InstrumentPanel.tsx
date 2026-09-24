@@ -3,17 +3,23 @@ import type { AppTheme, DualPalmState } from '../types';
 import { MusicalInstrumentView } from './MusicalInstrumentView';
 import { TREBLE_TRAINING_RANGE, MUSICAL_FIGURES, mapHeightToNote, mapSeparationToFigure, calculateRealDurationSec, DEFAULT_PITCH_Y_MIN, DEFAULT_PITCH_Y_MAX } from '../data/musicalScaleData';
 import { audioSynthesizer } from '../services/audioSynthesizer';
-import { INSTRUMENT_TIMBRE_OPTIONS, type InstrumentTimbre } from '../services/instrumentSamples';
+import type { InstrumentTimbre } from '../services/instrumentSamples';
+import { InstrumentTimbreSelector } from './InstrumentTimbreSelector';
 
-export function InstrumentPanel({ palmState, theme }: { palmState: DualPalmState; theme: AppTheme }) {
+interface InstrumentPanelProps {
+  palmState: DualPalmState;
+  theme: AppTheme;
+  timbre: InstrumentTimbre;
+  onTimbreChange: (timbre: InstrumentTimbre) => void;
+}
+
+export function InstrumentPanel({ palmState, theme, timbre, onTimbreChange }: InstrumentPanelProps) {
   const [bpm, setBpm] = useState(120);
   const [note, setNote] = useState(TREBLE_TRAINING_RANGE.find((item) => item.id === 'sol4') ?? TREBLE_TRAINING_RANGE[0]);
   const [figure, setFigure] = useState(MUSICAL_FIGURES[2]);
   const [range, setRange] = useState({ top: DEFAULT_PITCH_Y_MIN, bottom: DEFAULT_PITCH_Y_MAX, close: 15, far: 85 });
   const [playing, setPlaying] = useState(false);
-  const [timbre, setTimbre] = useState<InstrumentTimbre>('synth');
   const [liveSoundFeedback, setLiveSoundFeedback] = useState(false);
-  const [sampleReady, setSampleReady] = useState<'idle' | 'loading' | 'ready' | 'fallback'>('idle');
   const [progress, setProgress] = useState(0);
   const frame = useRef<number | null>(null);
   const playingRef = useRef(false);
@@ -45,19 +51,6 @@ export function InstrumentPanel({ palmState, theme }: { palmState: DualPalmState
 
 
   useEffect(() => {
-    if (timbre === 'synth') {
-      setSampleReady('idle');
-      return;
-    }
-    setSampleReady('loading');
-    let cancelled = false;
-    void audioSynthesizer.preloadInstrument(timbre, note.frequency).then((ok) => {
-      if (!cancelled) setSampleReady(ok ? 'ready' : 'fallback');
-    });
-    return () => { cancelled = true; };
-  }, [timbre]);
-
-  useEffect(() => {
     if (!liveSoundFeedback || trackingLost || playing) {
       if (trackingLost) lastFeedbackNoteRef.current = null;
       return;
@@ -87,23 +80,16 @@ export function InstrumentPanel({ palmState, theme }: { palmState: DualPalmState
 
     <section className="rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-4 text-sm shadow-[var(--ui-shadow)]">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <label className="flex-1 space-y-1.5">
-          <span className="block text-xs font-semibold uppercase tracking-wide text-slate-500">Timbre del instrumento</span>
-          <select
-            aria-label="Timbre del instrumento"
-            value={timbre}
-            onChange={(event) => {
-              const next = event.target.value as InstrumentTimbre;
-              setTimbre(next);
+        <div className="flex-1">
+          <InstrumentTimbreSelector
+            timbre={timbre}
+            onChange={(next) => {
+              onTimbreChange(next);
               lastFeedbackNoteRef.current = null;
             }}
-            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
-          >
-            {INSTRUMENT_TIMBRE_OPTIONS.map((option) => (
-              <option key={option.id} value={option.id}>{option.label}</option>
-            ))}
-          </select>
-        </label>
+            currentFrequency={note.frequency}
+          />
+        </div>
 
         <label className="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 dark:border-slate-800">
           <input
@@ -118,22 +104,6 @@ export function InstrumentPanel({ palmState, theme }: { palmState: DualPalmState
         </label>
       </div>
 
-      <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500">
-        <span>
-          {timbre === 'synth'
-            ? 'Sintetizador local · sin descarga externa.'
-            : sampleReady === 'loading'
-            ? 'Preparando muestra…'
-            : sampleReady === 'ready'
-            ? 'Muestra preparada · las siguientes notas se cargan bajo demanda.'
-            : sampleReady === 'fallback'
-            ? 'No se pudo cargar la muestra; se usará el sintetizador como respaldo.'
-            : 'Muestras cargadas bajo demanda.'}
-        </span>
-        {timbre !== 'synth' && (
-          <span>Fuente: tonejs-instruments · muestras CC BY 3.0.</span>
-        )}
-      </div>
     </section>
 
     <details className="rounded-xl border border-slate-300 p-4 text-sm">
