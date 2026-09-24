@@ -9,6 +9,7 @@ Esta carpeta conserva la memoria técnica, pedagógica y de producto del proyect
 - [ROADMAP.md](./ROADMAP.md) — roadmap posterior a Phase 2 y prioridades de implementación.
 - [MANUAL_USUARIO.md](./MANUAL_USUARIO.md) — versión textual del manual técnico-pedagógico.
 - [VISION_PEDAGOGICA_2026.md](./VISION_PEDAGOGICA_2026.md) — visión de interfaz y pedagogía posterior a las pruebas físicas.
+- [AUDIO_SOURCES.md](./AUDIO_SOURCES.md) — procedencia, licencia y arquitectura de los timbres muestreados.
 
 ## Principio de conservación
 
