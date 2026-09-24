@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { AppTheme, FigureDuration, MusicalAccidental, ScaleNote } from '../types';
+import { AppTheme, FigureDuration, ScaleNote } from '../types';
 import { SimpleStaffView } from './SimpleStaffView';
 import { TREBLE_TRAINING_RANGE, MUSICAL_FIGURES } from '../data/musicalScaleData';
 import { Play, AlertCircle, Volume2 } from 'lucide-react';
@@ -21,9 +21,6 @@ interface MusicalInstrumentViewProps {
   separationCm: number;
   avgYNorm: number;
   theme?: AppTheme;
-  accidental?: MusicalAccidental;
-  isSilentGesture?: boolean;
-  gestureLabel?: string;
 }
 
 export const MusicalInstrumentView: React.FC<MusicalInstrumentViewProps> = ({
@@ -38,12 +35,8 @@ export const MusicalInstrumentView: React.FC<MusicalInstrumentViewProps> = ({
   separationCm,
   avgYNorm,
   theme = 'white',
-  accidental = 'natural',
-  isSilentGesture = false,
-  gestureLabel = 'Natural',
 }) => {
   const isWhite = theme === 'white';
-  const accidentalMark = accidental === 'sharp' ? '♯' : accidental === 'flat' ? '♭' : '';
 
   return (
     <div
@@ -98,10 +91,10 @@ export const MusicalInstrumentView: React.FC<MusicalInstrumentViewProps> = ({
                   : 'text-slate-100'
               } transition-transform`}
             >
-              {isSilentGesture ? 'SILENCIO' : `${selectedNote.name}${accidentalMark}`}
+              {selectedNote.name}
             </span>
             <span className="text-sm font-semibold text-slate-500 font-mono">
-              {isSilentGesture ? gestureLabel : `${selectedNote.octaveName}${accidentalMark}`}
+              {selectedNote.octaveName}
             </span>
           </div>
 
@@ -199,18 +192,16 @@ export const MusicalInstrumentView: React.FC<MusicalInstrumentViewProps> = ({
         figure={selectedFigure}
         isPlaying={isPlaying}
         theme={theme}
-        accidental={accidental}
-        isSilent={isSilentGesture}
       />
 
       {/* Primary Action Button: Tocar Nota */}
       <div className="space-y-2 pt-1">
         <button
           onClick={onPlayNote}
-          disabled={trackingLost || isPlaying || isSilentGesture}
-          aria-label={isSilentGesture ? 'Silencio activo por gesto' : 'Tocar nota musical seleccionada'}
+          disabled={trackingLost || isPlaying}
+          aria-label="Tocar nota musical seleccionada"
           className={`w-full py-4 px-6 rounded-2xl font-bold text-base transition-all flex items-center justify-center space-x-3 relative overflow-hidden shadow-sm ${
-            trackingLost || isSilentGesture
+            trackingLost
               ? 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed border border-slate-300 dark:border-slate-700'
               : isPlaying
               ? 'bg-cyan-600 text-white scale-[0.99]'
@@ -237,15 +228,10 @@ export const MusicalInstrumentView: React.FC<MusicalInstrumentViewProps> = ({
               <AlertCircle className="w-5 h-5" />
               <span>Seguimiento perdido · Muestra ambas manos</span>
             </>
-          ) : isSilentGesture ? (
-            <>
-              <AlertCircle className="w-5 h-5" />
-              <span>{gestureLabel} · no se emite sonido</span>
-            </>
           ) : (
             <>
               <Play className="w-5 h-5 fill-current" />
-              <span>Tocar nota ({selectedNote.name}{accidentalMark} · {selectedFigure.name})</span>
+              <span>Tocar nota ({selectedNote.name} · {selectedFigure.name})</span>
             </>
           )}
         </button>
