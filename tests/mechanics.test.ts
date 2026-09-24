@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mapHeightToNote, mapSeparationToFigure, calculateRealDurationSec } from '../src/data/musicalScaleData';
+import { mapHeightToNote, mapSeparationToFigure, calculateRealDurationSec, mapBodyToMusic, ledgerLineStepsForStaffStep, noteHeightForId } from '../src/data/musicalScaleData';
 import { trackingState, palmAt } from '../src/services/trackingGeometry';
 import { ColorBlobDetector } from '../src/services/colorDetection';
 import { HoldTimer } from '../src/services/holdTimer';
@@ -18,18 +18,41 @@ test('hold uses elapsed time, completes once and resets when tracking is lost', 
   assert.equal(timer.update(true, 1300, 1000).progress, 0);
 });
 
-test('height increases pitch and opening increases duration', () => {
-  assert.equal(mapHeightToNote(0.2).id, 'do5');
-  assert.equal(mapHeightToNote(0.8).id, 'do4');
+test('height spans Sol3 to Si5 and opening increases duration', () => {
+  assert.equal(mapHeightToNote(0.08).id, 'si5');
+  assert.equal(mapHeightToNote(0.92).id, 'sol3');
+  assert.equal(mapHeightToNote(noteHeightForId('do4')).id, 'do4');
+  assert.equal(mapHeightToNote(noteHeightForId('do5')).id, 'do5');
   assert.equal(mapSeparationToFigure(15).id, 'semicorchea');
   assert.equal(mapSeparationToFigure(85).id, 'redonda');
   assert.equal(calculateRealDurationSec(4, 120), 2);
   assert.equal(calculateRealDurationSec(0.25, 60), 0.25);
 });
-test('hysteresis suppresses tiny movements across note and figure boundaries', () => {
-  assert.equal(mapHeightToNote(0.8 - (0.55 / 7) * 0.6, 0.2, 0.8, 'do4').id, 'do4');
-  assert.equal(mapHeightToNote(0.8 - (0.7 / 7) * 0.6, 0.2, 0.8, 'do4').id, 're4');
+test('hysteresis suppresses tiny movements across extended-note and figure boundaries', () => {
+  const yMax = 0.92;
+  const yMin = 0.08;
+  const span = yMax - yMin;
+  assert.equal(mapHeightToNote(yMax - (0.55 / 16) * span, yMin, yMax, 'sol3').id, 'sol3');
+  assert.equal(mapHeightToNote(yMax - (0.70 / 16) * span, yMin, yMax, 'sol3').id, 'la3');
   assert.equal(mapSeparationToFigure(15 + 0.55 * 70 / 4, 15, 85, 'semicorchea').id, 'semicorchea');
+});
+test('body pitch and hand aperture remain independent musical axes', () => {
+  const narrow = mapBodyToMusic(0.50, 15);
+  const wide = mapBodyToMusic(0.50, 85);
+  const high = mapBodyToMusic(0.08, 15);
+  assert.equal(narrow.note.id, 'la4');
+  assert.equal(wide.note.id, 'la4');
+  assert.equal(narrow.figure.id, 'semicorchea');
+  assert.equal(wide.figure.id, 'redonda');
+  assert.equal(high.note.id, 'si5');
+  assert.equal(high.figure.id, 'semicorchea');
+});
+test('ledger-line geometry supports notes below and above the treble staff', () => {
+  assert.deepEqual(ledgerLineStepsForStaffStep(-3), [0, -2]);
+  assert.deepEqual(ledgerLineStepsForStaffStep(-1), [0]);
+  assert.deepEqual(ledgerLineStepsForStaffStep(4), []);
+  assert.deepEqual(ledgerLineStepsForStaffStep(12), [12]);
+  assert.deepEqual(ledgerLineStepsForStaffStep(13), [12]);
 });
 test('vertical movement cannot change the opening control', () => {
   const a = palmAt({ x: 0.2, y: 0.4 });
