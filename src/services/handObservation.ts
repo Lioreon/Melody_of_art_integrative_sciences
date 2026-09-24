@@ -1,5 +1,6 @@
 import type { HandPoint, PalmData } from '../types';
 import { classifyGesture } from './gestureClassifier';
+import { analyzeHandGeometry } from './handGeometry';
 
 export interface HandednessObservation {
   label?: string;
@@ -43,5 +44,6 @@ export function palmDataFromLandmarks(
     landmarks: copied,
     handedness: normalizedHandedness,
     confidence: Number.isFinite(handedness?.score) ? handedness?.score : undefined,
+    geometry: analyzeHandGeometry(copied) ?? undefined,
   };
 }
