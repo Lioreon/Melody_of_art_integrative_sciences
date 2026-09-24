@@ -52,21 +52,27 @@ export const COMPAS_PATTERNS: CompasPatternDefinition[] = [
     defaultBpm: 68,
     figureIds: ['negra', 'corchea', 'corchea', 'blanca'],
   },
+  {
+    id: 'sonido_silencio',
+    title: 'Sonido y silencio',
+    description: 'Negra · Silencio de Negra · Negra · Silencio de Negra.',
+    timeSignature: '4/4',
+    defaultBpm: 64,
+    figureIds: ['negra', 'silencio_negra', 'negra', 'silencio_negra'],
+  },
 ];
 
 export function buildCompasTimeline(
   pattern: CompasPatternDefinition,
   figures: MusicalFigure[],
 ): CompasTimelineStep[] {
-  const noteFigures = new Map(
-    figures
-      .filter((figure) => figure.type === 'note')
-      .map((figure) => [figure.id, figure] as const),
+  const availableFigures = new Map(
+    figures.map((figure) => [figure.id, figure] as const),
   );
 
   let beatCursor = 0;
   return pattern.figureIds.map((id) => {
-    const figure = noteFigures.get(id);
+    const figure = availableFigures.get(id);
     if (!figure) throw new Error(`Missing compás figure: ${id}`);
     const startBeat = beatCursor;
     const endBeat = startBeat + figure.durationBeats;
@@ -154,7 +160,22 @@ export function compasGuidance(
   if (detected.id === target.id && inRange) {
     return {
       status: 'aligned',
-      feedback: 'Alineado. Mantén esta apertura mientras avanza la figura.',
+      feedback: target.type === 'rest'
+        ? 'Silencio alineado. Mantén ambos puños mientras avanza su duración.'
+        : 'Alineado. Mantén esta apertura mientras avanza la figura.',
+    };
+  }
+
+  if (
+    inRange
+    && detected.durationBeats === target.durationBeats
+    && detected.type !== target.type
+  ) {
+    return {
+      status: 'adjust',
+      feedback: target.type === 'rest'
+        ? 'Mantén la distancia y cierra ambos puños para entrar en silencio.'
+        : 'Mantén la distancia y abre ambas manos para recuperar la figura sonora.',
     };
   }
 
