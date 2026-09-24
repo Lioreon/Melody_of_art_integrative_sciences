@@ -23,11 +23,11 @@ export const SimpleStaffView: React.FC<SimpleStaffViewProps> = ({
   const isWhite = theme === 'white';
 
   // Pentagrama en clave de Sol con espacio suficiente para Sol3–Si5.
-  const staffWidth = 300;
-  const staffHeight = 170;
-  const stepSpacing = 7;
-  const c4Y = 125;
-  const noteX = 185;
+  const staffWidth = 340;
+  const staffHeight = 205;
+  const stepSpacing = 8;
+  const c4Y = 148;
+  const noteX = 214;
   const noteY = c4Y - note.staffLineIndex * stepSpacing;
   const staffSteps = [10, 8, 6, 4, 2]; // Fa5, Re5, Si4, Sol4, Mi4
   const ledgerSteps = ledgerLineStepsForStaffStep(note.staffLineIndex);
@@ -43,7 +43,7 @@ export const SimpleStaffView: React.FC<SimpleStaffViewProps> = ({
   return (
     <div
       className={`relative rounded-xl px-3 py-5 sm:px-5 flex flex-col items-center justify-center transition-all ${
-        isWhite ? 'bg-slate-50 border border-slate-200' : 'bg-slate-900 border border-slate-800'
+        isWhite ? 'bg-white/85 border border-slate-300' : 'bg-[#081b26] border border-slate-700'
       }`}
     >
       <svg
@@ -52,7 +52,7 @@ export const SimpleStaffView: React.FC<SimpleStaffViewProps> = ({
         viewBox={`0 0 ${staffWidth} ${staffHeight}`}
         role="img"
         aria-label={`${note.octaveName}, ${figure.name}, en clave de Sol`}
-        className="w-full max-w-[680px] h-auto overflow-visible select-none"
+        className="h-auto w-full max-w-none overflow-visible select-none sm:max-w-[760px]"
       >
         {staffSteps.map((staffStep) => {
           const y = c4Y - staffStep * stepSpacing;
@@ -63,28 +63,28 @@ export const SimpleStaffView: React.FC<SimpleStaffViewProps> = ({
               y1={y}
               x2={staffWidth - 20}
               y2={y}
-              stroke={isWhite ? '#94a3b8' : '#475569'}
-              strokeWidth="1.5"
+              stroke={isWhite ? '#526478' : '#9fb5c2'}
+              strokeWidth="1.8"
             />
           );
         })}
 
         <text
           x="38"
-          y="113"
+          y="134"
           fontSize="60"
           fontFamily="serif"
-          fill={isWhite ? '#334155' : '#cbd5e1'}
+          fill={isWhite ? '#1f3347' : '#e3edf2'}
           textAnchor="middle"
           className="select-none"
         >
           𝄞
         </text>
 
-        <text x="70" y="79" fontSize="15" fontWeight="bold" fontFamily="sans-serif"
-          fill={isWhite ? '#64748b' : '#94a3b8'} textAnchor="middle">4</text>
-        <text x="70" y="101" fontSize="15" fontWeight="bold" fontFamily="sans-serif"
-          fill={isWhite ? '#64748b' : '#94a3b8'} textAnchor="middle">4</text>
+        <text x="70" y="95" fontSize="15" fontWeight="bold" fontFamily="sans-serif"
+          fill={isWhite ? '#526478' : '#aebfca'} textAnchor="middle">4</text>
+        <text x="70" y="119" fontSize="15" fontWeight="bold" fontFamily="sans-serif"
+          fill={isWhite ? '#526478' : '#aebfca'} textAnchor="middle">4</text>
 
         {ledgerSteps.map((step) => {
           const y = c4Y - step * stepSpacing;
@@ -95,7 +95,7 @@ export const SimpleStaffView: React.FC<SimpleStaffViewProps> = ({
               y1={y}
               x2={noteX + 17}
               y2={y}
-              stroke={isPlaying ? '#0ea5e9' : isWhite ? '#475569' : '#94a3b8'}
+              stroke={isPlaying ? '#0284c7' : isWhite ? '#26384b' : '#d5e3ea'}
               strokeWidth="2"
             />
           );
@@ -117,7 +117,7 @@ export const SimpleStaffView: React.FC<SimpleStaffViewProps> = ({
             y1={stemY1}
             x2={stemX}
             y2={stemY2}
-            stroke={isPlaying ? '#0284c7' : isWhite ? '#0f172a' : '#f8fafc'}
+            stroke={isPlaying ? '#0284c7' : isWhite ? '#0b1f33' : '#f8fafc'}
             strokeWidth="2.5"
             strokeLinecap="round"
           />
@@ -131,7 +131,7 @@ export const SimpleStaffView: React.FC<SimpleStaffViewProps> = ({
                 : `M ${stemX} ${stemY2} Q ${stemX + 10} ${stemY2 + 8}, ${stemX + 8} ${stemY2 + 18}`
             }
             fill="none"
-            stroke={isPlaying ? '#0284c7' : isWhite ? '#0f172a' : '#f8fafc'}
+            stroke={isPlaying ? '#0284c7' : isWhite ? '#0b1f33' : '#f8fafc'}
             strokeWidth="2.5"
             strokeLinecap="round"
           />
@@ -146,7 +146,7 @@ export const SimpleStaffView: React.FC<SimpleStaffViewProps> = ({
                   : `M ${stemX} ${stemY2} Q ${stemX + 10} ${stemY2 + 6}, ${stemX + 8} ${stemY2 + 14}`
               }
               fill="none"
-              stroke={isPlaying ? '#0284c7' : isWhite ? '#0f172a' : '#f8fafc'}
+              stroke={isPlaying ? '#0284c7' : isWhite ? '#0b1f33' : '#f8fafc'}
               strokeWidth="2.5"
               strokeLinecap="round"
             />
@@ -157,7 +157,7 @@ export const SimpleStaffView: React.FC<SimpleStaffViewProps> = ({
                   : `M ${stemX} ${stemY2 + 8} Q ${stemX + 10} ${stemY2 + 14}, ${stemX + 8} ${stemY2 + 22}`
               }
               fill="none"
-              stroke={isPlaying ? '#0284c7' : isWhite ? '#0f172a' : '#f8fafc'}
+              stroke={isPlaying ? '#0284c7' : isWhite ? '#0b1f33' : '#f8fafc'}
               strokeWidth="2.5"
               strokeLinecap="round"
             />
@@ -181,7 +181,7 @@ export const SimpleStaffView: React.FC<SimpleStaffViewProps> = ({
               ? '#0f172a'
               : '#f8fafc'
           }
-          stroke={isPlaying ? '#0284c7' : isWhite ? '#0f172a' : '#f8fafc'}
+          stroke={isPlaying ? '#0284c7' : isWhite ? '#0b1f33' : '#f8fafc'}
           strokeWidth={isOpenHead ? '2.5' : '1.5'}
         />
       </svg>
