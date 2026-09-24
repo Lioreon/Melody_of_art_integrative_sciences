@@ -6,7 +6,7 @@
 import React from 'react';
 import { AppTheme, FigureDuration, ScaleNote } from '../types';
 import { SimpleStaffView } from './SimpleStaffView';
-import { C_MAJOR_SCALE, MUSICAL_FIGURES } from '../data/musicalScaleData';
+import { TREBLE_TRAINING_RANGE, MUSICAL_FIGURES } from '../data/musicalScaleData';
 import { Play, AlertCircle, Volume2 } from 'lucide-react';
 
 interface MusicalInstrumentViewProps {
@@ -100,8 +100,8 @@ export const MusicalInstrumentView: React.FC<MusicalInstrumentViewProps> = ({
 
           {/* Scale steps visual gauge */}
           <div className="space-y-1.5">
-            <div className="grid grid-cols-8 gap-1">
-              {C_MAJOR_SCALE.map((note) => {
+            <div className="grid grid-cols-[repeat(17,minmax(0,1fr))] gap-0.5">
+              {TREBLE_TRAINING_RANGE.map((note) => {
                 const isActive = note.id === selectedNote.id;
                 return (
                   <div
@@ -119,8 +119,8 @@ export const MusicalInstrumentView: React.FC<MusicalInstrumentViewProps> = ({
               })}
             </div>
             <div className="flex justify-between text-[10px] text-slate-400">
-              <span>Do (Grave)</span>
-              <span>Do 5 (Agudo)</span>
+              <span>Sol 3 (grave)</span>
+              <span>Si 5 (agudo)</span>
             </div>
           </div>
         </div>
