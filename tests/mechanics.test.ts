@@ -7,6 +7,7 @@ import { HoldTimer } from '../src/services/holdTimer';
 import { classifyGesture, type GestureLandmark } from '../src/services/gestureClassifier';
 import { advanceRhythmSequence, evaluateRhythmTarget, exploreRhythm } from '../src/services/rhythmEvaluation';
 import { MUSICAL_FIGURES } from '../src/data/scorePresets';
+import { midiToFrequency, nearestInstrumentSample, noteNameToMidi } from '../src/services/instrumentSamples';
 
 test('hold uses elapsed time, completes once and resets when tracking is lost', () => {
   const timer = new HoldTimer();
@@ -138,4 +139,19 @@ test('colour detection rejects noise and missing markers', () => {
   square(2, 2, 2, [255, 0, 0]); square(20, 10, 5, [0, 190, 190]);
   const [red, cyan] = detector.detect(pixels, '#ff0000', '#00ffff', 50);
   assert.equal(red, null); assert.ok(cyan);
+});
+
+
+test('sample note helpers map scientific pitch notation consistently', () => {
+  assert.equal(noteNameToMidi('A4'), 69);
+  assert.equal(noteNameToMidi('C4'), 60);
+  assert.ok(Math.abs(midiToFrequency(69) - 440) < 0.001);
+});
+
+test('sampled timbres choose nearby anchors across the Melody Motion register', () => {
+  assert.equal(nearestInstrumentSample('piano', 196).note, 'G3');
+  assert.equal(nearestInstrumentSample('piano', 987.77).note, 'B5');
+  assert.equal(nearestInstrumentSample('violin', 196).note, 'G3');
+  assert.ok(['A5', 'C6'].includes(nearestInstrumentSample('violin', 987.77).note));
+  assert.equal(nearestInstrumentSample('guitar', 880).note, 'A5');
 });
