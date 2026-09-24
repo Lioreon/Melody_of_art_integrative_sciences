@@ -45,6 +45,13 @@ Este roadmap separa lo implementado de la experiencia objetivo. No constituye un
   - metrónomo estable;
   - congelación automática del tiempo ante pérdida de tracking;
   - la dirección experimental se conserva como Nivel 2.
+- **Tracking v2 · T0/T1**:
+  - diagnóstico local de FPS, intervalo de frame, inferencia, jitter aproximado, disponibilidad y recuperaciones;
+  - persistencia de los 21 landmarks de cada mano;
+  - handedness y confidence conservados cuando MediaPipe los entrega;
+  - overlay opcional de esqueleto de 21 puntos para validación técnica;
+  - sin cambiar todavía el backend `@mediapipe/hands`;
+  - “Pelotas de colores” pasa conceptualmente a **Marcadores de color**.
 
 ## Fase 3 — aprendizaje musical multimodal
 
@@ -116,6 +123,24 @@ La asistencia debe poder reducirse por módulo y por relación aprendida:
 
 La tecnología actúa como andamio. El objetivo final es que parte del aprendizaje pueda ejecutarse fuera de la pantalla.
 
+## Tracking v2
+
+T0 y T1 se implementan antes de migrar de modelo:
+
+- **T0 — baseline medible:** métricas locales de rendimiento y estabilidad.
+- **T1 — 21 landmarks persistentes:** la mano deja de reducirse únicamente a centro, muñeca e MCPs.
+- **T2 — geometría completa:** dedos, falanges, curl, dirección, span y estabilidad.
+- **T3 — adaptador de backends.**
+- **T4 — benchmark/migración a MediaPipe Tasks HandLandmarker.**
+- **T5 — identidad estable de manos.**
+- **T6 — gestos derivados por dedo**, sin significado musical automático.
+
+Marcadores de color siguen una rama paralela C0–C4: renombrado, calibración desde cámara, confianza/bbox, identidad por color y benchmark frente a tracking.js/OpenCV.js.
+
+La colaboración A/B queda documentada como investigación futura y no se expone todavía en la interfaz.
+
+Especificación: [TRACKING_V2_SPEC.md](./TRACKING_V2_SPEC.md).
+
 ## Cámara y UX
 Visión futura:
 - calibración: cámara amplia;
@@ -142,4 +167,5 @@ Variables futuras de investigación:
 - gesto → sonido/silencio como equivalencia automática;
 - dificultad adaptativa opaca;
 - arquitectura genérica de aprendizaje antes de que al menos dos módulos requieran la misma abstracción;
-- cambios grandes de MediaPipe/cámara sin medición base.
+- cambios grandes de MediaPipe/cámara sin medición base;
+- colaboración multiusuario visible antes de diseñar identidad, consentimiento y validación pedagógica.
