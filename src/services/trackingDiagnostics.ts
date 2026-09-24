@@ -59,6 +59,12 @@ export class TrackingDiagnosticsRecorder {
     this.recoveryCount = 0;
   }
 
+  recordProcessing(processingMs: number) {
+    if (Number.isFinite(processingMs) && processingMs >= 0) {
+      pushWindow(this.processingTimes, processingMs);
+    }
+  }
+
   record(
     state: DualPalmState,
     backend: TrackingBackendId,
@@ -88,9 +94,7 @@ export class TrackingDiagnosticsRecorder {
     }
     this.lastTimestampMs = state.timestampMs;
 
-    if (processingMs !== undefined && Number.isFinite(processingMs) && processingMs >= 0) {
-      pushWindow(this.processingTimes, processingMs);
-    }
+    if (processingMs !== undefined) this.recordProcessing(processingMs);
 
     const centers: [HandPoint | null, HandPoint | null] = [
       state.leftPalm?.center ?? null,
