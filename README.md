@@ -103,4 +103,6 @@ La migración a MediaPipe Tasks/Web Worker queda como siguiente fase, después d
 
 ## Timbres de instrumento
 
-Los módulos **Instrumento** y **Pentagrama** comparten el sintetizador Web Audio interno o timbres muestreados de **piano, guitarra nylon y violín**. El timbre seleccionado se mantiene al cambiar entre ambos módulos durante la sesión. Las muestras se cargan bajo demanda desde una revisión fijada de `nbrosowsky/tonejs-instruments` y conservan su atribución CC BY 3.0. Si la carga externa falla, Melody Motion vuelve al sintetizador interno. Consulte [docs/AUDIO_SOURCES.md](docs/AUDIO_SOURCES.md).
+Los módulos **Instrumento** y **Pentagrama** comparten el sintetizador Web Audio interno o timbres muestreados de **piano, guitarra nylon, violín con arco y violín pizzicato**. El timbre seleccionado se mantiene al cambiar entre ambos módulos durante la sesión. Las muestras se cargan bajo demanda desde fuentes públicas fijadas a commits concretos; cada una conserva su atribución y licencia. Si la carga externa falla, Melody Motion vuelve al sintetizador interno. Consulte [docs/AUDIO_SOURCES.md](docs/AUDIO_SOURCES.md).
+
+Pentagrama ofrece dos submódulos: **Guiado · dos notas**, donde la nota META permanece fija y una nota TÚ se desplaza con la altura corporal, y **Desafío · una meta**, que conserva la modalidad de menor asistencia visual.
