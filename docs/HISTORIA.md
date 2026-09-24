@@ -78,6 +78,9 @@ La hipótesis de diseño no afirma efectos clínicos ni cognitivos demostrados. 
 
 
 ### 8. Formalización editorial e identidad institucional
+
+La interfaz alcanzó además una **primera fase demostrativa pública**: la jerarquía de presentación se consolidó como *Melody of Art → Melody Motion → proyecto pedagógico para Escuela de Música Matiaví · Salinas → diseño y desarrollo A. Owsky*. La misma relación se conserva en el pie de página para dar cierre institucional sin desplazar la experiencia pedagógica.
+
 El 24 de septiembre de 2026 se consolidaron dos líneas complementarias de presentación.
 
 La primera fue un conjunto de **láminas experimentales responsive** para visualizar cómo Instrumento, Ritmo, Pentagrama y Compás podían compartir un lenguaje de interfaz más coherente en teléfono, tableta y escritorio. Estas láminas se conservaron como contrato visual, no como evidencia automática de funciones desplegadas.
