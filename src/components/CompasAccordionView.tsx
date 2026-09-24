@@ -15,10 +15,6 @@ import {
   COMPAS_PATTERNS,
   getCompasFrame,
 } from '../services/compasAccordion';
-import {
-  equivalentRestForFigure,
-  interpretBimanualMusicalGesture,
-} from '../services/musicalGesture';
 
 interface CompasAccordionViewProps {
   palmState: DualPalmState;
@@ -28,6 +24,9 @@ interface CompasAccordionViewProps {
 }
 
 const rhythmFigures = MUSICAL_FIGURES.filter((figure) => figure.type === 'note');
+const PUBLISHED_COMPAS_PATTERNS = COMPAS_PATTERNS.filter(
+  (pattern) => pattern.id !== 'sonido_silencio',
+);
 
 export const CompasAccordionView: React.FC<CompasAccordionViewProps> = ({
   palmState,
@@ -37,7 +36,7 @@ export const CompasAccordionView: React.FC<CompasAccordionViewProps> = ({
 }) => {
   const isWhite = theme === 'white';
   const [patternId, setPatternId] = useState(COMPAS_PATTERNS[0].id);
-  const initialPattern = COMPAS_PATTERNS[0];
+  const initialPattern = PUBLISHED_COMPAS_PATTERNS[0];
   const [bpm, setBpm] = useState(initialPattern.defaultBpm);
   const [elapsedBeats, setElapsedBeats] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -46,7 +45,7 @@ export const CompasAccordionView: React.FC<CompasAccordionViewProps> = ({
   const lastTimestampRef = useRef<number | null>(null);
   const lastClickedBeatRef = useRef(0);
 
-  const pattern = COMPAS_PATTERNS.find((candidate) => candidate.id === patternId) ?? initialPattern;
+  const pattern = PUBLISHED_COMPAS_PATTERNS.find((candidate) => candidate.id === patternId) ?? initialPattern;
   const timeline = useMemo(
     () => buildCompasTimeline(pattern, MUSICAL_FIGURES),
     [pattern],
@@ -54,18 +53,10 @@ export const CompasAccordionView: React.FC<CompasAccordionViewProps> = ({
   const frame = getCompasFrame(timeline, elapsedBeats);
 
   const hasTracking = Boolean(palmState.leftPalm?.present && palmState.rightPalm?.present);
-  const bimanualGesture = interpretBimanualMusicalGesture(palmState);
-  const detectedNoteFigure: MusicalFigure | undefined = hasTracking
+  const detectedFigure: MusicalFigure | undefined = hasTracking
     ? rhythmFigures.find((figure) =>
       palmState.distanceCm >= figure.targetDistanceMinCm
       && palmState.distanceCm <= figure.targetDistanceMaxCm)
-    : undefined;
-  const detectedFigure: MusicalFigure | undefined = !detectedNoteFigure
-    ? undefined
-    : bimanualGesture.mode === 'rest'
-    ? equivalentRestForFigure(detectedNoteFigure, MUSICAL_FIGURES)
-    : bimanualGesture.mode === 'sound'
-    ? detectedNoteFigure
     : undefined;
 
   const guidance = compasGuidance(
@@ -141,7 +132,7 @@ export const CompasAccordionView: React.FC<CompasAccordionViewProps> = ({
   };
 
   const changePattern = (nextId: string) => {
-    const next = COMPAS_PATTERNS.find((candidate) => candidate.id === nextId);
+    const next = PUBLISHED_COMPAS_PATTERNS.find((candidate) => candidate.id === nextId);
     if (!next) return;
     setPatternId(next.id);
     setBpm(next.defaultBpm);
@@ -182,8 +173,8 @@ export const CompasAccordionView: React.FC<CompasAccordionViewProps> = ({
           </p>
         </div>
 
-        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-          {COMPAS_PATTERNS.map((candidate) => (
+        <div className="grid gap-2 sm:grid-cols-3">
+          {PUBLISHED_COMPAS_PATTERNS.map((candidate) => (
             <button
               key={candidate.id}
               type="button"
@@ -298,7 +289,7 @@ export const CompasAccordionView: React.FC<CompasAccordionViewProps> = ({
             </div>
             <div className="text-xl font-bold">{detectedFigure?.name ?? 'Sin figura'}</div>
             <div className="mt-1 text-xs text-slate-500">
-              Apertura: {palmState.distanceCm} u. · {bimanualGesture.label}
+              Apertura: {palmState.distanceCm} u.
             </div>
           </section>
 
@@ -366,7 +357,7 @@ export const CompasAccordionView: React.FC<CompasAccordionViewProps> = ({
         </div>
 
         <p className="text-center text-[11px] text-slate-400">
-          Nivel 1 integra figura, silencio y tiempo. Las alteraciones ♯/♭ pertenecen a los módulos de altura.
+          Nivel 1 integra Ritmo dentro del tiempo. La altura musical se incorporará en una etapa posterior.
         </p>
       </section>
     </div>
