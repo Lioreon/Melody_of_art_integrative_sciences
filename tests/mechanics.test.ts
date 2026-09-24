@@ -26,6 +26,19 @@ import {
   equivalentRestForFigure,
   interpretBimanualMusicalGesture,
 } from '../src/services/musicalGesture';
+import {
+  EMPTY_LEARNING_SCORE,
+  RANKING_UNLOCK_POINTS,
+  addLearningPoints,
+  isRankingUnlocked,
+  pentagramGameAward,
+  rhythmGameAward,
+  totalLearningPoints,
+} from '../src/services/learningGame';
+import {
+  parseStoredInstrumentTimbre,
+  parseStoredLiveSoundFeedback,
+} from '../src/services/userPreferences';
 
 test('hold uses elapsed time, completes once and resets when tracking is lost', () => {
   const timer = new HoldTimer();
@@ -433,4 +446,39 @@ test('Compás includes a complete sound-rest pattern using the same spatial dura
   const restMismatch = compasGuidance(rest, note, true, rest.targetDistanceIdealCm);
   assert.equal(restMismatch.status, 'adjust');
   assert.match(restMismatch.feedback, /cierra ambos puños/);
+});
+
+
+test('learning game awards are transparent and ranking unlocks at the documented threshold', () => {
+  let score = EMPTY_LEARNING_SCORE;
+  assert.equal(totalLearningPoints(score), 0);
+  assert.equal(isRankingUnlocked(score), false);
+
+  assert.equal(rhythmGameAward(0, false), 0);
+  assert.equal(rhythmGameAward(1, false), 25);
+  assert.equal(rhythmGameAward(2, false), 30);
+  assert.equal(rhythmGameAward(2, true), 90);
+  assert.equal(pentagramGameAward('note'), 30);
+  assert.equal(pentagramGameAward('piece'), 100);
+
+  score = addLearningPoints(score, 'rhythm', 90);
+  score = addLearningPoints(score, 'pentagram', RANKING_UNLOCK_POINTS - 90);
+  assert.equal(totalLearningPoints(score), RANKING_UNLOCK_POINTS);
+  assert.equal(isRankingUnlocked(score), true);
+});
+
+test('learning score ignores negative awards', () => {
+  const score = addLearningPoints(EMPTY_LEARNING_SCORE, 'rhythm', -50);
+  assert.deepEqual(score, EMPTY_LEARNING_SCORE);
+});
+
+
+test('instrument preferences restore only supported persistent values', () => {
+  assert.equal(parseStoredInstrumentTimbre('violin_pizzicato'), 'violin_pizzicato');
+  assert.equal(parseStoredInstrumentTimbre('piano'), 'piano');
+  assert.equal(parseStoredInstrumentTimbre('unsupported'), 'synth');
+  assert.equal(parseStoredInstrumentTimbre(null), 'synth');
+  assert.equal(parseStoredLiveSoundFeedback('true'), true);
+  assert.equal(parseStoredLiveSoundFeedback('false'), false);
+  assert.equal(parseStoredLiveSoundFeedback(null), false);
 });

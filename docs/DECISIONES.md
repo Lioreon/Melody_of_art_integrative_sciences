@@ -72,6 +72,30 @@ El commit `7eff8ee` consolidó:
 - Compás: Nivel 1 = acordeón corporal con patrón 4/4, playhead, anticipación y pausa temporal ante pérdida de tracking. Nivel 2 = dirección experimental existente con partitura, cues y métricas.
 - Cámara: estados diferenciados para calibración, aprendizaje e interpretación.
 
+## Modo juego y puntuación de aprendizaje
+
+La primera fase demostrativa incorpora un **modo juego opcional** únicamente en Ritmo y Pentagrama.
+
+Reglas:
+
+- la práctica normal sigue funcionando sin puntos;
+- Ritmo otorga puntos al completar una mantención válida de la figura;
+- Pentagrama otorga puntos al mantener simultáneamente nota + figura durante la duración objetivo;
+- la puntuación es explícita y determinista, no adaptativa ni opaca;
+- no hay vidas, castigos, rachas obligatorias ni pérdida de puntos;
+- Tracking perdido nunca se convierte en error del estudiante;
+- Ranking se desbloquea al alcanzar **300 puntos** de juego;
+- el Ranking inicial es **local a la sesión** y ordena áreas de aprendizaje, no estudiantes;
+- no existen todavía cuentas, ranking en nube ni comparación entre menores.
+
+Puntuación inicial:
+
+- Ritmo · Una figura: 25 pts;
+- Ritmo · Secuencia: 30 pts por paso + 60 pts al cerrar la secuencia;
+- Pentagrama: 30 pts por nota + 100 pts al completar la obra.
+
+Esta capa se entiende como una estructura de motivación visible y acotada. Si posteriormente se plantea un ranking entre estudiantes, requerirá consentimiento, identidad, persistencia y una decisión pedagógica específica.
+
 ## Investigación y población objetivo
 
 Melody Motion está orientado principalmente a población infanto-juvenil. Las hipótesis sobre memoria asociativa, plasticidad, aprendizaje o transferencia requieren evaluación experimental; no deben presentarse como resultados demostrados.

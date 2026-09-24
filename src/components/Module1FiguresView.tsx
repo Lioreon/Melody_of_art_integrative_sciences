@@ -18,7 +18,8 @@ import {
   sequenceLengthForDifficulty,
   type RhythmDifficulty,
 } from '../services/rhythmEvaluation';
-import { Check, ChevronDown, ChevronUp, RefreshCw, Volume2 } from 'lucide-react';
+import { Check, ChevronDown, ChevronUp, Gamepad2, RefreshCw, Trophy, Volume2 } from 'lucide-react';
+import { rhythmGameAward } from '../services/learningGame';
 
 type RhythmLevel = 0 | 1 | 2;
 type RhythmPhase = 'READY' | 'ACTIVE' | 'FEEDBACK' | 'SUCCESS';
@@ -49,6 +50,7 @@ const difficultyLabels: Record<RhythmDifficulty, { title: string; detail: string
 
 export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
   palmState,
+  onScoreGain,
   isSimulation,
   onSimulatedDistanceChange,
   theme = 'dark_cyan',
@@ -66,7 +68,10 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
   const [showCatalog, setShowCatalog] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
   const [completedCount, setCompletedCount] = useState(0);
+  const [gameMode, setGameMode] = useState(false);
+  const [lastAward, setLastAward] = useState(0);
   const successTimerRef = useRef<number | null>(null);
+  const holdCueActiveRef = useRef(false);
 
   useEffect(() => () => {
     if (successTimerRef.current !== null) clearTimeout(successTimerRef.current);
@@ -116,8 +121,16 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
 
   const triggerSuccess = () => {
     audioSynthesizer.playHitSound(100);
+    const willCompleteSequence = level === 2 && sequenceIndex === sequence.length - 1;
+    const awarded = gameMode ? rhythmGameAward(level, willCompleteSequence) : 0;
+    if (awarded > 0) onScoreGain(awarded);
+    setLastAward(awarded);
     setPhase('SUCCESS');
-    setFeedback('¡Correcto! Has relacionado la separación con la figura.');
+    setFeedback(
+      awarded > 0
+        ? `¡Correcto! Mantención completada · +${awarded} pts.`
+        : '¡Correcto! Has relacionado la separación con la figura.',
+    );
     successTimerRef.current = window.setTimeout(() => {
       successTimerRef.current = null;
       setCompletedCount(count => count + 1);
@@ -141,11 +154,19 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
   };
 
   const [holdProgress, setHoldProgress] = useHoldProgress(
-    `${level}:${targetFigure.id}:${sequenceIndex}:${difficulty}`,
+    `${level}:${targetFigure.id}:${sequenceIndex}:${difficulty}:${gameMode}`,
     isHoldingCorrect,
     targetFigure.durationSeconds * 1000,
     triggerSuccess,
   );
+
+  useEffect(() => {
+    if (gameMode && isHoldingCorrect && !holdCueActiveRef.current) {
+      holdCueActiveRef.current = true;
+      audioSynthesizer.playPitchNote(659.25, 0.16, 'bell');
+    }
+    if (!isHoldingCorrect) holdCueActiveRef.current = false;
+  }, [gameMode, isHoldingCorrect, targetFigure.id]);
 
   useEffect(() => {
     if (level === 0 || phase === 'SUCCESS') return;
@@ -158,6 +179,7 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
     setLevel(nextLevel);
     setSequenceIndex(0);
     setPhase(nextLevel === 0 ? 'READY' : 'ACTIVE');
+    setLastAward(0);
     setFeedback(nextLevel === 0
       ? 'Explora qué ocurre al cambiar la distancia entre tus manos.'
       : nextLevel === 1
@@ -257,6 +279,38 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
 
   return (
     <div className="space-y-4">
+      <section className="rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-3 shadow-[var(--ui-shadow)]">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <Gamepad2 className="h-4 w-4 text-[var(--ui-jade)]" aria-hidden="true" />
+              Modo juego
+            </div>
+            <p className="mt-1 text-xs text-slate-500">
+              Mantén correctamente la figura: 25 pts en Una figura; 30 pts por paso y +60 al cerrar una secuencia.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setGameMode((enabled) => !enabled);
+              setLastAward(0);
+            }}
+            aria-pressed={gameMode}
+            className={`touch-target rounded-xl border px-4 py-2 text-xs font-semibold transition-colors ${
+              gameMode
+                ? 'border-[var(--ui-jade)] bg-[var(--ui-jade)] text-white'
+                : 'border-[var(--ui-border)] bg-[var(--ui-background)] text-[var(--ui-text)]'
+            }`}
+          >
+            {gameMode ? 'Juego activado' : 'Activar juego'}
+          </button>
+        </div>
+        {gameMode && level === 0 && (
+          <p className="mt-2 text-xs text-[var(--ui-gold)]">Elige Nivel 1 o 2 para comenzar a sumar puntos.</p>
+        )}
+      </section>
+
       <div className="flex flex-wrap items-center justify-center gap-2 rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-3 shadow-[var(--ui-shadow)]">
         <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">Ritmo</span>
         {([
@@ -315,8 +369,11 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
       <div className="relative space-y-5 overflow-hidden rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-5 text-[var(--ui-text)] shadow-[var(--ui-shadow)] transition-colors md:p-6">
         {phase === 'SUCCESS' && (
           <div className="flex items-center justify-center gap-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-2.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-            <Check className="h-4 w-4" />
-            <span>{sequenceComplete ? 'Secuencia completada' : 'Objetivo completado'}</span>
+            {lastAward > 0 ? <Trophy className="h-4 w-4" /> : <Check className="h-4 w-4" />}
+            <span>
+              {sequenceComplete ? 'Secuencia completada' : 'Objetivo completado'}
+              {lastAward > 0 ? ` · +${lastAward} pts` : ''}
+            </span>
           </div>
         )}
 
