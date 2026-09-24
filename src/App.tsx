@@ -17,6 +17,7 @@ import { SessionReport } from './components/SessionReport';
 import { InfoModal } from './components/InfoModal';
 import { InstitutionalSignature } from './components/InstitutionalSignature';
 import { WorkspaceHeader } from './components/WorkspaceHeader';
+import { LearningRankingView } from './components/LearningRankingView';
 
 import { Module1FiguresView } from './components/Module1FiguresView';
 import { Module2PentagramView } from './components/Module2PentagramView';
@@ -27,6 +28,13 @@ import { AppTheme, DualPalmState, ReactionAttempt, ScoreCue, SessionStats, Tempo
 import { HandTracker } from './services/handTracker';
 import { audioSynthesizer } from './services/audioSynthesizer';
 import type { InstrumentTimbre } from './services/instrumentSamples';
+import {
+  EMPTY_LEARNING_SCORE,
+  addLearningPoints,
+  isRankingUnlocked,
+  totalLearningPoints,
+  type LearningGameArea,
+} from './services/learningGame';
 
 type CompasExperience = 'accordion' | 'direction';
 
@@ -47,6 +55,10 @@ const AREA_COPY: Record<string, { title: string; description: string }> = {
     title: 'Compás',
     description: 'Integra apertura, duración y pulso en un acordeón corporal; conserva la dirección experimental como nivel posterior.',
   },
+  ranking: {
+    title: 'Ranking',
+    description: 'Resume los puntos obtenidos en los modos de juego de Ritmo y Pentagrama dentro de esta sesión.',
+  },
 };
 
 export default function App() {
@@ -56,6 +68,7 @@ export default function App() {
   const [showInfoModal, setShowInfoModal] = useState<boolean>(false);
   const [showReportModal, setShowReportModal] = useState<boolean>(false);
   const [compasExperience, setCompasExperience] = useState<CompasExperience>('accordion');
+  const [learningScore, setLearningScore] = useState(EMPTY_LEARNING_SCORE);
 
   const handleToggleTheme = () => {
     setTheme((prev) => (prev === 'white' ? 'dark_cyan' : 'white'));
@@ -132,6 +145,8 @@ export default function App() {
   });
   const [lastAttempt, setLastAttempt] = useState<ReactionAttempt | null>(null);
   const activeArea = AREA_COPY[activeModuleId] ?? AREA_COPY.instrument;
+  const learningPoints = totalLearningPoints(learningScore);
+  const rankingUnlocked = isRankingUnlocked(learningScore);
 
   // References
   const handTrackerRef = useRef<HandTracker | null>(null);
@@ -231,6 +246,10 @@ export default function App() {
       totalScore: prev.totalScore + pts,
       streak: prev.streak + 1,
     }));
+  };
+
+  const handleLearningScoreGain = (area: LearningGameArea, points: number) => {
+    setLearningScore((current) => addLearningPoints(current, area, points));
   };
 
   const handleToggleMute = () => {
@@ -438,6 +457,8 @@ export default function App() {
         onToggleSimulation={handleToggleSimulation}
         totalScore={stats.totalScore}
         streak={stats.streak}
+        learningPoints={learningPoints}
+        rankingUnlocked={rankingUnlocked}
         onShowInfo={() => setShowInfoModal(true)}
         theme={theme}
         onToggleTheme={handleToggleTheme}
@@ -448,7 +469,7 @@ export default function App() {
         {/* Primary Workspace Grid with Persistent Single CameraView */}
         <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-12 md:gap-5 lg:gap-6">
           {/* Left Column: Persistent CameraView */}
-          <div className="min-w-0 space-y-4 md:col-span-5 md:space-y-5 lg:space-y-6">
+          <div className={`${activeModuleId === 'ranking' ? 'hidden' : ''} min-w-0 space-y-4 md:col-span-5 md:space-y-5 lg:space-y-6`}>
             <VideoSourceSelector selectedId={cameraDeviceId}
               onSelect={(id) => { setCameraDeviceId(id); setCameraMessage(''); }}
               active={!isSimulation} busy={cameraBusy} onToggle={handleToggleSimulation}
@@ -509,7 +530,7 @@ export default function App() {
           </div>
 
           {/* Right Column: Active Module View */}
-          <div className="min-w-0 space-y-4 md:col-span-7 md:space-y-5 lg:space-y-6">
+          <div className={`min-w-0 space-y-4 md:space-y-5 lg:space-y-6 ${activeModuleId === 'ranking' ? 'md:col-span-12' : 'md:col-span-7'}`}>
             <WorkspaceHeader title={activeArea.title} description={activeArea.description} />
             {activeModuleId === 'instrument' && (
               <InstrumentPanel
@@ -522,7 +543,7 @@ export default function App() {
             {activeModuleId === 'module_1_figures_duration' && (
               <Module1FiguresView
                 palmState={palmState}
-                onScoreGain={handleScoreGain}
+                onScoreGain={(points) => handleLearningScoreGain('rhythm', points)}
                 isSimulation={isSimulation}
                 onSimulatedDistanceChange={handleSimulatedDistanceChange}
                 theme={theme}
@@ -532,13 +553,18 @@ export default function App() {
             {activeModuleId === 'module_2_pentagram_height' && (
               <Module2PentagramView
                 palmState={palmState}
-                onScoreGain={handleScoreGain}
+                onScoreGain={(points) => handleLearningScoreGain('pentagram', points)}
                 isSimulation={isSimulation}
                 onSimulatedPositionChange={handleSimulatedPositionChange}
                 theme={theme}
                 timbre={instrumentTimbre}
                 onTimbreChange={setInstrumentTimbre}
               />
+            )}
+
+
+            {activeModuleId === 'ranking' && rankingUnlocked && (
+              <LearningRankingView score={learningScore} theme={theme} />
             )}
 
             {activeModuleId === 'module_3_orchestra_score' && (
