@@ -154,4 +154,8 @@ test('sampled timbres choose nearby anchors across the Melody Motion register', 
   assert.equal(nearestInstrumentSample('violin', 196).note, 'G3');
   assert.ok(['A5', 'C6'].includes(nearestInstrumentSample('violin', 987.77).note));
   assert.equal(nearestInstrumentSample('guitar', 880).note, 'A5');
+  assert.equal(nearestInstrumentSample('violin_pizzicato', 196).note, 'G3');
+  assert.equal(nearestInstrumentSample('violin_pizzicato', 987.77).note, 'B5');
+  assert.match(nearestInstrumentSample('violin_pizzicato', 440).url, /peastman\/sso/);
+  assert.match(nearestInstrumentSample('violin_pizzicato', 440).url, /violin_pizz_non_vib_/);
 });
