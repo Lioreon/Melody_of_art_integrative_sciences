@@ -30,6 +30,13 @@ Este roadmap separa lo implementado de la experiencia objetivo. No constituye un
 - Piano, guitarra nylon, violín con arco y **violín pizzicato** con carga bajo demanda y fallback al sintetizador.
 - Pentagrama **Guiado · dos notas**: META fija + TÚ móvil.
 - Pentagrama **Desafío · una meta**: conserva la modalidad de menor referencia visual.
+- **Ritmo v2**:
+  - Nivel 0 — Explorar;
+  - Nivel 1 — objetivo de una figura con generación controlada;
+  - Nivel 2 — secuencia variable;
+  - vocabulario Inicial / Intermedio / Amplio;
+  - secuencias reproducibles sin repetición inmediata;
+  - botón para escuchar la duración de la figura con un tono neutro.
 
 ## Fase 3 — aprendizaje musical multimodal
 
@@ -49,10 +56,15 @@ Debe permitir comenzar con síntesis Web Audio y evolucionar después hacia banc
 - posterior selección de timbres.
 
 ### 3.3 Ritmo
+Implementación inicial completada en Rhythm v2:
 - vocabulario de figuras configurable;
 - objetivo aleatorio controlado y reproducible;
-- secuencias progresivas;
+- secuencias progresivas de 3 / 4 / 5 figuras según vocabulario;
 - dificultad basada en relaciones musicales y reducción de ayudas, no en XP o vidas.
+
+Siguiente etapa:
+- patrones ligados a pulso estable;
+- transferencia de estas secuencias hacia Compás.
 
 ### 3.4 Pentagrama guiado
 Progresión objetivo:
