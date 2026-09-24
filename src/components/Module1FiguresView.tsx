@@ -85,15 +85,6 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
   const bimanualGesture = interpretBimanualMusicalGesture(palmState);
   const supportsHandShape = bimanualGesture.supportsHandShape;
 
-  useEffect(() => {
-    if (level === 3 && !supportsHandShape) {
-      setLevel(0);
-      setPhase('READY');
-      setFeedback('Sonido / silencio requiere Manos libres. Se volvió a Exploración posicional.');
-      setHoldProgress(0);
-    }
-  }, [level, supportsHandShape, setHoldProgress]);
-
   const detectedNoteFigure: MusicalFigure | undefined = hasTracking
     ? rhythmFigures.find(figure =>
       palmState.distanceCm >= figure.targetDistanceMinCm &&
@@ -190,6 +181,15 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
     targetFigure.durationSeconds * 1000,
     triggerSuccess,
   );
+
+  useEffect(() => {
+    if (level === 3 && !supportsHandShape) {
+      setLevel(0);
+      setPhase('READY');
+      setFeedback('Sonido / silencio requiere Manos libres. Se volvió a Exploración posicional.');
+      setHoldProgress(0);
+    }
+  }, [level, supportsHandShape, setHoldProgress]);
 
   useEffect(() => {
     if (level === 0 || phase === 'SUCCESS') return;
