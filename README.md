@@ -99,3 +99,8 @@ Durante esta sesión, el navegador integrado informó `NotAllowedError: Permissi
 Antes de publicar: ensayar manos y pelotas con iluminación real, medir latencia y uso de memoria durante una sesión larga, revisar accesibilidad y unificar los textos heredados de unidades.
 Las métricas del módulo orquestal son de prototipo: no constituyen mediciones validadas de reacción, sincronización o estabilidad.
 La migración a MediaPipe Tasks/Web Worker queda como siguiente fase, después de obtener una medición base. No se ha implementado en esta adaptación.
+
+
+## Timbres de instrumento
+
+El módulo **Instrumento** puede usar el sintetizador Web Audio interno o timbres muestreados de **piano, guitarra nylon y violín**. Las muestras se cargan bajo demanda desde una revisión fijada de `nbrosowsky/tonejs-instruments` y conservan su atribución CC BY 3.0. Si la carga externa falla, Melody Motion vuelve al sintetizador interno. Consulte [docs/AUDIO_SOURCES.md](docs/AUDIO_SOURCES.md).
