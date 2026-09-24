@@ -34,7 +34,7 @@ const AREA_COPY: Record<string, { title: string; description: string }> = {
   },
   module_1_figures_duration: {
     title: 'Ritmo',
-    description: 'Representa figuras y silencios con la separación de tus manos y mantén cada posición durante su duración.',
+    description: 'Relaciona apertura, figura y duración mediante exploración, retos de una figura y secuencias variables con vocabulario progresivo.',
   },
   module_2_pentagram_height: {
     title: 'Pentagrama',
