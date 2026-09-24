@@ -29,7 +29,7 @@ import { audioSynthesizer } from './services/audioSynthesizer';
 const AREA_COPY: Record<string, { title: string; description: string }> = {
   instrument: {
     title: 'Instrumento',
-    description: 'Explora cómo la altura de tus manos define la nota y cómo su separación determina la figura musical.',
+    description: 'Explora cómo la altura conjunta de tus manos recorre de Sol3 a Si5 y cómo su apertura horizontal determina la figura musical.',
   },
   module_1_figures_duration: {
     title: 'Ritmo',
@@ -37,7 +37,7 @@ const AREA_COPY: Record<string, { title: string; description: string }> = {
   },
   module_2_pentagram_height: {
     title: 'Pentagrama',
-    description: 'Relaciona la altura y la apertura de tus manos con notas, figuras y secuencias musicales.',
+    description: 'Relaciona altura y apertura con notas, figuras y secuencias, incluyendo posiciones por debajo y por encima del pentagrama.',
   },
   module_3_orchestra_score: {
     title: 'Compás',
