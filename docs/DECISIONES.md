@@ -9,13 +9,13 @@
 
 ## Arquitectura de interacción
 
-- Objetivo: instrumento educativo visual y minimalista controlado con dos manos o dos pelotas.
+- Objetivo: instrumento educativo visual y minimalista controlado con dos manos o dos **marcadores de color**.
 - Mapeo base: apertura horizontal → duración/figura; altura promedio → nota.
 - Procesamiento local en navegador. GitHub conserva código, dependencias y decisiones; Pages distribuye archivos.
 - No se necesita un modelo generativo para interpretar cada fotograma.
 - Escala de apertura virtual: ancho relativo de imagen multiplicado por 125. No presentar como medición física.
 - Detector de manos heredado @mediapipe/hands, recursos locales y modelo ligero. Modernizar solo después de comparar calidad y latencia.
-- Detector de pelotas sin OpenCV: HSV y mayor componente conectado, análisis 160×120 y hasta 30 Hz.
+- Detector de marcadores de color sin OpenCV: HSV y mayor componente conectado, análisis 160×120 y hasta 30 Hz. El nombre histórico interno `colored_balls` se mantiene temporalmente por compatibilidad hasta un refactor controlado.
 - La cámara no guarda ni envía imágenes en esta versión. Configuración y calibración viven en memoria durante la sesión.
 - Sesiones, cuentas, almacenamiento persistente y sincronización entre dispositivos no están implementados.
 
@@ -94,6 +94,18 @@ La memoria se conserva en tres capas:
 3. Artefactos visuales — slides y diseños objetivo usados como referencia para implementación.
 
 No conservar código obsoleto en `main` únicamente por valor histórico.
+
+## Tracking v2 — decisiones
+
+- Los 21 landmarks ya existen en el callback de MediaPipe; primero se conservarán y modelarán antes de migrar de backend.
+- Centro de palma ↔ centro de palma continúa siendo la referencia musical base para apertura. Los fingertips no reemplazan automáticamente esta relación.
+- MediaPipe Tasks HandLandmarker es el candidato principal de migración porque ofrece landmarks normalizados, world landmarks, handedness y confidence.
+- TensorFlow hand-pose-detection queda como benchmark alternativo.
+- fingerpose se considera referencia para curl/direction, no tracker principal.
+- El detector cromático propio se mejora antes de introducir tracking.js u OpenCV.js.
+- La interacción colaborativa A/B por marcadores queda registrada como investigación futura y **no debe aparecer todavía en la UI**.
+
+Ver [TRACKING_V2_SPEC.md](./TRACKING_V2_SPEC.md).
 
 ## Próximos experimentos técnicos
 
