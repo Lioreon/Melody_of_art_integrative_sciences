@@ -98,11 +98,13 @@ Durante esta sesión, el navegador integrado informó `NotAllowedError: Permissi
 
 Antes de publicar: ensayar manos y marcadores de color con iluminación real, medir latencia y uso de memoria durante una sesión larga, revisar accesibilidad y unificar los textos heredados de unidades.
 Las métricas del módulo orquestal son de prototipo: no constituyen mediciones validadas de reacción, sincronización o estabilidad.
-Tracking v2 comienza con T0/T1: Melody Motion registra métricas locales de sesión y conserva los 21 landmarks de cada mano sin cambiar todavía el backend heredado. MediaPipe Tasks/Web Worker queda para T4, después de comparar el baseline. Consulte [docs/TRACKING_V2_SPEC.md](docs/TRACKING_V2_SPEC.md).
+Tracking v2 ya cubre T0/T1 y una primera capa T2: Melody Motion registra métricas locales, conserva los 21 landmarks y deriva geometría por dedo sin cambiar todavía el backend heredado. El overlay puede sombrear suavemente la mano según OPEN/CLOSED. MediaPipe Tasks/Web Worker queda para T4, después de comparar el baseline. Consulte [docs/TRACKING_V2_SPEC.md](docs/TRACKING_V2_SPEC.md).
+
+La gramática gestual experimental añade: ambas manos abiertas = sonido natural; ambos puños = silencio equivalente; gesto asimétrico A/B = sostenido o bemol. La duración sigue dependiendo de la distancia entre centros de palma. Los slots A/B aún no son identidad anatómica estable y se consideran provisionales hasta T5.
 
 
 ## Timbres de instrumento
 
 Los módulos **Instrumento** y **Pentagrama** comparten el sintetizador Web Audio interno o timbres muestreados de **piano, guitarra nylon, violín con arco y violín pizzicato**. El timbre seleccionado se mantiene al cambiar entre ambos módulos durante la sesión. Las muestras se cargan bajo demanda desde fuentes públicas fijadas a commits concretos; cada una conserva su atribución y licencia. Si la carga externa falla, Melody Motion vuelve al sintetizador interno. Consulte [docs/AUDIO_SOURCES.md](docs/AUDIO_SOURCES.md).
 
-Pentagrama ofrece dos submódulos: **Guiado · dos notas**, donde la nota META permanece fija y una nota TÚ se desplaza con la altura corporal, y **Desafío · una meta**, que conserva la modalidad de menor asistencia visual.
+Pentagrama ofrece tres submódulos: **Guiado · dos notas**, **Desafío · una meta** y **Alteraciones · ♯/♭**. Ritmo añade un nivel **Sonido / silencio**, y Compás incorpora un patrón que alterna Negra con Silencio de Negra usando la misma distancia espacial.
