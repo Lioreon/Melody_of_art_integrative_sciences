@@ -83,3 +83,25 @@ input[type='range'] {
     container-type: inline-size;
   }
 }
+
+
+@keyframes mm-story-enter {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mm-story-panel {
+  animation: mm-story-enter 360ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mm-story-panel {
+    animation: none;
+  }
+}
