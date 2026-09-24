@@ -112,7 +112,7 @@ function pizzicatoAnchor(note: string, fileStem: string): InstrumentSampleAnchor
     instrument: 'violin_pizzicato',
     note,
     frequency: midiToFrequency(noteNameToMidi(note)),
-    url: `${SSO_PIZZICATO_ROOT}/violin_pizz_non_vib_${fileStem}.wav`,
+    url: `${SSO_PIZZICATO_ROOT}/violin_pizz_non_vib_${fileStem.toLowerCase()}.wav`,
   };
 }
 
