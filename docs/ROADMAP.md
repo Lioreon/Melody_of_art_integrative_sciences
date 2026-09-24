@@ -55,6 +55,19 @@ Este roadmap separa lo implementado de la experiencia objetivo. No constituye un
   - sin cambiar todavía el backend `@mediapipe/hands`;
   - “Pelotas de colores” pasa conceptualmente a **Marcadores de color**.
 
+- **Modo juego opcional**:
+  - Ritmo: puntos por mantención válida de la figura;
+  - Pentagrama: puntos por nota + figura mantenidas durante la duración objetivo;
+  - feedback sonoro corto al entrar correctamente en el objetivo;
+  - Ranking local de sesión desbloqueable a 300 puntos;
+  - sin cuentas, ranking global, vidas ni pérdida de puntos.
+- **Pentagrama responsive**:
+  - pentagramas Guiado y Desafío con mayor área útil en móvil;
+  - contraste reforzado de líneas, notas y líneas adicionales en claro/oscuro.
+- **Carrusel institucional**:
+  - superficie translúcida tipo vidrio pulido;
+  - mantiene rotación reducida y `prefers-reduced-motion`.
+
 ## Fase 3 — aprendizaje musical multimodal
 
 ### 3.1 Audio transversal
@@ -170,9 +183,9 @@ Variables futuras de investigación:
 - diferencias entre condiciones visuales, auditivas y corporales.
 
 ## No implementar todavía sin una decisión explícita
-- gamificación genérica;
-- ranking de estudiantes;
-- vidas / XP / streaks;
+- gamificación opaca o punitiva;
+- ranking **entre estudiantes** sin cuentas, consentimiento y validación pedagógica;
+- vidas, pérdida de puntos o streaks obligatorios;
 - dificultad adaptativa opaca;
 - arquitectura genérica de aprendizaje antes de que al menos dos módulos requieran la misma abstracción;
 - cambios grandes de MediaPipe/cámara sin medición base;
