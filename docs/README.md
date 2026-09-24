@@ -10,6 +10,7 @@ Esta carpeta conserva la memoria técnica, pedagógica y de producto del proyect
 - [MANUAL_USUARIO.md](./MANUAL_USUARIO.md) — versión textual del manual técnico-pedagógico.
 - [VISION_PEDAGOGICA_2026.md](./VISION_PEDAGOGICA_2026.md) — visión de interfaz y pedagogía posterior a las pruebas físicas.
 - [AUDIO_SOURCES.md](./AUDIO_SOURCES.md) — procedencia, licencia y arquitectura de los timbres muestreados.
+- [TRACKING_V2_SPEC.md](./TRACKING_V2_SPEC.md) — investigación, arquitectura y secuencia de implementación para manos completas y marcadores de color.
 
 ## Principio de conservación
 
