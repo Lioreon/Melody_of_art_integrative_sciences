@@ -12,6 +12,9 @@ Este documento conserva la evolución técnica, visual y pedagógica de **Melody
 | Reorganización de interfaz | `2076c22` | Fase 1: reorganización de la interfaz y jerarquía visual. |
 | Graphify + Codex | `588f0c7` | Integración de Graphify por proyecto y contexto para agentes. |
 | Phase 2 validada | `7eff8ee` | Bucle pedagógico de Ritmo + estados de gesto integrados. |
+| Tracking v2 + gramática gestual | `07f9c73` | Persistencia de 21 landmarks, geometría inicial de mano y reglas experimentales de silencio / alteraciones. |
+| UI institucional responsive | `2f15ed8` | Shell adaptable para teléfono, tableta y escritorio con destino pedagógico y firma autoral visibles. |
+| Manual técnico-científico 2026 | `307a3ce` | Registro formal de la edición `MM-MAN-2026-02` y su trazabilidad documental. |
 
 ## Evolución conceptual
 
@@ -71,6 +74,26 @@ Compás deja de concebirse únicamente como una pantalla de métricas. La hipót
 Melody Motion se entiende como primer laboratorio de una pregunta más amplia: cómo diseñar interfaces digitales que activen cuerpo, percepción, memoria asociativa y transferencia, especialmente en población infanto-juvenil.
 
 La hipótesis de diseño no afirma efectos clínicos ni cognitivos demostrados. Su evaluación requiere investigación posterior.
+
+
+
+### 8. Formalización editorial e identidad institucional
+
+La interfaz alcanzó además una **primera fase demostrativa pública**: la jerarquía de presentación se consolidó como *Melody of Art → Melody Motion → proyecto pedagógico para Escuela de Música Matiaví · Salinas → diseño y desarrollo A. Owsky*. La misma relación se conserva en el pie de página para dar cierre institucional sin desplazar la experiencia pedagógica.
+
+El 24 de septiembre de 2026 se consolidaron dos líneas complementarias de presentación.
+
+La primera fue un conjunto de **láminas experimentales responsive** para visualizar cómo Instrumento, Ritmo, Pentagrama y Compás podían compartir un lenguaje de interfaz más coherente en teléfono, tableta y escritorio. Estas láminas se conservaron como contrato visual, no como evidencia automática de funciones desplegadas.
+
+La segunda fue el **Manual técnico-científico de Melody Motion**, código `MM-MAN-2026-02`. Esta edición adoptó una presentación más cercana a un paper técnico y a un manual institucional: portada sobria, resumen, secciones numeradas, descripción funcional, arquitectura pedagógica y QR de acceso a la herramienta en desarrollo.
+
+A partir de esta formalización, la interfaz pública incorpora de manera discreta tres referencias:
+
+- **Melody of Art · Melody Motion** como identidad del sistema;
+- **A. Owsky · Ciencias Integrativas · Bolívar · Ecuador** como firma de diseño y desarrollo;
+- **Escuela de Música Matiaví · Salinas** como contexto pedagógico de destino.
+
+La incorporación visual de estas referencias no altera la jerarquía principal: el aprendizaje y la interacción corporal siguen ocupando el centro de la experiencia.
 
 ## Memoria del proyecto
 

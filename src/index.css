@@ -39,3 +39,47 @@
   --music-rhythm-accent: #8aa7df;
   --feedback-success: #55d6a4;
 }
+
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100dvh;
+}
+
+button,
+summary,
+select,
+input[type='range'] {
+  touch-action: manipulation;
+}
+
+.mm-module-nav {
+  scrollbar-width: none;
+}
+
+.mm-module-nav::-webkit-scrollbar {
+  display: none;
+}
+
+@media (pointer: coarse), (hover: none) {
+  .touch-target {
+    min-height: 44px;
+  }
+
+  button,
+  summary,
+  select {
+    font-size: max(16px, 1em);
+  }
+}
+
+@media (max-width: 479px) {
+  .mm-module-nav {
+    container-type: inline-size;
+  }
+}
