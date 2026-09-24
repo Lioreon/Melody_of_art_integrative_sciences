@@ -12,7 +12,7 @@ export const InstitutionalSignature: React.FC = () => (
       <div className="grid gap-3 md:grid-cols-[1fr_auto_1fr] md:items-center md:gap-5">
         <section className="flex items-center gap-3 rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface-muted)] px-3 py-3 md:border-0 md:bg-transparent md:px-0">
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--ui-gold)]/25 bg-[var(--ui-surface)] text-[var(--ui-gold)]">
-            <Building2 className="h-4.5 w-4.5" aria-hidden="true" />
+            <Building2 className="h-4 w-4" aria-hidden="true" />
           </span>
           <div className="min-w-0">
             <p className="text-[8px] font-semibold uppercase tracking-[0.18em] text-[var(--ui-gold)]">
@@ -27,7 +27,7 @@ export const InstitutionalSignature: React.FC = () => (
 
         <section className="flex items-center gap-3 rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface-muted)] px-3 py-3 md:border-0 md:bg-transparent md:px-0">
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--ui-jade)]/25 bg-[var(--ui-surface)] text-[var(--ui-blue)]">
-            <Music2 className="h-4.5 w-4.5" aria-hidden="true" />
+            <Music2 className="h-4 w-4" aria-hidden="true" />
           </span>
           <div className="min-w-0">
             <p className="text-[8px] font-semibold uppercase tracking-[0.18em] text-[var(--ui-gold)]">
