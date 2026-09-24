@@ -16,6 +16,7 @@ export function InstrumentTimbreSelector({
   compact = false,
 }: InstrumentTimbreSelectorProps) {
   const [sampleReady, setSampleReady] = useState<'idle' | 'loading' | 'ready' | 'fallback'>('idle');
+  const selectedOption = INSTRUMENT_TIMBRE_OPTIONS.find((option) => option.id === timbre);
 
   useEffect(() => {
     if (timbre === 'synth') {
@@ -66,8 +67,8 @@ export function InstrumentTimbreSelector({
             ? 'No se pudo cargar la muestra; se usará el sintetizador como respaldo.'
             : 'Muestras cargadas bajo demanda.'}
         </span>
-        {timbre !== 'synth' && (
-          <span>Fuente: tonejs-instruments · muestras CC BY 3.0.</span>
+        {timbre !== 'synth' && selectedOption?.sourceLabel && (
+          <span>Fuente: {selectedOption.sourceLabel}.</span>
         )}
       </div>
     </div>
