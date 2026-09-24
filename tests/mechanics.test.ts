@@ -5,7 +5,15 @@ import { trackingState, palmAt } from '../src/services/trackingGeometry';
 import { ColorBlobDetector } from '../src/services/colorDetection';
 import { HoldTimer } from '../src/services/holdTimer';
 import { classifyGesture, type GestureLandmark } from '../src/services/gestureClassifier';
-import { advanceRhythmSequence, evaluateRhythmTarget, exploreRhythm } from '../src/services/rhythmEvaluation';
+import {
+  advanceRhythmSequence,
+  evaluateRhythmTarget,
+  exploreRhythm,
+  generateRhythmSequence,
+  getRhythmVocabulary,
+  pickRhythmTarget,
+  sequenceLengthForDifficulty,
+} from '../src/services/rhythmEvaluation';
 import { MUSICAL_FIGURES } from '../src/data/scorePresets';
 import { midiToFrequency, nearestInstrumentSample, noteNameToMidi } from '../src/services/instrumentSamples';
 
@@ -116,6 +124,37 @@ test('exploration evaluation has no failure condition', () => {
   assert.equal(exploreRhythm(false).status, 'explore');
   assert.match(exploreRhythm(false).feedback, /comenzar a explorar/);
 });
+
+test('rhythm difficulty exposes progressively larger musical vocabularies', () => {
+  assert.deepEqual(getRhythmVocabulary(rhythmFigures, 'initial').map(figure => figure.id), ['blanca', 'negra']);
+  assert.deepEqual(getRhythmVocabulary(rhythmFigures, 'intermediate').map(figure => figure.id), ['blanca', 'negra', 'corchea']);
+  assert.deepEqual(getRhythmVocabulary(rhythmFigures, 'full').map(figure => figure.id), ['redonda', 'blanca', 'negra', 'corchea']);
+  assert.equal(sequenceLengthForDifficulty('initial'), 3);
+  assert.equal(sequenceLengthForDifficulty('intermediate'), 4);
+  assert.equal(sequenceLengthForDifficulty('full'), 5);
+});
+
+test('controlled rhythm targets are deterministic and can avoid immediate repetition', () => {
+  const first = pickRhythmTarget(rhythmFigures, 'initial', 1234);
+  const repeated = pickRhythmTarget(rhythmFigures, 'initial', 1234);
+  assert.equal(first.figure.id, repeated.figure.id);
+  assert.equal(first.nextSeed, repeated.nextSeed);
+
+  const next = pickRhythmTarget(rhythmFigures, 'initial', first.nextSeed, first.figure.id);
+  assert.notEqual(next.figure.id, first.figure.id);
+});
+
+test('generated rhythm sequences are reproducible and avoid adjacent duplicates', () => {
+  const a = generateRhythmSequence(rhythmFigures, 'full', 5, 42);
+  const b = generateRhythmSequence(rhythmFigures, 'full', 5, 42);
+  assert.deepEqual(a.figures.map(figure => figure.id), b.figures.map(figure => figure.id));
+  assert.equal(a.nextSeed, b.nextSeed);
+  assert.equal(a.figures.length, 5);
+  for (let index = 1; index < a.figures.length; index += 1) {
+    assert.notEqual(a.figures[index].id, a.figures[index - 1].id);
+  }
+});
+
 function scene() {
   const width = 40, height = 30, pixels = new Uint8ClampedArray(width * height * 4);
   function square(x: number, y: number, size: number, rgb: number[]) {
