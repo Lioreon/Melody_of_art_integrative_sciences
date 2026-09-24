@@ -91,8 +91,18 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
     );
   const isTargetMatched = hasBothHands && isPitchMatched && isDistanceMatched && isAccidentalMatched;
 
+  useEffect(() => {
+    if (learningMode === 'accidentals' && !bimanualGesture.supportsHandShape) {
+      setLearningMode('guided');
+    }
+  }, [learningMode, bimanualGesture.supportsHandShape]);
+
   // Sound feedback on note change
   useEffect(() => {
+    if (bimanualGesture.mode === 'rest' || bimanualGesture.mode === 'unknown') {
+      if (lastSoundFrequency !== 0) setLastSoundFrequency(0);
+      return;
+    }
     if (
       hasBothHands
       && bimanualGesture.mode !== 'rest'
