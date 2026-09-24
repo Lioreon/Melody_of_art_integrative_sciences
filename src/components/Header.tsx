@@ -81,6 +81,31 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </div>
 
+          <section className="grid grid-cols-[1fr_auto] items-center gap-3 rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface-muted)] px-3 py-2.5 sm:hidden">
+            <div className="min-w-0">
+              <p className="text-[8px] font-semibold uppercase tracking-[0.18em] text-[var(--ui-gold)]">
+                Proyecto pedagógico para
+              </p>
+              <div className="mt-1 flex items-start gap-2">
+                <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--ui-jade)]" aria-hidden="true" />
+                <div className="min-w-0 leading-tight">
+                  <p className="text-[10px] font-semibold text-[var(--ui-text-muted)]">Escuela de Música</p>
+                  <p className="text-sm font-bold tracking-wide text-[var(--ui-jade)]">
+                    Matiaví · Salinas
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="border-l border-[var(--ui-border)] pl-3 text-right leading-tight">
+              <p className="text-[8px] font-semibold uppercase tracking-[0.14em] text-[var(--ui-gold)]">
+                Desarrollo
+              </p>
+              <p className="mt-1 text-xs font-bold text-[var(--ui-blue)] dark:text-[var(--ui-text)]">
+                A. Owsky
+              </p>
+            </div>
+          </section>
+
           <div className="hidden gap-2 sm:grid sm:grid-cols-2 lg:flex lg:items-stretch">
             <section className="rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface-muted)] px-3 py-2 lg:min-w-[235px]">
               <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[var(--ui-gold)]">
@@ -135,13 +160,7 @@ export const Header: React.FC<HeaderProps> = ({
             })}
           </nav>
 
-          <div className="flex items-center justify-between gap-2 lg:justify-end">
-            <div className="min-w-0 truncate text-[10px] leading-tight text-[var(--ui-text-muted)] lg:hidden">
-              <span className="font-semibold text-[var(--ui-jade)]">Escuela de Música Matiaví · Salinas</span>
-              <span className="mx-1.5">·</span>
-              <span>A. Owsky</span>
-            </div>
-
+          <div className="flex items-center justify-end gap-2">
             <div className="flex items-center gap-1.5">
               <button
                 type="button"
