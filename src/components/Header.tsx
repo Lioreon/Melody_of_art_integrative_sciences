@@ -7,10 +7,12 @@ import React from 'react';
 import {
   Camera,
   HelpCircle,
+  LockKeyhole,
   Moon,
   Music2,
   Sliders,
   Sun,
+  Trophy,
   Volume2,
   VolumeX,
 } from 'lucide-react';
@@ -26,6 +28,8 @@ interface HeaderProps {
   onToggleSimulation: () => void;
   totalScore: number;
   streak: number;
+  learningPoints: number;
+  rankingUnlocked: boolean;
   onShowInfo: () => void;
   theme: AppTheme;
   onToggleTheme: () => void;
@@ -38,6 +42,7 @@ const LEARNING_AREAS = [
     title: mod.title,
     index: String(index + 2).padStart(2, '0'),
   })),
+  { id: 'ranking', title: 'Ranking', index: '05' },
 ];
 
 const PROJECT_STORIES = [
@@ -70,6 +75,8 @@ export const Header: React.FC<HeaderProps> = ({
   onToggleMute,
   isSimulation,
   onToggleSimulation,
+  learningPoints,
+  rankingUnlocked,
   onShowInfo,
   theme,
   onToggleTheme,
@@ -142,10 +149,10 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <div
                 key={storyIndex}
-                className="mm-story-panel grid min-h-[68px] place-items-center rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface-muted)] px-3 py-2.5 sm:min-h-[72px] sm:px-5"
+                className="mm-story-panel mm-story-glass grid min-h-[68px] place-items-center rounded-2xl px-3 py-2.5 sm:min-h-[72px] sm:px-5"
                 aria-live="off"
               >
-                <div>
+                <div className="relative z-10">
                   <p className="text-[8px] font-bold uppercase tracking-[0.19em] text-[var(--ui-gold)] sm:text-[9px]">
                     {currentStory.eyebrow}
                   </p>
@@ -180,33 +187,53 @@ export const Header: React.FC<HeaderProps> = ({
 
         <div className="flex flex-col gap-2 py-2.5 lg:flex-row lg:items-center lg:justify-between">
           <nav
-            className="mm-module-nav grid grid-cols-4 gap-1 overflow-hidden rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface-muted)] p-1"
+            className="mm-module-nav flex gap-1 overflow-x-auto rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface-muted)] p-1 sm:grid sm:grid-cols-5"
             aria-label="Áreas de aprendizaje"
           >
             {LEARNING_AREAS.map((area) => {
               const isActive = area.id === activeModuleId;
+              const isRanking = area.id === 'ranking';
+              const isLocked = isRanking && !rankingUnlocked;
               return (
                 <button
                   key={area.id}
                   type="button"
-                  onClick={() => onSelectModule(area.id)}
+                  onClick={() => {
+                    if (!isLocked) onSelectModule(area.id);
+                  }}
                   aria-current={isActive ? 'page' : undefined}
-                  className={`touch-target min-w-0 rounded-xl px-2 py-2 text-center transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ui-gold)] sm:px-4 ${
+                  aria-disabled={isLocked}
+                  title={isLocked ? 'Desbloquea Ranking al alcanzar 300 puntos de juego.' : undefined}
+                  className={`touch-target min-w-[96px] flex-1 rounded-xl px-2 py-2 text-center transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ui-gold)] sm:min-w-0 sm:px-3 ${
                     isActive
                       ? 'bg-[var(--ui-forest)] text-white shadow-sm dark:text-slate-950'
+                      : isLocked
+                      ? 'cursor-not-allowed text-[var(--ui-text-muted)] opacity-50'
                       : 'text-[var(--ui-text-muted)] hover:bg-[var(--ui-surface)] hover:text-[var(--ui-text)]'
                   }`}
                 >
                   <span className="hidden text-[9px] font-semibold uppercase tracking-[0.14em] opacity-70 sm:block">
                     {area.index}
                   </span>
-                  <span className="block truncate text-[11px] font-semibold sm:text-sm">{area.title}</span>
+                  <span className="flex items-center justify-center gap-1 truncate text-[11px] font-semibold sm:text-sm">
+                    {isRanking && (isLocked
+                      ? <LockKeyhole className="h-3 w-3 shrink-0" aria-hidden="true" />
+                      : <Trophy className="h-3 w-3 shrink-0" aria-hidden="true" />)}
+                    {area.title}
+                  </span>
                 </button>
               );
             })}
           </nav>
 
           <div className="flex items-center justify-end gap-1.5">
+            {learningPoints > 0 && (
+              <span className="inline-flex min-h-10 items-center gap-1.5 rounded-xl border border-[var(--ui-gold)]/30 bg-[var(--ui-gold)]/8 px-3 text-xs font-bold text-[var(--ui-gold)]">
+                <Trophy className="h-4 w-4" aria-hidden="true" />
+                {learningPoints} pts
+              </span>
+            )}
+
             <button
               type="button"
               onClick={onToggleSimulation}
