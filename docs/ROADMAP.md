@@ -23,6 +23,14 @@ Este roadmap separa lo implementado de la experiencia objetivo. No constituye un
   - reinicio de secuencia.
 - Tests automáticos y despliegue por GitHub → Cloudflare Pages.
 
+## Incrementos implementados después de Phase 2
+
+- Registro tonal extendido **Sol3–Si5** con líneas adicionales.
+- Timbres compartidos entre Instrumento y Pentagrama.
+- Piano, guitarra nylon, violín con arco y **violín pizzicato** con carga bajo demanda y fallback al sintetizador.
+- Pentagrama **Guiado · dos notas**: META fija + TÚ móvil.
+- Pentagrama **Desafío · una meta**: conserva la modalidad de menor referencia visual.
+
 ## Fase 3 — aprendizaje musical multimodal
 
 ### 3.1 Audio transversal
@@ -50,7 +58,7 @@ Debe permitir comenzar con síntesis Web Audio y evolucionar después hacia banc
 Progresión objetivo:
 
 1. Explorar — mostrar estado actual sin objetivo.
-2. Guiado — objetivo frente a nota/figura actual.
+2. Guiado — objetivo frente a nota/figura actual. **Implementado inicialmente como META fija + TÚ móvil.**
 3. Ayuda reducida — retirar referencias.
 4. Lectura — notación convencional con asistencia mínima.
 
