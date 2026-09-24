@@ -105,8 +105,6 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
     }
     if (
       hasBothHands
-      && bimanualGesture.mode !== 'rest'
-      && bimanualGesture.mode !== 'unknown'
       && effectiveDetectedFrequency !== lastSoundFrequency
     ) {
       void audioSynthesizer.playInstrumentNote(effectiveDetectedFrequency, 0.3, timbre);
@@ -286,7 +284,7 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
               : learningMode === 'guided'
               ? `Lleva la nota TÚ hasta META (${activeTargetNote.spanishNote}) y ajusta la apertura al objetivo.`
               : learningMode === 'accidentals'
-              ? `Busca ${activeTargetNote.spanishNote}${accidentalSymbol(targetAccidental)}. Natural = ambas abiertas; ♯ = izquierda cerrada/derecha abierta; ♭ = izquierda abierta/derecha cerrada.`
+              ? `Busca ${activeTargetNote.spanishNote}${accidentalSymbol(targetAccidental)}. Natural = ambas abiertas; ♯ = slot A cerrado/B abierto; ♭ = slot A abierto/B cerrado. La identidad anatómica estable llegará en T5.`
               : `Busca ${activeTargetNote.spanishNote} con la altura y ajusta palmas a ${activeTargetNote.targetDistanceCm} cm`}
           </span>
           <span className="font-mono font-bold text-cyan-600">
@@ -305,7 +303,6 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
             currentSilent={bimanualGesture.mode === 'rest'}
             matched={isTargetMatched}
             theme={theme}
-            accidental="natural"
           />
         ) : (
           <SimpleStaffView
