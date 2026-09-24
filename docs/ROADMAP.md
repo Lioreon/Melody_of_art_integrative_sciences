@@ -37,6 +37,14 @@ Este roadmap separa lo implementado de la experiencia objetivo. No constituye un
   - vocabulario Inicial / Intermedio / Amplio;
   - secuencias reproducibles sin repetición inmediata;
   - botón para escuchar la duración de la figura con un tono neutro.
+- **Compás v1 — Acordeón corporal**:
+  - tres patrones simples en 4/4;
+  - playhead temporal;
+  - figura actual + figura siguiente;
+  - apertura corporal como eje rítmico;
+  - metrónomo estable;
+  - congelación automática del tiempo ante pérdida de tracking;
+  - la dirección experimental se conserva como Nivel 2.
 
 ## Fase 3 — aprendizaje musical multimodal
 
@@ -77,14 +85,20 @@ Progresión objetivo:
 También se prevé ampliar el rango por encima y por debajo de una sola octava y soportar líneas adicionales.
 
 ### 3.5 Compás — acordeón corporal
-Primera implementación propuesta:
+Primera implementación completada en Compás v1:
 
-- canción o patrón sencillo;
+- patrón sencillo seleccionable;
 - pulso estable;
 - apertura/cierre de manos como secuencia rítmica;
 - playhead;
 - anticipación de la figura siguiente;
-- feedback sin penalizar incertidumbre de tracking.
+- feedback sin penalizar incertidumbre de tracking;
+- pausa temporal automática cuando se pierde seguimiento.
+
+Siguiente etapa:
+- incorporar canciones o frases musicales reales;
+- registrar alineación temporal por segmento sin gamificación;
+- integrar gradualmente el eje de altura.
 
 Más adelante:
 
