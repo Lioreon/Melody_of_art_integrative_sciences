@@ -5,6 +5,10 @@ import { TREBLE_TRAINING_RANGE, MUSICAL_FIGURES, mapHeightToNote, mapSeparationT
 import { audioSynthesizer } from '../services/audioSynthesizer';
 import type { InstrumentTimbre } from '../services/instrumentSamples';
 import { InstrumentTimbreSelector } from './InstrumentTimbreSelector';
+import {
+  applyAccidentalToFrequency,
+  interpretBimanualMusicalGesture,
+} from '../services/musicalGesture';
 
 interface InstrumentPanelProps {
   palmState: DualPalmState;
@@ -27,6 +31,9 @@ export function InstrumentPanel({ palmState, theme, timbre, onTimbreChange }: In
   const trackingLost = !palmState.leftPalm?.present || !palmState.rightPalm?.present;
   const avgY = trackingLost ? 0.5 : (palmState.leftPalm!.center.y + palmState.rightPalm!.center.y) / 2;
   const duration = calculateRealDurationSec(figure.beats, bpm);
+  const bimanualGesture = interpretBimanualMusicalGesture(palmState);
+  const isSilentGesture = bimanualGesture.mode === 'rest';
+  const effectiveFrequency = applyAccidentalToFrequency(note.frequency, bimanualGesture.accidental);
 
   useEffect(() => {
     if (trackingLost || playing) return;
@@ -35,8 +42,8 @@ export function InstrumentPanel({ palmState, theme, timbre, onTimbreChange }: In
   }, [avgY, palmState.distanceCm, trackingLost, playing, range]);
 
   const play = useCallback(() => {
-    if (trackingLost || playingRef.current) return;
-    void audioSynthesizer.playInstrumentNote(note.frequency, duration, timbre);
+    if (trackingLost || playingRef.current || isSilentGesture) return;
+    void audioSynthesizer.playInstrumentNote(effectiveFrequency, duration, timbre);
     playingRef.current = true;
     setPlaying(true);
     const start = performance.now();
@@ -47,19 +54,20 @@ export function InstrumentPanel({ palmState, theme, timbre, onTimbreChange }: In
       else { playingRef.current = false; setPlaying(false); frame.current = null; }
     };
     frame.current = requestAnimationFrame(tick);
-  }, [trackingLost, note, duration, timbre]);
+  }, [trackingLost, isSilentGesture, effectiveFrequency, duration, timbre]);
 
 
   useEffect(() => {
-    if (!liveSoundFeedback || trackingLost || playing) {
+    if (!liveSoundFeedback || trackingLost || playing || isSilentGesture) {
       if (trackingLost) lastFeedbackNoteRef.current = null;
       return;
     }
-    if (lastFeedbackNoteRef.current === note.id) return;
-    lastFeedbackNoteRef.current = note.id;
+    const feedbackKey = `${note.id}:${bimanualGesture.accidental}`;
+    if (lastFeedbackNoteRef.current === feedbackKey) return;
+    lastFeedbackNoteRef.current = feedbackKey;
     const feedbackDuration = Math.min(0.45, Math.max(0.18, duration));
-    void audioSynthesizer.playInstrumentNote(note.frequency, feedbackDuration, timbre);
-  }, [note.id, note.frequency, duration, timbre, liveSoundFeedback, trackingLost, playing]);
+    void audioSynthesizer.playInstrumentNote(effectiveFrequency, feedbackDuration, timbre);
+  }, [note.id, bimanualGesture.accidental, effectiveFrequency, duration, timbre, liveSoundFeedback, trackingLost, playing, isSilentGesture]);
 
   useEffect(() => {
     const keydown = (event: KeyboardEvent) => {
@@ -76,7 +84,25 @@ export function InstrumentPanel({ palmState, theme, timbre, onTimbreChange }: In
   return <div className="space-y-4">
     <MusicalInstrumentView selectedNote={note} selectedFigure={figure} realDurationSec={duration}
       bpm={bpm} trackingLost={trackingLost} isPlaying={playing} playProgress={progress} onPlayNote={play}
-      separationCm={palmState.distanceCm} avgYNorm={avgY} theme={theme} />
+      separationCm={palmState.distanceCm} avgYNorm={avgY} theme={theme}
+      accidental={bimanualGesture.accidental}
+      isSilentGesture={isSilentGesture}
+      gestureLabel={bimanualGesture.label} />
+
+    <section className="rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-4 text-sm shadow-[var(--ui-shadow)]">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">Gramática gestual</div>
+          <div className="mt-1 text-base font-semibold">{bimanualGesture.label}</div>
+          <div className="mt-1 text-xs text-slate-500">{bimanualGesture.description}</div>
+        </div>
+        <div className="text-right text-xs text-slate-500">
+          {bimanualGesture.supportsHandShape
+            ? 'Manos libres · falanges activas'
+            : 'Modo posicional · sin forma de dedos'}
+        </div>
+      </div>
+    </section>
 
     <section className="rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-4 text-sm shadow-[var(--ui-shadow)]">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
