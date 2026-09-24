@@ -91,9 +91,14 @@ export interface MusicalFigure {
   color: string;
 }
 
+export type TrebleTrainingNoteName =
+  | 'Sol3' | 'La3' | 'Si3'
+  | 'Do4' | 'Re4' | 'Mi4' | 'Fa4' | 'Sol4' | 'La4' | 'Si4'
+  | 'Do5' | 'Re5' | 'Mi5' | 'Fa5' | 'Sol5' | 'La5' | 'Si5';
+
 export interface PentagramNoteItem {
   id: string;
-  noteName: 'Do4' | 'Re4' | 'Mi4' | 'Fa4' | 'Sol4' | 'La4' | 'Si4' | 'Do5';
+  noteName: TrebleTrainingNoteName;
   spanishNote: string;
   frequency: number; // Hz
   staffLineIndex: number; // 0 to 7
@@ -101,7 +106,7 @@ export interface PentagramNoteItem {
   figureSymbol: string;
   durationBeats: number;
   targetDistanceCm: number;
-  targetHeightYNorm: number; // 0.1 (high pitch C5) to 0.85 (low pitch C4)
+  targetHeightYNorm: number; // Hint de simulación; el rango actual va de Sol3 a Si5
 }
 
 export interface GalleryItem {
@@ -134,8 +139,8 @@ export interface ScaleNote {
   name: string; // e.g. 'DO', 'RE', 'MI', etc.
   octaveName: string; // e.g. 'Do4', 'Sol4', 'Do5'
   frequency: number; // in Hz
-  pitchIndex: number; // 0 (lowest, Do4) to 7 (highest, Do5)
-  staffLineIndex: number; // 0 for Do4 ledger line, 1 for Re4, etc.
+  pitchIndex: number; // índice dentro del registro usado por la vista
+  staffLineIndex: number; // paso diatónico relativo a Do4; puede ser negativo o superar el pentagrama
   isLedgerLine?: boolean;
 }
 
@@ -161,8 +166,8 @@ export interface ColorMarkerConfig {
 }
 
 export interface RangeCalibration {
-  yMin: number; // Top boundary (high pitch Do5, e.g. 0.20)
-  yMax: number; // Bottom boundary (low pitch Do4, e.g. 0.80)
+  yMin: number; // límite superior corporal (agudo, por defecto Si5 ≈ 0.08)
+  yMax: number; // límite inferior corporal (grave, por defecto Sol3 ≈ 0.92)
   sepMinCm: number; // Minimum separation in cm (Semicorchea, e.g. 12)
   sepMaxCm: number; // Maximum separation in cm (Redonda, e.g. 80)
 }
