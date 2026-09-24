@@ -42,12 +42,12 @@ Esto no convierte por sí solo la web publicada en una PWA disponible sin conexi
 3. Pulsa **Tocar nota** o la barra espaciadora. Los controles de formulario conservan sus propias teclas.
 4. En **Tempo y rango cómodo**, ajusta el tempo o guarda las posiciones extremas. La calibración es por sesión.
 5. En **Fuente de video**, elige la cámara predeterminada o una cámara específica y pulsa **Activar cámara**. Permite el acceso en el navegador para ver los nombres completos. **Actualizar lista** vuelve a consultar las fuentes; la lista también se actualiza al conectar o retirar dispositivos. Al cambiar la selección con la cámara activa, la fuente anterior se cierra y se abre la elegida. Puedes detenerla con **Detener cámara**. Se admiten cámaras físicas y virtuales expuestas como entradas de video por el navegador; archivos de video y direcciones de cámaras IP no están implementados.
-6. En **Seguimiento y colores**, elige manos libres o pelotas. Para pelotas, usa dos colores saturados claramente distintos y ajusta los selectores y la tolerancia. Es selección manual de color; aún no hay cuentagotas.
+6. En **Seguimiento y colores**, elige manos libres o **marcadores de color**. Usa dos referencias cromáticas saturadas y claramente distintas; no tienen que ser pelotas. Ajusta los selectores y la tolerancia. Es selección manual de color; aún no hay cuentagotas.
 
 La separación es una escala relativa de 0 a 125 unidades, proporcional al ancho de la imagen; no mide centímetros reales ni profundidad. La altura musical usa el centro vertical promedio de las dos manos y se calibra de forma independiente a la apertura horizontal.
 Los módulos heredados conservan algunos textos y nombres internos `distanceCm`, que corresponden a esa misma escala virtual. Mantén estable la distancia del cuerpo a la cámara.
 La vista Instrumento no emite nuevas notas si falta un punto. Una nota ya iniciada termina su duración programada.
-Las pelotas se distinguen por color, aunque se crucen; las manos libres se ordenan por posición horizontal, no por identidad anatómica.
+Las marcadores de color se distinguen por color, aunque se crucen; las manos libres se ordenan por posición horizontal, no por identidad anatómica.
 
 ## Cambios de esta adaptación
 
@@ -55,7 +55,7 @@ Las pelotas se distinguen por color, aunque se crucen; las manos libres se orden
 - Apertura horizontal independiente de la altura, rango cómodo y selección con histéresis.
 - Una solicitud de cámara por inicio, parada de pistas y bucles, y protección frente a inicios que terminan después de cancelar.
 - Máximo de 30 detecciones/s, sin repetir el mismo fotograma y con pausa de procesamiento mientras la pestaña está oculta.
-- Pelotas: detección por tono/saturación, componente conectado mayor, buffers reutilizables y suavizado temporal.
+- Marcadores de color: detección por tono/saturación, componente conectado mayor, buffers reutilizables y suavizado temporal.
 - Liberación de nodos de audio al terminar y carga diferida de las gráficas de métricas.
 - Temporizadores de ejercicios basados en tiempo transcurrido y bloqueo de evaluación sin ambos puntos.
 - Dependencias innecesarias eliminadas, versiones resueltas en `pnpm-lock.yaml`, comprobación automática y Dependabot preparados.
@@ -96,9 +96,9 @@ La cámara simulada en los tests comprueba liberación y cancelación; no demues
 La vista local se comprobó con los controles virtuales y reproducción activada desde la interfaz. Falta evaluación auditiva y de precisión en tu equipo.
 Durante esta sesión, el navegador integrado informó `NotAllowedError: Permission denied by system`; la aplicación volvió al simulador. Abre la dirección local en un navegador con acceso a la cámara y revisa sus permisos y los de Windows antes de ensayar el seguimiento real.
 
-Antes de publicar: ensayar manos y pelotas con iluminación real, medir latencia y uso de memoria durante una sesión larga, revisar accesibilidad y unificar los textos heredados de unidades.
+Antes de publicar: ensayar manos y marcadores de color con iluminación real, medir latencia y uso de memoria durante una sesión larga, revisar accesibilidad y unificar los textos heredados de unidades.
 Las métricas del módulo orquestal son de prototipo: no constituyen mediciones validadas de reacción, sincronización o estabilidad.
-La migración a MediaPipe Tasks/Web Worker queda como siguiente fase, después de obtener una medición base. No se ha implementado en esta adaptación.
+La evolución de tracking se realizará por fases: primero baseline, luego persistencia de los 21 landmarks, geometría completa de mano, adaptador de backends y finalmente benchmark/migración a MediaPipe Tasks HandLandmarker. Los marcadores de color seguirán como ruta alternativa con calibración y confianza mejoradas. La colaboración A/B por marcadores queda documentada como investigación futura, no como capacidad visible actual. Consulte [docs/TRACKING_V2_SPEC.md](docs/TRACKING_V2_SPEC.md).
 
 
 ## Timbres de instrumento
