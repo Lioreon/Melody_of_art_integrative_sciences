@@ -6,7 +6,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useHoldProgress } from '../hooks/useHoldProgress';
 import { SimpleStaffView } from './SimpleStaffView';
-import { TREBLE_TRAINING_RANGE, MUSICAL_FIGURES as INSTRUMENT_FIGURES, mapHeightToNote, noteHeightForId, ledgerLineStepsForStaffStep } from '../data/musicalScaleData';
+import { GuidedStaffView } from './GuidedStaffView';
+import { TREBLE_TRAINING_RANGE, MUSICAL_FIGURES as INSTRUMENT_FIGURES, mapHeightToNote, mapSeparationToFigure, noteHeightForId, ledgerLineStepsForStaffStep } from '../data/musicalScaleData';
 import confetti from 'canvas-confetti';
 import { GALLERY_ITEMS } from '../data/scorePresets';
 import { DualPalmState, GalleryItem, PentagramNoteItem, AppTheme } from '../types';
@@ -14,6 +15,8 @@ import { audioSynthesizer } from '../services/audioSynthesizer';
 import { Music, Check, ChevronDown, ChevronUp, RotateCcw } from 'lucide-react';
 import type { InstrumentTimbre } from '../services/instrumentSamples';
 import { InstrumentTimbreSelector } from './InstrumentTimbreSelector';
+
+type PentagramLearningMode = 'guided' | 'challenge';
 
 interface Module2PentagramViewProps {
   palmState: DualPalmState;
@@ -41,6 +44,7 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
   const [showItemVictoryModal, setShowItemVictoryModal] = useState<boolean>(false);
   const [lastSoundFrequency, setLastSoundFrequency] = useState<number>(0);
   const [showGallery, setShowGallery] = useState<boolean>(false);
+  const [learningMode, setLearningMode] = useState<PentagramLearningMode>('guided');
 
   const activeTargetNote: PentagramNoteItem = selectedGalleryItem.notes[noteStepIndex % selectedGalleryItem.notes.length];
 
@@ -52,6 +56,13 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
   // El centro vertical del par de manos recorre el registro Sol3–Si5.
   // La apertura horizontal permanece como un segundo eje independiente para la figura/duración.
   const currentDetectedNote = mapHeightToNote(averageYNorm);
+  const currentDetectedFigure = mapSeparationToFigure(palmState.distanceCm);
+  const targetScaleNote = TREBLE_TRAINING_RANGE.find(
+    (note) => note.id === activeTargetNote.noteName.toLowerCase(),
+  ) ?? TREBLE_TRAINING_RANGE[0];
+  const targetFigure = INSTRUMENT_FIGURES.find(
+    (figure) => figure.name === activeTargetNote.figureName,
+  ) ?? INSTRUMENT_FIGURES[2];
 
   // Check alignment with active target note in scale/song
   const isPitchMatched = currentDetectedNote.id === activeTargetNote.noteName.toLowerCase();
@@ -120,6 +131,39 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
 
   return (
     <div className="space-y-4">
+      <section className="rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-3 shadow-[var(--ui-shadow)]">
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={() => setLearningMode('guided')}
+            aria-pressed={learningMode === 'guided'}
+            className={`rounded-xl px-3 py-3 text-left transition-colors ${
+              learningMode === 'guided'
+                ? 'bg-cyan-600 text-white'
+                : 'bg-[var(--ui-background)] text-[var(--ui-text)]'
+            }`}
+          >
+            <div className="text-xs font-semibold uppercase tracking-wide opacity-75">Pentagrama · Nivel 1</div>
+            <div className="mt-1 font-bold">Guiado · dos notas</div>
+            <div className="mt-1 text-xs opacity-80">META fija + TÚ móvil como referencia visual.</div>
+          </button>
+          <button
+            type="button"
+            onClick={() => setLearningMode('challenge')}
+            aria-pressed={learningMode === 'challenge'}
+            className={`rounded-xl px-3 py-3 text-left transition-colors ${
+              learningMode === 'challenge'
+                ? 'bg-cyan-600 text-white'
+                : 'bg-[var(--ui-background)] text-[var(--ui-text)]'
+            }`}
+          >
+            <div className="text-xs font-semibold uppercase tracking-wide opacity-75">Pentagrama · Nivel 2</div>
+            <div className="mt-1 font-bold">Desafío · una meta</div>
+            <div className="mt-1 text-xs opacity-80">Conserva la modalidad actual con menos referencia visual.</div>
+          </button>
+        </div>
+      </section>
+
       {/* Victory Celebration Notice */}
       {showItemVictoryModal && (
         <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 flex items-center justify-between gap-3 animate-in fade-in">
@@ -186,17 +230,32 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
           <span className="text-slate-500">
             {isTargetMatched
               ? '¡Alineación correcta! Sosteniendo nota...'
-              : `Mueve la mano en Y hacia ${activeTargetNote.spanishNote} y ajusta palmas a ${activeTargetNote.targetDistanceCm} cm`}
+              : learningMode === 'guided'
+              ? `Lleva la nota TÚ hasta META (${activeTargetNote.spanishNote}) y ajusta la apertura al objetivo.`
+              : `Busca ${activeTargetNote.spanishNote} con la altura y ajusta palmas a ${activeTargetNote.targetDistanceCm} cm`}
           </span>
           <span className="font-mono font-bold text-cyan-600">
             {Math.round(holdProgress)}%
           </span>
         </div>
 
-        <SimpleStaffView
-          note={TREBLE_TRAINING_RANGE.find(note => note.id === activeTargetNote.noteName.toLowerCase()) ?? TREBLE_TRAINING_RANGE[0]}
-          figure={INSTRUMENT_FIGURES.find(figure => figure.name === activeTargetNote.figureName) ?? INSTRUMENT_FIGURES[2]}
-          isPlaying={isTargetMatched} theme={theme} />
+        {learningMode === 'guided' ? (
+          <GuidedStaffView
+            targetNote={targetScaleNote}
+            targetFigure={targetFigure}
+            currentNote={currentDetectedNote}
+            currentFigure={currentDetectedFigure}
+            matched={isTargetMatched}
+            theme={theme}
+          />
+        ) : (
+          <SimpleStaffView
+            note={targetScaleNote}
+            figure={targetFigure}
+            isPlaying={isTargetMatched}
+            theme={theme}
+          />
+        )}
         <p className="text-center text-lg text-slate-600 dark:text-slate-300">
           {activeTargetNote.durationBeats} {activeTargetNote.durationBeats === 1 ? 'pulso' : 'pulsos'} · Nota {noteStepIndex + 1} de {selectedGalleryItem.notes.length}
         </p>

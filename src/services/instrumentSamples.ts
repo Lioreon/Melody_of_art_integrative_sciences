@@ -2,18 +2,18 @@
  * @license
  * SPDX-License-Identifier: Apache-2.0
  *
- * External instrument samples are loaded on demand from the pinned
- * nbrosowsky/tonejs-instruments repository. The upstream code is MIT and
- * the samples are published as CC BY 3.0. See docs/AUDIO_SOURCES.md.
+ * External instrument samples are loaded on demand from pinned public
+ * repositories. See docs/AUDIO_SOURCES.md for provenance and licenses.
  */
 
-export type SampledInstrumentId = 'piano' | 'guitar' | 'violin';
+export type SampledInstrumentId = 'piano' | 'guitar' | 'violin' | 'violin_pizzicato';
 export type InstrumentTimbre = 'synth' | SampledInstrumentId;
 
 export interface InstrumentTimbreOption {
   id: InstrumentTimbre;
   label: string;
   description: string;
+  sourceLabel?: string;
 }
 
 export interface InstrumentSampleAnchor {
@@ -24,8 +24,12 @@ export interface InstrumentSampleAnchor {
 }
 
 const TONEJS_INSTRUMENTS_COMMIT = '622c2f1c32c8cfce4158ddc3eb26e518ddef37e5';
-const SAMPLE_ROOT =
+const TONEJS_SAMPLE_ROOT =
   `https://raw.githubusercontent.com/nbrosowsky/tonejs-instruments/${TONEJS_INSTRUMENTS_COMMIT}/samples`;
+
+const SSO_COMMIT = '32bbdb169aef636b8216029a2e056424ba7c2abb';
+const SSO_PIZZICATO_ROOT =
+  `https://raw.githubusercontent.com/peastman/sso/${SSO_COMMIT}/Sonatina%20Symphonic%20Orchestra/Samples/Violin%202`;
 
 export const INSTRUMENT_TIMBRE_OPTIONS: InstrumentTimbreOption[] = [
   {
@@ -37,16 +41,25 @@ export const INSTRUMENT_TIMBRE_OPTIONS: InstrumentTimbreOption[] = [
     id: 'piano',
     label: 'Piano',
     description: 'Muestras de piano acústico cargadas bajo demanda.',
+    sourceLabel: 'tonejs-instruments · CC BY 3.0',
   },
   {
     id: 'guitar',
     label: 'Guitarra nylon',
     description: 'Muestras de guitarra clásica cargadas bajo demanda.',
+    sourceLabel: 'tonejs-instruments · CC BY 3.0',
   },
   {
     id: 'violin',
-    label: 'Violín',
-    description: 'Muestras de violín cargadas bajo demanda.',
+    label: 'Violín · arco',
+    description: 'Violín sostenido con arco, cargado bajo demanda.',
+    sourceLabel: 'tonejs-instruments · CC BY 3.0',
+  },
+  {
+    id: 'violin_pizzicato',
+    label: 'Violín · pizzicato',
+    description: 'Violín pulsado con los dedos, cargado bajo demanda.',
+    sourceLabel: 'Sonatina Symphonic Orchestra · CC Sampling Plus 1.0',
   },
 ];
 
@@ -81,28 +94,51 @@ export function midiToFrequency(midi: number): number {
   return 440 * Math.pow(2, (midi - 69) / 12);
 }
 
-function anchor(instrument: SampledInstrumentId, folder: string, note: string): InstrumentSampleAnchor {
+function toneAnchor(
+  instrument: Exclude<SampledInstrumentId, 'violin_pizzicato'>,
+  folder: string,
+  note: string,
+): InstrumentSampleAnchor {
   return {
     instrument,
     note,
     frequency: midiToFrequency(noteNameToMidi(note)),
-    url: `${SAMPLE_ROOT}/${folder}/${note}.mp3`,
+    url: `${TONEJS_SAMPLE_ROOT}/${folder}/${note}.mp3`,
   };
 }
 
-// Sparse anchor sets keep initial/network cost low. Playback rate fills the
-// diatonic positions between anchors. All anchors cover Melody Motion's
-// current Sol3–Si5 body register without requiring a full SoundFont.
+function pizzicatoAnchor(note: string, fileStem: string): InstrumentSampleAnchor {
+  return {
+    instrument: 'violin_pizzicato',
+    note,
+    frequency: midiToFrequency(noteNameToMidi(note)),
+    url: `${SSO_PIZZICATO_ROOT}/violin_pizz_non_vib_${fileStem.toLowerCase()}.wav`,
+  };
+}
+
+// Sparse anchor sets keep initial/network cost low. Playback-rate transposition
+// fills positions between anchors. The pizzicato mapping follows the pitch
+// centers declared in SSO's "Violin Solo 1 Pizzicato.sfz".
 export const SAMPLE_ANCHORS: Record<SampledInstrumentId, InstrumentSampleAnchor[]> = {
   piano: ['G3', 'C4', 'E4', 'G4', 'C5', 'E5', 'G5', 'B5'].map((note) =>
-    anchor('piano', 'piano', note),
+    toneAnchor('piano', 'piano', note),
   ),
   guitar: ['G3', 'Cs4', 'E4', 'A4', 'D5', 'Fs5', 'A5', 'As5'].map((note) =>
-    anchor('guitar', 'guitar-nylon', note),
+    toneAnchor('guitar', 'guitar-nylon', note),
   ),
   violin: ['G3', 'C4', 'E4', 'G4', 'C5', 'E5', 'G5', 'A5', 'C6'].map((note) =>
-    anchor('violin', 'violin', note),
+    toneAnchor('violin', 'violin', note),
   ),
+  violin_pizzicato: [
+    pizzicatoAnchor('G3', 'G2'),
+    pizzicatoAnchor('C4', 'C3'),
+    pizzicatoAnchor('E4', 'E3'),
+    pizzicatoAnchor('G4', 'G3'),
+    pizzicatoAnchor('C5', 'C4'),
+    pizzicatoAnchor('E5', 'E4'),
+    pizzicatoAnchor('G5', 'G4'),
+    pizzicatoAnchor('B5', 'B4'),
+  ],
 };
 
 export function nearestInstrumentSample(
@@ -125,8 +161,16 @@ export function nearestInstrumentSample(
 }
 
 export const SAMPLE_SOURCE_INFO = {
-  repository: 'nbrosowsky/tonejs-instruments',
-  commit: TONEJS_INSTRUMENTS_COMMIT,
-  sampleLicense: 'CC BY 3.0',
-  codeLicense: 'MIT',
+  tonejs: {
+    repository: 'nbrosowsky/tonejs-instruments',
+    commit: TONEJS_INSTRUMENTS_COMMIT,
+    sampleLicense: 'CC BY 3.0',
+    codeLicense: 'MIT',
+  },
+  sonatinaPizzicato: {
+    repository: 'peastman/sso',
+    commit: SSO_COMMIT,
+    sampleLicense: 'Creative Commons Sampling Plus 1.0',
+    articulation: 'Solo Violin 1 Pizzicato (non-vibrato sample layer)',
+  },
 } as const;
