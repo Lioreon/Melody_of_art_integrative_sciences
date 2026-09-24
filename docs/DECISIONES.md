@@ -69,7 +69,7 @@ El commit `7eff8ee` consolidó:
 - Ritmo: aleatoriedad controlada y dificultad por relaciones musicales. La progresión usa vocabularios Inicial (Negra/Blanca), Intermedio (+ Corchea) y Amplio (+ Redonda); las secuencias se generan de forma reproducible y evitan repeticiones inmediatas.
 - Pentagrama: objetivo frente a estado actual, ayudas decrecientes y rango ampliado. El modo **Guiado** muestra META fija + TÚ móvil; el modo **Desafío** conserva una única meta visible.
 - El audio de Ritmo representa duración mediante un tono neutro activado por el usuario; no introduce altura como objetivo pedagógico del módulo.
-- Compás: acordeón corporal, canción sencilla, playhead y anticipación.
+- Compás: Nivel 1 = acordeón corporal con patrón 4/4, playhead, anticipación y pausa temporal ante pérdida de tracking. Nivel 2 = dirección experimental existente con partitura, cues y métricas.
 - Cámara: estados diferenciados para calibración, aprendizaje e interpretación.
 
 ## Investigación y población objetivo
@@ -105,3 +105,15 @@ No conservar código obsoleto en `main` únicamente por valor histórico.
 - evaluación de un rango tonal configurable;
 - arquitectura de audio reutilizable.
 
+
+
+## Compás v1 — regla temporal
+
+En Compás v1 el tiempo pedagógico depende de tracking válido:
+
+- con ambas manos presentes, el playhead avanza según BPM;
+- si se pierde una o ambas manos, el playhead se congela;
+- al recuperar seguimiento, la frase continúa desde el mismo punto;
+- la pérdida de tracking no registra error ni penalización.
+
+La primera capa integra únicamente `X = apertura → figura/duración` y `T = momento`. El eje `Y = altura → nota` queda para una etapa posterior.
