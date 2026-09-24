@@ -27,7 +27,7 @@ Mantener separadas las capas:
 
 La pérdida de tracking es incertidumbre perceptiva y no debe penalizarse como error del aprendiz.
 
-`GestureState` pertenece a percepción corporal. `OPEN_HAND`, `CLOSED_FIST` y `UNKNOWN` no equivalen directamente a acciones musicales.
+`GestureState` pertenece a percepción corporal. La equivalencia musical se aplica en una capa posterior mediante una gramática bimanual explícita; MediaPipe nunca decide por sí mismo que un gesto sea una nota, silencio o alteración.
 
 ## Arquitectura pedagógica
 
@@ -108,6 +108,23 @@ No conservar código obsoleto en `main` únicamente por valor histórico.
 - Colaboración A/B por marcadores permanece como investigación futura y no aparece como capacidad implementada.
 
 Ver [TRACKING_V2_SPEC.md](./TRACKING_V2_SPEC.md).
+
+## Gramática bimanual experimental
+
+Reglas actuales:
+
+- ambas manos abiertas → sonido natural;
+- ambos puños cerrados → silencio equivalente;
+- slot A cerrado + slot B abierto → sostenido ♯;
+- slot A abierto + slot B cerrado → bemol ♭.
+
+La distancia de centros de palma conserva la duración. Una figura y su silencio equivalente usan el mismo rango espacial.
+
+La clasificación OPEN/CLOSED usa información de fingertips y geometría de falanges, y se estabiliza durante varios frames antes de cambiar el estado musical.
+
+Limitación: los slots A/B siguen vinculados al orden espacial del tracker. No se consideran todavía identidades anatómicas permanentes. T5 deberá resolver identidad estable antes de fijar semántica corporal izquierda/derecha definitiva.
+
+Marcadores de color y simulador no contienen landmarks de dedos y conservan únicamente la semántica posicional natural.
 
 ## Próximos experimentos técnicos
 
