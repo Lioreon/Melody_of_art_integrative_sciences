@@ -13,6 +13,7 @@ export interface InstrumentTimbreOption {
   id: InstrumentTimbre;
   label: string;
   description: string;
+  sourceLabel?: string;
 }
 
 export interface InstrumentSampleAnchor {
@@ -40,21 +41,25 @@ export const INSTRUMENT_TIMBRE_OPTIONS: InstrumentTimbreOption[] = [
     id: 'piano',
     label: 'Piano',
     description: 'Muestras de piano acústico cargadas bajo demanda.',
+    sourceLabel: 'tonejs-instruments · CC BY 3.0',
   },
   {
     id: 'guitar',
     label: 'Guitarra nylon',
     description: 'Muestras de guitarra clásica cargadas bajo demanda.',
+    sourceLabel: 'tonejs-instruments · CC BY 3.0',
   },
   {
     id: 'violin',
     label: 'Violín · arco',
     description: 'Violín sostenido con arco, cargado bajo demanda.',
+    sourceLabel: 'tonejs-instruments · CC BY 3.0',
   },
   {
     id: 'violin_pizzicato',
     label: 'Violín · pizzicato',
     description: 'Violín pulsado con los dedos, cargado bajo demanda.',
+    sourceLabel: 'Sonatina Symphonic Orchestra · CC Sampling Plus 1.0',
   },
 ];
 
