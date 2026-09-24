@@ -50,6 +50,20 @@ export function evaluateRhythmTarget(
   if (detected.id === target.id && inTargetRange) {
     return { status: 'correct', feedback: 'Correcto. Mantén esa posición.' };
   }
+
+  if (
+    inTargetRange
+    && detected.durationBeats === target.durationBeats
+    && detected.type !== target.type
+  ) {
+    return {
+      status: 'incorrect',
+      feedback: target.type === 'rest'
+        ? 'Mantén la misma distancia y cierra ambos puños para convertirla en silencio.'
+        : 'Mantén la misma distancia y abre ambas manos para convertirla en figura sonora.',
+    };
+  }
+
   return {
     status: 'incorrect',
     feedback: distanceCm < target.targetDistanceMinCm
@@ -79,6 +93,19 @@ export function getRhythmVocabulary(
   return vocabulary;
 }
 
+
+export function getRhythmSoundSilenceVocabulary(
+  figures: MusicalFigure[],
+  difficulty: RhythmDifficulty,
+): MusicalFigure[] {
+  const noteVocabulary = getRhythmVocabulary(figures, difficulty);
+  const durations = new Set(noteVocabulary.map((figure) => figure.durationBeats));
+  const rests = figures.filter(
+    (figure) => figure.type === 'rest' && durations.has(figure.durationBeats),
+  );
+  return [...noteVocabulary, ...rests];
+}
+
 function nextRandom(seed: number): { value: number; nextSeed: number } {
   // LCG determinista: suficiente para generar retos reproducibles, no para criptografía.
   const normalizedSeed = Number.isFinite(seed) ? Math.trunc(seed) >>> 0 : 1;
@@ -93,6 +120,22 @@ export function pickRhythmTarget(
   avoidId?: string,
 ): RhythmPick {
   const vocabulary = getRhythmVocabulary(figures, difficulty);
+  const filtered = vocabulary.length > 1 && avoidId
+    ? vocabulary.filter((figure) => figure.id !== avoidId)
+    : vocabulary;
+  const random = nextRandom(seed);
+  const index = Math.min(filtered.length - 1, Math.floor(random.value * filtered.length));
+  return { figure: filtered[index], nextSeed: random.nextSeed };
+}
+
+
+export function pickRhythmSoundSilenceTarget(
+  figures: MusicalFigure[],
+  difficulty: RhythmDifficulty,
+  seed: number,
+  avoidId?: string,
+): RhythmPick {
+  const vocabulary = getRhythmSoundSilenceVocabulary(figures, difficulty);
   const filtered = vocabulary.length > 1 && avoidId
     ? vocabulary.filter((figure) => figure.id !== avoidId)
     : vocabulary;
