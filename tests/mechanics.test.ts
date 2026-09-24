@@ -19,6 +19,7 @@ import { midiToFrequency, nearestInstrumentSample, noteNameToMidi } from '../src
 import { beatDurationMs, buildCompasTimeline, compasGuidance, COMPAS_PATTERNS, getCompasFrame } from '../src/services/compasAccordion';
 import { TrackingDiagnosticsRecorder } from '../src/services/trackingDiagnostics';
 import { palmDataFromLandmarks } from '../src/services/handObservation';
+import { GestureStateStabilizer } from '../src/services/gestureStability';
 import { analyzeHandGeometry } from '../src/services/handGeometry';
 import {
   applyAccidentalToFrequency,
@@ -403,4 +404,33 @@ test('rhythm feedback distinguishes a rest from its sounding equivalent at the s
   const result = evaluateRhythmTarget(rest, note, true, rest.targetDistanceIdealCm);
   assert.equal(result.status, 'incorrect');
   assert.match(result.feedback, /cierra ambos puños/);
+});
+
+
+test('gesture stabilization requires consecutive frames before changing musical state', () => {
+  const stabilizer = new GestureStateStabilizer(3, 5);
+  assert.equal(stabilizer.update('OPEN_HAND'), 'UNKNOWN');
+  assert.equal(stabilizer.update('OPEN_HAND'), 'UNKNOWN');
+  assert.equal(stabilizer.update('OPEN_HAND'), 'OPEN_HAND');
+  assert.equal(stabilizer.update('CLOSED_FIST'), 'OPEN_HAND');
+  assert.equal(stabilizer.update('CLOSED_FIST'), 'OPEN_HAND');
+  assert.equal(stabilizer.update('CLOSED_FIST'), 'CLOSED_FIST');
+  assert.equal(stabilizer.update('UNKNOWN'), 'CLOSED_FIST');
+});
+
+test('Compás includes a complete sound-rest pattern using the same spatial durations', () => {
+  const pattern = COMPAS_PATTERNS.find((candidate) => candidate.id === 'sonido_silencio');
+  assert.ok(pattern);
+  const timeline = buildCompasTimeline(pattern, MUSICAL_FIGURES);
+  assert.deepEqual(
+    timeline.map((step) => step.figure.id),
+    ['negra', 'silencio_negra', 'negra', 'silencio_negra'],
+  );
+  assert.equal(timeline[timeline.length - 1].endBeat, 4);
+
+  const note = MUSICAL_FIGURES.find((figure) => figure.id === 'negra')!;
+  const rest = MUSICAL_FIGURES.find((figure) => figure.id === 'silencio_negra')!;
+  const restMismatch = compasGuidance(rest, note, true, rest.targetDistanceIdealCm);
+  assert.equal(restMismatch.status, 'adjust');
+  assert.match(restMismatch.feedback, /cierra ambos puños/);
 });
