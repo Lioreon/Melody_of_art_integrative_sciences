@@ -16,6 +16,7 @@ import {
 } from '../src/services/rhythmEvaluation';
 import { MUSICAL_FIGURES } from '../src/data/scorePresets';
 import { midiToFrequency, nearestInstrumentSample, noteNameToMidi } from '../src/services/instrumentSamples';
+import { beatDurationMs, buildCompasTimeline, compasGuidance, COMPAS_PATTERNS, getCompasFrame } from '../src/services/compasAccordion';
 
 test('hold uses elapsed time, completes once and resets when tracking is lost', () => {
   const timer = new HoldTimer();
@@ -197,4 +198,44 @@ test('sampled timbres choose nearby anchors across the Melody Motion register', 
   assert.equal(nearestInstrumentSample('violin_pizzicato', 987.77).note, 'B5');
   assert.match(nearestInstrumentSample('violin_pizzicato', 440).url, /peastman\/sso/);
   assert.match(nearestInstrumentSample('violin_pizzicato', 440).url, /violin_pizz_non_vib_/);
+});
+
+
+test('Compás body-accordion patterns resolve to complete 4/4 timelines', () => {
+  for (const pattern of COMPAS_PATTERNS) {
+    const timeline = buildCompasTimeline(pattern, MUSICAL_FIGURES);
+    assert.equal(timeline[0].startBeat, 0);
+    assert.equal(timeline[timeline.length - 1].endBeat, 4);
+  }
+});
+
+test('Compás playhead exposes current, next and progress without skipping steps', () => {
+  const timeline = buildCompasTimeline(COMPAS_PATTERNS[0], MUSICAL_FIGURES);
+  const start = getCompasFrame(timeline, 0);
+  assert.equal(start.currentStep.figure.id, 'negra');
+  assert.equal(start.nextStep?.figure.id, 'negra');
+  assert.equal(start.currentIndex, 0);
+  assert.equal(start.patternProgress, 0);
+
+  const middle = getCompasFrame(timeline, 2.5);
+  assert.equal(middle.currentStep.figure.id, 'blanca');
+  assert.equal(middle.currentIndex, 2);
+  assert.ok(middle.stepProgress > 0 && middle.stepProgress < 1);
+
+  const end = getCompasFrame(timeline, 4);
+  assert.equal(end.complete, true);
+  assert.equal(end.patternProgress, 1);
+});
+
+test('Compás timing uses BPM and tracking uncertainty never becomes learner error', () => {
+  assert.equal(beatDurationMs(60), 1000);
+  assert.equal(beatDurationMs(120), 500);
+
+  const target = rhythmFigures.find((figure) => figure.id === 'negra')!;
+  const aligned = compasGuidance(target, target, true, target.targetDistanceIdealCm);
+  assert.equal(aligned.status, 'aligned');
+
+  const paused = compasGuidance(target, undefined, false, 0);
+  assert.equal(paused.status, 'tracking-paused');
+  assert.match(paused.feedback, /espera/);
 });
