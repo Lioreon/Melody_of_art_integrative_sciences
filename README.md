@@ -105,7 +105,7 @@ La geometría de mano OPEN/CLOSED se mantiene disponible como información perce
 
 ## Timbres de instrumento
 
-Los módulos **Instrumento** y **Pentagrama** comparten el sintetizador Web Audio interno o timbres muestreados de **piano, guitarra nylon, violín con arco y violín pizzicato**. El timbre seleccionado se mantiene al cambiar entre ambos módulos durante la sesión. Las muestras se cargan bajo demanda desde fuentes públicas fijadas a commits concretos; cada una conserva su atribución y licencia. Si la carga externa falla, Melody Motion vuelve al sintetizador interno. Consulte [docs/AUDIO_SOURCES.md](docs/AUDIO_SOURCES.md).
+Los módulos **Instrumento** y **Pentagrama** comparten el sintetizador Web Audio interno o timbres muestreados de **piano, guitarra nylon, violín con arco y violín pizzicato**. El timbre seleccionado se conserva al cambiar de módulo y también después de recargar la aplicación en el mismo dispositivo. La opción **Respuesta sonora al mover las manos** utiliza la misma persistencia local: una vez activada permanece activa hasta que el usuario la desactive explícitamente. Las muestras se cargan bajo demanda desde fuentes públicas fijadas a commits concretos; cada una conserva su atribución y licencia. Si la carga externa falla, Melody Motion vuelve al sintetizador interno. Consulte [docs/AUDIO_SOURCES.md](docs/AUDIO_SOURCES.md).
 
 Pentagrama mantiene los submódulos validados **Guiado · dos notas** y **Desafío · una meta**. Ritmo conserva Exploración, Una figura y Secuencia variable. Compás mantiene los patrones posicionales validados; las reglas de silencio y alteraciones permanecen como investigación futura.
 
