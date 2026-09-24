@@ -11,15 +11,23 @@ interface InstrumentPanelProps {
   theme: AppTheme;
   timbre: InstrumentTimbre;
   onTimbreChange: (timbre: InstrumentTimbre) => void;
+  liveSoundFeedback: boolean;
+  onLiveSoundFeedbackChange: (enabled: boolean) => void;
 }
 
-export function InstrumentPanel({ palmState, theme, timbre, onTimbreChange }: InstrumentPanelProps) {
+export function InstrumentPanel({
+  palmState,
+  theme,
+  timbre,
+  onTimbreChange,
+  liveSoundFeedback,
+  onLiveSoundFeedbackChange,
+}: InstrumentPanelProps) {
   const [bpm, setBpm] = useState(120);
   const [note, setNote] = useState(TREBLE_TRAINING_RANGE.find((item) => item.id === 'sol4') ?? TREBLE_TRAINING_RANGE[0]);
   const [figure, setFigure] = useState(MUSICAL_FIGURES[2]);
   const [range, setRange] = useState({ top: DEFAULT_PITCH_Y_MIN, bottom: DEFAULT_PITCH_Y_MAX, close: 15, far: 85 });
   const [playing, setPlaying] = useState(false);
-  const [liveSoundFeedback, setLiveSoundFeedback] = useState(false);
   const [progress, setProgress] = useState(0);
   const frame = useRef<number | null>(null);
   const playingRef = useRef(false);
@@ -96,11 +104,16 @@ export function InstrumentPanel({ palmState, theme, timbre, onTimbreChange }: In
             type="checkbox"
             checked={liveSoundFeedback}
             onChange={(event) => {
-              setLiveSoundFeedback(event.target.checked);
+              onLiveSoundFeedbackChange(event.target.checked);
               lastFeedbackNoteRef.current = null;
             }}
           />
-          <span>Respuesta sonora al mover las manos</span>
+          <span>
+            Respuesta sonora al mover las manos
+            <span className="mt-0.5 block text-[10px] font-normal text-slate-500">
+              Se conserva en este dispositivo hasta que la desactives.
+            </span>
+          </span>
         </label>
       </div>
 
