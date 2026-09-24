@@ -4,8 +4,17 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
-import { DualPalmState, ScoreCue, AppTheme } from '../types';
+import { DualPalmState, ScoreCue, AppTheme, TrackingDiagnostics } from '../types';
 import { AlertCircle, Sliders, RotateCw, FlipHorizontal, ChevronDown, ChevronUp } from 'lucide-react';
+
+const HAND_CONNECTIONS: Array<[number, number]> = [
+  [0, 1], [1, 2], [2, 3], [3, 4],
+  [0, 5], [5, 6], [6, 7], [7, 8],
+  [5, 9], [9, 10], [10, 11], [11, 12],
+  [9, 13], [13, 14], [14, 15], [15, 16],
+  [13, 17], [17, 18], [18, 19], [19, 20],
+  [0, 17],
+];
 
 interface CameraViewProps {
   palmState: DualPalmState;
@@ -17,6 +26,7 @@ interface CameraViewProps {
   onSimulatedPositionChange?: (yNorm: number, distCm: number) => void;
   onToggleSimulation: () => void;
   cameraError: boolean;
+  diagnostics: TrackingDiagnostics;
   theme?: AppTheme;
 }
 
@@ -30,6 +40,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
   onSimulatedPositionChange,
   onToggleSimulation,
   cameraError,
+  diagnostics,
   theme = 'dark_cyan',
 }) => {
   const isWhite = theme === 'white';
@@ -39,6 +50,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
   const [rotationDeg, setRotationDeg] = useState<number>(0);
   const [isMirrored, setIsMirrored] = useState<boolean>(true);
   const [showAdvancedSettings, setShowAdvancedSettings] = useState<boolean>(false);
+  const [showHandSkeleton, setShowHandSkeleton] = useState<boolean>(false);
 
   const handleRotate = () => {
     setRotationDeg((prev) => (prev + 90) % 360);
@@ -63,6 +75,32 @@ export const CameraView: React.FC<CameraViewProps> = ({
     ctx.clearRect(0, 0, width, height);
 
     const { leftPalm, rightPalm, distanceCm } = palmState;
+
+    if (showHandSkeleton) {
+      for (const palm of [leftPalm, rightPalm]) {
+        const landmarks = palm?.landmarks;
+        if (!landmarks || landmarks.length < 21) continue;
+
+        ctx.strokeStyle = 'rgba(34, 211, 238, 0.72)';
+        ctx.lineWidth = 1.4;
+        for (const [from, to] of HAND_CONNECTIONS) {
+          const a = landmarks[from];
+          const b = landmarks[to];
+          ctx.beginPath();
+          ctx.moveTo(a.x * width, a.y * height);
+          ctx.lineTo(b.x * width, b.y * height);
+          ctx.stroke();
+        }
+
+        for (let index = 0; index < landmarks.length; index += 1) {
+          const point = landmarks[index];
+          ctx.beginPath();
+          ctx.arc(point.x * width, point.y * height, index % 4 === 0 ? 3.2 : 2.2, 0, Math.PI * 2);
+          ctx.fillStyle = index % 4 === 0 ? '#f4c95d' : '#67e8f9';
+          ctx.fill();
+        }
+      }
+    }
 
     if (leftPalm && rightPalm) {
       const lx = leftPalm.center.x * width;
@@ -133,7 +171,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
       ctx.textBaseline = 'middle';
       ctx.fillText(`${distanceCm} u.`, centerX, centerY - 20);
     }
-  }, [palmState, activeCue]);
+  }, [palmState, activeCue, showHandSkeleton]);
 
   return (
     <div className="overflow-hidden rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface)] shadow-[var(--ui-shadow)] transition-colors">
@@ -269,6 +307,47 @@ export const CameraView: React.FC<CameraViewProps> = ({
 
           {showAdvancedSettings && (
             <div className="pt-3 space-y-3">
+              {!isSimulation && (
+                <div className="rounded-xl border border-slate-200 p-3 text-xs dark:border-slate-800">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                      <div className="font-semibold text-slate-700 dark:text-slate-200">Diagnóstico de tracking · T0</div>
+                      <div className="mt-0.5 text-[11px] text-slate-500">
+                        Métricas locales de la sesión; no se guarda video.
+                      </div>
+                    </div>
+                    {diagnostics.backend === 'mediapipe-hands' && (
+                      <label className="flex items-center gap-2 text-[11px] text-slate-500">
+                        <input
+                          type="checkbox"
+                          checked={showHandSkeleton}
+                          onChange={(event) => setShowHandSkeleton(event.target.checked)}
+                        />
+                        Mostrar 21 landmarks
+                      </label>
+                    )}
+                  </div>
+
+                  <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 sm:grid-cols-4">
+                    <div><span className="block text-slate-400">Backend</span><strong>{diagnostics.backend}</strong></div>
+                    <div><span className="block text-slate-400">FPS</span><strong>{diagnostics.fps.toFixed(1)}</strong></div>
+                    <div><span className="block text-slate-400">ms/frame</span><strong>{diagnostics.avgFrameIntervalMs.toFixed(1)}</strong></div>
+                    <div><span className="block text-slate-400">Inferencia</span><strong>{diagnostics.avgProcessingMs === null ? 'n/d' : `${diagnostics.avgProcessingMs.toFixed(1)} ms`}</strong></div>
+                    <div><span className="block text-slate-400">Jitter aprox.</span><strong>{diagnostics.jitterPx.toFixed(1)} px</strong></div>
+                    <div><span className="block text-slate-400">Confianza</span><strong>{diagnostics.confidence === null ? 'n/d' : `${Math.round(diagnostics.confidence * 100)}%`}</strong></div>
+                    <div><span className="block text-slate-400">2 puntos</span><strong>{diagnostics.totalFrames === 0 ? '0%' : `${Math.round((diagnostics.twoPointFrames / diagnostics.totalFrames) * 100)}%`}</strong></div>
+                    <div><span className="block text-slate-400">Recuperaciones</span><strong>{diagnostics.recoveryCount}</strong></div>
+                  </div>
+
+                  {diagnostics.backend === 'mediapipe-hands' && (
+                    <div className="mt-2 text-[11px] text-slate-500">
+                      Landmarks persistentes: {diagnostics.landmarkCount1} + {diagnostics.landmarkCount2}.
+                      {' '}Identidad anatómica todavía no reemplaza el orden espacial.
+                    </div>
+                  )}
+                </div>
+              )}
+
               {/* Camera Orientation buttons */}
               {!isSimulation && (
                 <div className="flex items-center gap-2">
