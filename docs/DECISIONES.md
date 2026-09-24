@@ -64,10 +64,10 @@ El commit `7eff8ee` consolidó:
 
 ## Dirección posterior a Phase 2
 
-- Audio transversal: evento pedagógico → intención sonora → motor de audio → timbre.
+- Audio transversal: evento pedagógico → intención sonora → motor de audio → timbre/articulación. Violín con arco y violín pizzicato se modelan como voces distintas.
 - Instrumento: respuesta sonora inmediata y rango tonal configurable.
 - Ritmo: aleatoriedad controlada y dificultad por relaciones musicales.
-- Pentagrama: objetivo frente a estado actual, ayudas decrecientes y rango ampliado.
+- Pentagrama: objetivo frente a estado actual, ayudas decrecientes y rango ampliado. El modo **Guiado** muestra META fija + TÚ móvil; el modo **Desafío** conserva una única meta visible.
 - Compás: acordeón corporal, canción sencilla, playhead y anticipación.
 - Cámara: estados diferenciados para calibración, aprendizaje e interpretación.
 
