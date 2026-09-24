@@ -42,14 +42,9 @@ const LEARNING_AREAS = [
 
 const PROJECT_STORIES = [
   {
-    eyebrow: 'Proyecto educativo',
-    title: 'Aprender música desde el movimiento',
-    description: 'Una experiencia pedagógica que relaciona cuerpo, sonido, representación y tiempo.',
-  },
-  {
     eyebrow: 'Melody Motion',
-    title: 'Cuatro áreas, una misma metodología',
-    description: 'Instrumento · Ritmo · Pentagrama · Compás dentro de una interfaz responsiva.',
+    title: 'Instrumento · Ritmo · Pentagrama · Compás',
+    description: 'Cuatro áreas de aprendizaje dentro de una misma interfaz responsiva.',
   },
   {
     eyebrow: 'Diseño y desarrollo',
@@ -59,12 +54,12 @@ const PROJECT_STORIES = [
   {
     eyebrow: 'Territorio',
     title: 'Salinas · Bolívar · Ecuador',
-    description: 'Una herramienta desarrollada para su exploración pedagógica en la Escuela de Música Matiaví.',
+    description: 'Desarrollado para su exploración pedagógica en la Escuela de Música Matiaví.',
   },
   {
-    eyebrow: 'Mensaje pedagógico',
-    title: 'Mover · escuchar · reconocer · anticipar',
-    description: 'Distintas formas de entrar a la música desde una misma experiencia de aprendizaje.',
+    eyebrow: 'Estado del proyecto',
+    title: 'Primera fase demostrativa · 2026',
+    description: 'Herramienta educativa en desarrollo y validación progresiva.',
   },
 ] as const;
 
