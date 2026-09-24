@@ -243,7 +243,7 @@ export const CompasAccordionView: React.FC<CompasAccordionViewProps> = ({
                     isCurrent
                       ? 'bg-cyan-500/10'
                       : isPast
-                      ? 'bg-emerald-500/8'
+                      ? 'bg-emerald-500/10'
                       : ''
                   }`}
                 >
