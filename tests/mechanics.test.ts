@@ -17,6 +17,8 @@ import {
 import { MUSICAL_FIGURES } from '../src/data/scorePresets';
 import { midiToFrequency, nearestInstrumentSample, noteNameToMidi } from '../src/services/instrumentSamples';
 import { beatDurationMs, buildCompasTimeline, compasGuidance, COMPAS_PATTERNS, getCompasFrame } from '../src/services/compasAccordion';
+import { TrackingDiagnosticsRecorder } from '../src/services/trackingDiagnostics';
+import { palmDataFromLandmarks } from '../src/services/handObservation';
 
 test('hold uses elapsed time, completes once and resets when tracking is lost', () => {
   const timer = new HoldTimer();
@@ -238,4 +240,69 @@ test('Compás timing uses BPM and tracking uncertainty never becomes learner err
   const paused = compasGuidance(target, undefined, false, 0);
   assert.equal(paused.status, 'tracking-paused');
   assert.match(paused.feedback, /espera/);
+});
+
+
+test('Tracking v2 diagnostics record availability, recovery, confidence and landmarks', () => {
+  const recorder = new TrackingDiagnosticsRecorder();
+
+  const missing = trackingState(null, null, 640, 480, 1000);
+  recorder.record(missing, 'mediapipe-hands', 640, 480);
+  recorder.recordProcessing(12);
+
+  const left = palmAt({ x: 0.3, y: 0.5 });
+  const right = palmAt({ x: 0.7, y: 0.5 });
+  left.confidence = 0.9;
+  right.confidence = 0.8;
+  left.landmarks = Array.from({ length: 21 }, (_, index) => ({ x: index / 100, y: 0.5 }));
+  right.landmarks = Array.from({ length: 21 }, (_, index) => ({ x: 0.5 + index / 100, y: 0.5 }));
+
+  const tracked = trackingState(left, right, 640, 480, 1033);
+  recorder.record(tracked, 'mediapipe-hands', 640, 480);
+  recorder.recordProcessing(14);
+
+  const snapshot = recorder.snapshot(tracked);
+  assert.equal(snapshot.backend, 'mediapipe-hands');
+  assert.equal(snapshot.totalFrames, 2);
+  assert.equal(snapshot.zeroPointFrames, 1);
+  assert.equal(snapshot.twoPointFrames, 1);
+  assert.equal(snapshot.recoveryCount, 1);
+  assert.equal(snapshot.landmarkCount1, 21);
+  assert.equal(snapshot.landmarkCount2, 21);
+  assert.ok(snapshot.confidence !== null && snapshot.confidence > 0.84 && snapshot.confidence < 0.86);
+  assert.equal(snapshot.avgProcessingMs, 13);
+  assert.ok(snapshot.fps > 30 && snapshot.fps < 31);
+});
+
+test('Tracking v2 diagnostics reset when perception backend changes', () => {
+  const recorder = new TrackingDiagnosticsRecorder();
+  const state = trackingState(palmAt({ x: 0.2, y: 0.5 }), palmAt({ x: 0.8, y: 0.5 }), 640, 480, 1000);
+  recorder.record(state, 'mediapipe-hands', 640, 480);
+  recorder.record(state, 'color-markers', 640, 480);
+  const snapshot = recorder.snapshot(state);
+  assert.equal(snapshot.backend, 'color-markers');
+  assert.equal(snapshot.totalFrames, 1);
+  assert.equal(snapshot.confidence, null);
+});
+
+
+test('Tracking v2 T1 persists all 21 landmarks with handedness and confidence', () => {
+  const landmarks = Array.from({ length: 21 }, (_, index) => ({
+    x: 0.1 + index * 0.01,
+    y: 0.2 + index * 0.005,
+    z: -index * 0.001,
+  }));
+  const palm = palmDataFromLandmarks(landmarks, { label: 'Right', score: 0.92 });
+  assert.ok(palm);
+  assert.equal(palm.landmarks?.length, 21);
+  assert.equal(palm.handedness, 'Right');
+  assert.equal(palm.confidence, 0.92);
+  assert.deepEqual(palm.wrist, landmarks[0]);
+  assert.deepEqual(palm.indexMcp, landmarks[5]);
+  assert.deepEqual(palm.pinkyMcp, landmarks[17]);
+});
+
+test('Tracking v2 T1 rejects incomplete landmark frames', () => {
+  const incomplete = Array.from({ length: 20 }, () => ({ x: 0.4, y: 0.4 }));
+  assert.equal(palmDataFromLandmarks(incomplete, { label: 'Left', score: 0.9 }), null);
 });

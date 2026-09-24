@@ -7,7 +7,7 @@ import React, { useState, useEffect, useRef, useCallback, lazy, Suspense } from 
 import { InstrumentPanel } from './components/InstrumentPanel';
 import { VideoSourceSelector } from './components/VideoSourceSelector';
 import { trackingState, SEPARATION_SCALE } from './services/trackingGeometry';
-import type { TrackingModeType } from './types';
+import type { TrackingDiagnostics, TrackingModeType } from './types';
 import { Header } from './components/Header';
 import { CameraView } from './components/CameraView';
 import { ScoreVisualizer } from './components/ScoreVisualizer';
@@ -73,6 +73,23 @@ export default function App() {
   const [cameraMessage, setCameraMessage] = useState('');
   const [cameraBusy, setCameraBusy] = useState(false);
   const [cameraListRevision, setCameraListRevision] = useState(0);
+  const [trackingDiagnostics, setTrackingDiagnostics] = useState<TrackingDiagnostics>({
+    backend: 'simulation',
+    fps: 0,
+    avgFrameIntervalMs: 0,
+    avgProcessingMs: null,
+    jitterPx: 0,
+    confidence: null,
+    totalFrames: 0,
+    zeroPointFrames: 0,
+    onePointFrames: 0,
+    twoPointFrames: 0,
+    recoveryCount: 0,
+    marker1Present: false,
+    marker2Present: false,
+    landmarkCount1: 0,
+    landmarkCount2: 0,
+  });
 
   // Score & Training Selection
   const [selectedPiece, setSelectedPiece] = useState<ScorePiece>(SCORE_PIECES[0]);
@@ -133,6 +150,14 @@ export default function App() {
     if (isSimulation) handTrackerRef.current?.enableSimulationMode(setPalmState);
   }, [isSimulation]);
   useEffect(() => { handTrackerRef.current?.colors.setConfig(colors); }, [colors]);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      const tracker = handTrackerRef.current;
+      if (tracker) setTrackingDiagnostics(tracker.getDiagnostics());
+    }, 500);
+    return () => window.clearInterval(timer);
+  }, []);
   const handleStopCamera = useCallback(() => {
     cameraRequestRef.current++;
     handTrackerRef.current?.stop();
@@ -438,30 +463,31 @@ export default function App() {
               onSimulatedPositionChange={handleSimulatedPositionChange}
               onToggleSimulation={handleToggleSimulation}
               cameraError={cameraError}
+              diagnostics={trackingDiagnostics}
               theme={theme}
             />
 
             <details className="rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-4 text-sm shadow-[var(--ui-shadow)]">
-              <summary className="cursor-pointer">Seguimiento y colores</summary>
+              <summary className="cursor-pointer">Seguimiento y calibración</summary>
               <div className="pt-4 space-y-3">
                 <label className="block">Modo de detección
                   <select aria-label="Modo de detección" className="ml-3 rounded border p-2 bg-white text-slate-800" value={trackingMode}
                     onChange={e => setTrackingMode(e.target.value as TrackingModeType)}>
-                    <option value="hands">Manos libres</option><option value="colored_balls">Pelotas de colores</option>
+                    <option value="hands">Manos libres</option><option value="colored_balls">Marcadores de color</option>
                   </select>
                 </label>
                 {trackingMode === 'colored_balls' && <>
                   <div className="flex gap-4">
-                    <label>Pelota 1 <input aria-label="Color de pelota 1" type="color" value={colors.color1Hex}
+                    <label>Marcador A <input aria-label="Color del marcador A" type="color" value={colors.color1Hex}
                       onChange={e => setColors(c => ({ ...c, color1Hex: e.target.value }))} /></label>
-                    <label>Pelota 2 <input aria-label="Color de pelota 2" type="color" value={colors.color2Hex}
+                    <label>Marcador B <input aria-label="Color del marcador B" type="color" value={colors.color2Hex}
                       onChange={e => setColors(c => ({ ...c, color2Hex: e.target.value }))} /></label>
                   </div>
                   <label className="block">Tolerancia de color: {colors.tolerance}
                     <input className="block w-full" aria-label="Tolerancia de color" type="range" min="20" max="90" value={colors.tolerance}
                       onChange={e => setColors(c => ({ ...c, tolerance: Number(e.target.value) }))} />
                   </label>
-                  <p className="text-xs">Usa colores saturados y distintos, con luz uniforme y un fondo de otro color.</p>
+                  <p className="text-xs">Usa dos referencias cromáticas saturadas y distintas. Pueden ser objetos, tarjetas, adhesivos o marcadores visibles; no tienen que ser pelotas.</p>
                 </>}
                 <p className="text-xs text-slate-500">La cámara se procesa en este equipo. La apertura usa unidades relativas; las referencias heredadas en cm son aproximaciones.</p>
               </div>

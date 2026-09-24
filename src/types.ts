@@ -18,6 +18,9 @@ export interface PalmData {
   wrist: HandPoint;
   indexMcp: HandPoint;
   pinkyMcp: HandPoint;
+  landmarks?: HandPoint[];
+  handedness?: 'Left' | 'Right' | 'Unknown';
+  confidence?: number;
   bbox?: { x: number; y: number; width: number; height: number };
 }
 
@@ -173,9 +176,19 @@ export interface RangeCalibration {
 }
 
 export interface TrackingDiagnostics {
+  backend: 'simulation' | 'mediapipe-hands' | 'color-markers';
   fps: number;
+  avgFrameIntervalMs: number;
+  avgProcessingMs: number | null;
   jitterPx: number;
-  confidence: number;
+  confidence: number | null;
+  totalFrames: number;
+  zeroPointFrames: number;
+  onePointFrames: number;
+  twoPointFrames: number;
+  recoveryCount: number;
   marker1Present: boolean;
   marker2Present: boolean;
+  landmarkCount1: number;
+  landmarkCount2: number;
 }
