@@ -81,7 +81,7 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </div>
 
-          <div className="grid gap-2 sm:grid-cols-2 lg:flex lg:items-stretch">
+          <div className="hidden gap-2 sm:grid sm:grid-cols-2 lg:flex lg:items-stretch">
             <section className="rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface-muted)] px-3 py-2 lg:min-w-[235px]">
               <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[var(--ui-gold)]">
                 Proyecto pedagógico para
@@ -136,8 +136,8 @@ export const Header: React.FC<HeaderProps> = ({
           </nav>
 
           <div className="flex items-center justify-between gap-2 lg:justify-end">
-            <div className="text-[10px] leading-tight text-[var(--ui-text-muted)] lg:hidden">
-              <span className="font-semibold text-[var(--ui-jade)]">Matiaví · Salinas</span>
+            <div className="min-w-0 truncate text-[10px] leading-tight text-[var(--ui-text-muted)] lg:hidden">
+              <span className="font-semibold text-[var(--ui-jade)]">Escuela de Música Matiaví · Salinas</span>
               <span className="mx-1.5">·</span>
               <span>A. Owsky</span>
             </div>
