@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { nearestInstrumentSample, type InstrumentTimbre, type SampledInstrumentId } from './instrumentSamples';
+
 class AudioSynthesizer {
   private ctx: AudioContext | null = null;
   private isMuted: boolean = false;
@@ -12,6 +14,8 @@ class AudioSynthesizer {
   private stringFilter: BiquadFilterNode | null = null;
   private stringGain: GainNode | null = null;
   private isOrchestraPlaying: boolean = false;
+  private sampleBuffers = new Map<string, AudioBuffer>();
+  private sampleLoads = new Map<string, Promise<AudioBuffer | null>>();
 
   constructor() {
     // Lazy init context on first user interaction
@@ -40,6 +44,97 @@ class AudioSynthesizer {
 
   public getMuted(): boolean {
     return this.isMuted;
+  }
+
+
+  private async loadSample(url: string): Promise<AudioBuffer | null> {
+    this.initContext();
+    if (!this.ctx) return null;
+
+    const cached = this.sampleBuffers.get(url);
+    if (cached) return cached;
+
+    const pending = this.sampleLoads.get(url);
+    if (pending) return pending;
+
+    const load = fetch(url)
+      .then((response) => {
+        if (!response.ok) throw new Error(`Sample request failed: ${response.status}`);
+        return response.arrayBuffer();
+      })
+      .then((bytes) => this.ctx!.decodeAudioData(bytes.slice(0)))
+      .then((buffer) => {
+        this.sampleBuffers.set(url, buffer);
+        return buffer;
+      })
+      .catch(() => null)
+      .finally(() => {
+        this.sampleLoads.delete(url);
+      });
+
+    this.sampleLoads.set(url, load);
+    return load;
+  }
+
+  public async preloadInstrument(instrument: SampledInstrumentId, aroundFrequency = 440): Promise<boolean> {
+    const sample = nearestInstrumentSample(instrument, aroundFrequency);
+    return Boolean(await this.loadSample(sample.url));
+  }
+
+  /**
+   * Reproduce una nota con el timbre elegido. Las muestras se cargan de forma
+   * perezosa y, si la red o el decodificador fallan, se conserva el sintetizador
+   * interno como fallback para no romper la experiencia pedagógica.
+   */
+  public async playInstrumentNote(
+    freq: number,
+    durationSec = 0.5,
+    timbre: InstrumentTimbre = 'synth',
+  ): Promise<'sample' | 'synth' | 'muted'> {
+    if (this.isMuted) return 'muted';
+    if (timbre === 'synth') {
+      this.playPitchNote(freq, durationSec);
+      return 'synth';
+    }
+
+    this.initContext();
+    if (!this.ctx || !this.masterGain) return 'muted';
+
+    const sample = nearestInstrumentSample(timbre, freq);
+    const buffer = await this.loadSample(sample.url);
+    if (!buffer || this.isMuted || !this.ctx || !this.masterGain) {
+      this.playPitchNote(freq, durationSec);
+      return 'synth';
+    }
+
+    const now = this.ctx.currentTime;
+    const dur = Math.max(0.08, durationSec);
+    const source = this.ctx.createBufferSource();
+    const gain = this.ctx.createGain();
+
+    source.buffer = buffer;
+    source.playbackRate.setValueAtTime(freq / sample.frequency, now);
+
+    const attack = Math.min(0.02, dur * 0.12);
+    const release = Math.min(0.12, dur * 0.3);
+    const releaseStart = Math.max(now + attack, now + dur - release);
+
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.linearRampToValueAtTime(0.42, now + attack);
+    gain.gain.setValueAtTime(0.36, releaseStart);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+
+    source.connect(gain);
+    gain.connect(this.masterGain);
+
+    source.onended = () => {
+      source.disconnect();
+      gain.disconnect();
+    };
+
+    source.start(now);
+    source.stop(now + dur + 0.03);
+    return 'sample';
   }
 
   // Play a metronome click on beat
