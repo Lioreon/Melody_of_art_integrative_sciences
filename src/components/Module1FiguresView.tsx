@@ -14,19 +14,13 @@ import {
   exploreRhythm,
   generateRhythmSequence,
   getRhythmVocabulary,
-  getRhythmSoundSilenceVocabulary,
   pickRhythmTarget,
-  pickRhythmSoundSilenceTarget,
   sequenceLengthForDifficulty,
   type RhythmDifficulty,
 } from '../services/rhythmEvaluation';
 import { Check, ChevronDown, ChevronUp, RefreshCw, Volume2 } from 'lucide-react';
-import {
-  equivalentRestForFigure,
-  interpretBimanualMusicalGesture,
-} from '../services/musicalGesture';
 
-type RhythmLevel = 0 | 1 | 2 | 3;
+type RhythmLevel = 0 | 1 | 2;
 type RhythmPhase = 'READY' | 'ACTIVE' | 'FEEDBACK' | 'SUCCESS';
 
 interface Module1FiguresViewProps {
@@ -67,9 +61,6 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
   const [sequence, setSequence] = useState<MusicalFigure[]>(initialSequencePlan.figures);
   const [sequenceSeed, setSequenceSeed] = useState(initialSequencePlan.nextSeed);
   const [sequenceIndex, setSequenceIndex] = useState(0);
-  const initialSoundSilencePick = pickRhythmSoundSilenceTarget(MUSICAL_FIGURES, 'initial', 73);
-  const [soundSilenceTarget, setSoundSilenceTarget] = useState<MusicalFigure>(initialSoundSilencePick.figure);
-  const [soundSilenceSeed, setSoundSilenceSeed] = useState(initialSoundSilencePick.nextSeed);
   const [phase, setPhase] = useState<RhythmPhase>('READY');
   const [feedback, setFeedback] = useState('Explora qué ocurre al cambiar la distancia entre tus manos.');
   const [showCatalog, setShowCatalog] = useState(false);
@@ -82,27 +73,14 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
   }, []);
 
   const hasTracking = Boolean(palmState.leftPalm?.present && palmState.rightPalm?.present);
-  const bimanualGesture = interpretBimanualMusicalGesture(palmState);
-  const supportsHandShape = bimanualGesture.supportsHandShape;
-
-  const detectedNoteFigure: MusicalFigure | undefined = hasTracking
+  const detectedFigure: MusicalFigure | undefined = hasTracking
     ? rhythmFigures.find(figure =>
       palmState.distanceCm >= figure.targetDistanceMinCm &&
       palmState.distanceCm <= figure.targetDistanceMaxCm)
     : undefined;
 
-  const detectedFigure: MusicalFigure | undefined = !detectedNoteFigure
-    ? undefined
-    : bimanualGesture.mode === 'rest'
-    ? equivalentRestForFigure(detectedNoteFigure, MUSICAL_FIGURES)
-    : bimanualGesture.mode === 'sound'
-    ? detectedNoteFigure
-    : undefined;
-
   const targetFigure = level === 2
     ? (sequence[sequenceIndex] ?? sequence[0] ?? singleTarget)
-    : level === 3
-    ? soundSilenceTarget
     : singleTarget;
   const evaluation = level === 0
     ? exploreRhythm(hasTracking)
@@ -114,13 +92,6 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
       clearTimeout(successTimerRef.current);
       successTimerRef.current = null;
     }
-  };
-
-  const nextSoundSilenceTarget = (avoidId = soundSilenceTarget.id) => {
-    const pick = pickRhythmSoundSilenceTarget(MUSICAL_FIGURES, difficulty, soundSilenceSeed, avoidId);
-    setSoundSilenceTarget(pick.figure);
-    setSoundSilenceSeed(pick.nextSeed);
-    return pick.figure;
   };
 
   const nextSingleTarget = (avoidId = singleTarget.id) => {
@@ -163,15 +134,9 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
         return;
       }
 
-      if (level === 3) {
-        nextSoundSilenceTarget(targetFigure.id);
-        setPhase('ACTIVE');
-        setFeedback('Nuevo objetivo: conserva la distancia y usa manos abiertas para sonido o ambos puños para silencio.');
-      } else {
-        nextSingleTarget(targetFigure.id);
-        setPhase('ACTIVE');
-        setFeedback('Nueva figura: ajusta la separación y mantén la posición.');
-      }
+      nextSingleTarget(targetFigure.id);
+      setPhase('ACTIVE');
+      setFeedback('Nueva figura: ajusta la separación y mantén la posición.');
     }, 1100);
   };
 
@@ -181,15 +146,6 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
     targetFigure.durationSeconds * 1000,
     triggerSuccess,
   );
-
-  useEffect(() => {
-    if (level === 3 && !supportsHandShape) {
-      setLevel(0);
-      setPhase('READY');
-      setFeedback('Sonido / silencio requiere Manos libres. Se volvió a Exploración posicional.');
-      setHoldProgress(0);
-    }
-  }, [level, supportsHandShape, setHoldProgress]);
 
   useEffect(() => {
     if (level === 0 || phase === 'SUCCESS') return;
@@ -206,11 +162,7 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
       ? 'Explora qué ocurre al cambiar la distancia entre tus manos.'
       : nextLevel === 1
       ? 'Reconoce la figura objetivo, ajusta la apertura y mantén la posición.'
-      : nextLevel === 2
-      ? 'Recorre la secuencia en orden. Cada figura requiere su propia apertura y duración.'
-      : supportsHandShape
-      ? 'Mantén la misma distancia: manos abiertas producen sonido y ambos puños producen el silencio equivalente.'
-      : 'Este nivel requiere Manos libres con landmarks de dedos; los marcadores de color conservan el modo posicional.');
+      : 'Recorre la secuencia en orden. Cada figura requiere su propia apertura y duración.');
     setHoldProgress(0);
   };
 
@@ -229,15 +181,8 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
       sequenceLengthForDifficulty(nextDifficulty),
       sequenceSeed,
     );
-    const nextSoundSilence = pickRhythmSoundSilenceTarget(
-      MUSICAL_FIGURES,
-      nextDifficulty,
-      soundSilenceSeed,
-    );
     setSequence(nextPlan.figures);
     setSequenceSeed(nextPlan.nextSeed);
-    setSoundSilenceTarget(nextSoundSilence.figure);
-    setSoundSilenceSeed(nextSoundSilence.nextSeed);
     setSequenceIndex(0);
     setPhase(level === 0 ? 'READY' : 'ACTIVE');
     setFeedback(level === 0
@@ -281,14 +226,18 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
     setHoldProgress(0);
   };
 
-  const displayedFigure = level === 0 ? (detectedFigure ?? detectedNoteFigure ?? rhythmFigures[2]) : targetFigure;
-  const activeVocabulary = level === 3
-    ? getRhythmSoundSilenceVocabulary(MUSICAL_FIGURES, difficulty)
-    : getRhythmVocabulary(rhythmFigures, difficulty);
+  const displayedFigure = level === 0 ? (detectedFigure ?? rhythmFigures[2]) : targetFigure;
+  const activeVocabulary = getRhythmVocabulary(rhythmFigures, difficulty);
 
-  const gestureLabel = !hasTracking
+  const gestureLabel = palmState.leftPalm?.gestureState === 'OPEN_HAND' && palmState.rightPalm?.gestureState === 'OPEN_HAND'
+    ? 'Manos abiertas'
+    : palmState.leftPalm?.gestureState === 'CLOSED_FIST' && palmState.rightPalm?.gestureState === 'CLOSED_FIST'
+    ? 'Puños cerrados'
+    : !hasTracking
     ? 'Sin gesto detectado'
-    : bimanualGesture.label;
+    : palmState.leftPalm?.gestureState !== palmState.rightPalm?.gestureState
+    ? 'Gestos mixtos'
+    : 'Gesto no concluyente';
 
   const phaseLabel = phase === 'READY'
     ? 'Listo'
@@ -299,14 +248,6 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
     : 'Éxito';
 
   const hearDisplayedFigure = () => {
-    if (displayedFigure.type === 'rest') {
-      audioSynthesizer.playClick(true);
-      window.setTimeout(
-        () => audioSynthesizer.playClick(false),
-        Math.max(120, displayedFigure.durationSeconds * 1000),
-      );
-      return;
-    }
     audioSynthesizer.playPitchNote(440, displayedFigure.durationSeconds, 'warm');
   };
 
@@ -322,13 +263,11 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
           [0, 'Explorar'],
           [1, 'Una figura'],
           [2, 'Secuencia variable'],
-          [3, 'Sonido / silencio'],
         ] as const).map(([value, label]) => (
           <button
             key={value}
             onClick={() => selectLevel(value)}
-            disabled={value === 3 && !supportsHandShape}
-            className={`rounded-lg px-3 py-1.5 text-xs font-medium disabled:cursor-not-allowed disabled:opacity-40 ${
+            className={`rounded-lg px-3 py-1.5 text-xs font-medium ${
               level === value
                 ? 'bg-cyan-600 text-white'
                 : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
@@ -348,7 +287,7 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
                 La dificultad aumenta por relaciones musicales disponibles, no por puntos.
               </p>
             </div>
-            <span className="text-xs text-slate-500">{activeVocabulary.length} símbolos activos</span>
+            <span className="text-xs text-slate-500">{activeVocabulary.length} figuras activas</span>
           </div>
           <div className="grid gap-2 sm:grid-cols-3">
             {(Object.keys(difficultyLabels) as RhythmDifficulty[]).map((value) => (
@@ -387,11 +326,6 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
             <span className="text-slate-500">Completados: {completedCount}</span>
           </div>
           {level === 2 && <span className="font-mono text-cyan-600">{sequenceIndex + 1} / {sequence.length}</span>}
-          {level === 3 && (
-            <span className="font-mono text-cyan-600">
-              {supportsHandShape ? 'forma de mano activa' : 'requiere Manos libres'}
-            </span>
-          )}
         </div>
 
         {level === 2 && (
@@ -434,7 +368,7 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
               className="mx-auto mt-3 flex items-center gap-1.5 rounded-lg border border-cyan-600 px-3 py-1.5 text-xs font-medium text-cyan-700 hover:bg-cyan-50 dark:text-cyan-400 dark:hover:bg-cyan-950/30"
             >
               <Volume2 className="h-3.5 w-3.5" />
-              {displayedFigure.type === 'rest' ? 'Marcar silencio' : 'Escuchar duración'} · {displayedFigure.durationSeconds}s
+              Escuchar duración · {displayedFigure.durationSeconds}s
             </button>
           </section>
 
@@ -443,11 +377,6 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
             <div aria-hidden="true" className="my-3 text-7xl text-[var(--music-rhythm-accent)]">{detectedFigure?.symbol ?? '—'}</div>
             <h2 className="text-2xl font-bold">{detectedFigure?.name ?? 'Sin figura'}</h2>
             <p className="mt-2 text-sm text-slate-500">Separación: {palmState.distanceCm} u. · {gestureLabel}</p>
-            {supportsHandShape && (
-              <p className="mt-1 text-xs text-slate-400">
-                Abiertas = sonido · puños = silencio · gesto mixto = reservado para alteraciones en nota.
-              </p>
-            )}
           </section>
         </div>
 
@@ -487,20 +416,14 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
           </div>
         )}
 
-        {(level === 1 || level === 3) && (
+        {level === 1 && (
           <button
             type="button"
-            onClick={level === 3 ? () => {
-              resetSuccessTimer();
-              nextSoundSilenceTarget();
-              setPhase('ACTIVE');
-              setFeedback('Nuevo objetivo de sonido o silencio.');
-              setHoldProgress(0);
-            } : requestNewSingleTarget}
+            onClick={requestNewSingleTarget}
             className="mx-auto flex items-center gap-1.5 rounded-lg border border-cyan-600 px-3 py-1.5 text-xs font-medium text-cyan-700 hover:bg-cyan-50 dark:text-cyan-400 dark:hover:bg-cyan-950/30"
           >
             <RefreshCw className="h-3.5 w-3.5" />
-            {level === 3 ? 'Nuevo símbolo' : 'Nueva figura'}
+            Nueva figura
           </button>
         )}
 
@@ -535,17 +458,8 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
               {MUSICAL_FIGURES.map(figure => (
                 <button
                   key={figure.id}
-                  disabled={figure.type !== 'note' && level !== 3}
+                  disabled={figure.type !== 'note'}
                   onClick={() => {
-                    if (figure.type === 'rest') {
-                      setSoundSilenceTarget(figure);
-                      setLevel(3);
-                      setPhase('ACTIVE');
-                      setFeedback('Silencio elegido desde el catálogo. Conserva la distancia y cierra ambos puños.');
-                      setHoldProgress(0);
-                      if (isSimulation) onSimulatedDistanceChange(figure.targetDistanceIdealCm);
-                      return;
-                    }
                     const index = rhythmFigures.findIndex(candidate => candidate.id === figure.id);
                     if (index >= 0) selectFigure(index);
                   }}
@@ -575,9 +489,8 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
           </button>
           {showGuide && (
             <p className="pt-2 text-xs text-slate-500">
-              La apertura entre palmas regula la duración. En Manos libres, ambas manos abiertas representan figura sonora
-              y ambos puños cerrados representan el silencio equivalente con la misma distancia. Los gestos mixtos se reservan
-              para sostenido/bemol en los módulos de altura. La altura pertenece a Pentagrama.
+              La apertura entre palmas regula la duración y el valor rítmico. La altura pertenece a Pentagrama.
+              Los retos se generan de forma controlada y reproducible dentro del vocabulario seleccionado.
             </p>
           )}
         </div>
