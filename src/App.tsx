@@ -444,11 +444,11 @@ export default function App() {
       />
 
       {/* Main Container */}
-      <main className="flex-1 max-w-[1500px] w-full mx-auto p-4 md:p-6 space-y-6">
+      <main className="mx-auto w-full max-w-[1500px] flex-1 space-y-4 px-3 py-4 sm:px-4 md:space-y-5 md:px-5 md:py-5 lg:space-y-6 lg:px-6">
         {/* Primary Workspace Grid with Persistent Single CameraView */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-12 md:gap-5 lg:gap-6">
           {/* Left Column: Persistent CameraView */}
-          <div className="lg:col-span-4 min-w-0 space-y-6">
+          <div className="min-w-0 space-y-4 md:col-span-5 md:space-y-5 lg:space-y-6">
             <VideoSourceSelector selectedId={cameraDeviceId}
               onSelect={(id) => { setCameraDeviceId(id); setCameraMessage(''); }}
               active={!isSimulation} busy={cameraBusy} onToggle={handleToggleSimulation}
@@ -509,7 +509,7 @@ export default function App() {
           </div>
 
           {/* Right Column: Active Module View */}
-          <div className="lg:col-span-8 min-w-0 space-y-6">
+          <div className="min-w-0 space-y-4 md:col-span-7 md:space-y-5 lg:space-y-6">
             <WorkspaceHeader title={activeArea.title} description={activeArea.description} />
             {activeModuleId === 'instrument' && (
               <InstrumentPanel
