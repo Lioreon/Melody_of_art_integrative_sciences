@@ -181,7 +181,7 @@ export interface TrackingDiagnostics {
   avgFrameIntervalMs: number;
   avgProcessingMs: number | null;
   jitterPx: number;
-  confidence: number;
+  confidence: number | null;
   totalFrames: number;
   zeroPointFrames: number;
   onePointFrames: number;
