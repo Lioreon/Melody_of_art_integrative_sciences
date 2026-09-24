@@ -35,6 +35,10 @@ import {
   rhythmGameAward,
   totalLearningPoints,
 } from '../src/services/learningGame';
+import {
+  parseStoredInstrumentTimbre,
+  parseStoredLiveSoundFeedback,
+} from '../src/services/userPreferences';
 
 test('hold uses elapsed time, completes once and resets when tracking is lost', () => {
   const timer = new HoldTimer();
@@ -466,4 +470,15 @@ test('learning game awards are transparent and ranking unlocks at the documented
 test('learning score ignores negative awards', () => {
   const score = addLearningPoints(EMPTY_LEARNING_SCORE, 'rhythm', -50);
   assert.deepEqual(score, EMPTY_LEARNING_SCORE);
+});
+
+
+test('instrument preferences restore only supported persistent values', () => {
+  assert.equal(parseStoredInstrumentTimbre('violin_pizzicato'), 'violin_pizzicato');
+  assert.equal(parseStoredInstrumentTimbre('piano'), 'piano');
+  assert.equal(parseStoredInstrumentTimbre('unsupported'), 'synth');
+  assert.equal(parseStoredInstrumentTimbre(null), 'synth');
+  assert.equal(parseStoredLiveSoundFeedback('true'), true);
+  assert.equal(parseStoredLiveSoundFeedback('false'), false);
+  assert.equal(parseStoredLiveSoundFeedback(null), false);
 });
