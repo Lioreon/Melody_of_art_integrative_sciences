@@ -25,13 +25,13 @@ export const GuidedStaffView: React.FC<GuidedStaffViewProps> = ({
   theme = 'white',
 }) => {
   const isWhite = theme === 'white';
-  const staffWidth = 320;
-  const staffHeight = 185;
-  const stepSpacing = 7;
-  const c4Y = 132;
+  const staffWidth = 340;
+  const staffHeight = 210;
+  const stepSpacing = 8;
+  const c4Y = 150;
   const staffSteps = [10, 8, 6, 4, 2];
-  const targetX = 170;
-  const currentX = 238;
+  const targetX = 182;
+  const currentX = 266;
 
   const renderNote = (
     note: ScaleNote,
@@ -133,12 +133,12 @@ export const GuidedStaffView: React.FC<GuidedStaffViewProps> = ({
     );
   };
 
-  const targetColor = isWhite ? '#9a6a13' : '#f4c95d';
-  const currentColor = matched ? '#10b981' : '#0ea5e9';
+  const targetColor = isWhite ? '#8a5a0a' : '#f6d477';
+  const currentColor = matched ? '#059669' : (isWhite ? '#0369a1' : '#55d8ee');
 
   return (
-    <div className={`rounded-xl border px-3 py-4 sm:px-5 ${
-      isWhite ? 'border-slate-200 bg-slate-50' : 'border-slate-800 bg-slate-900'
+    <div className={`rounded-xl border px-2 py-4 sm:px-5 ${
+      isWhite ? 'border-slate-300 bg-white/85' : 'border-slate-700 bg-[#081b26]'
     }`}>
       <div className="mb-3 text-center">
         <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
@@ -155,7 +155,7 @@ export const GuidedStaffView: React.FC<GuidedStaffViewProps> = ({
         viewBox={`0 0 ${staffWidth} ${staffHeight}`}
         role="img"
         aria-label={`Meta ${targetNote.octaveName}; nota actual ${currentNote.octaveName}`}
-        className="mx-auto h-auto w-full max-w-[700px] overflow-visible select-none"
+        className="mx-auto h-auto w-full max-w-none overflow-visible select-none sm:max-w-[760px]"
       >
         {staffSteps.map((staffStep) => {
           const y = c4Y - staffStep * stepSpacing;
@@ -166,8 +166,8 @@ export const GuidedStaffView: React.FC<GuidedStaffViewProps> = ({
               y1={y}
               x2={staffWidth - 20}
               y2={y}
-              stroke={isWhite ? '#94a3b8' : '#475569'}
-              strokeWidth="1.5"
+              stroke={isWhite ? '#526478' : '#9fb5c2'}
+              strokeWidth="1.8"
             />
           );
         })}
@@ -177,21 +177,21 @@ export const GuidedStaffView: React.FC<GuidedStaffViewProps> = ({
           y="120"
           fontSize="60"
           fontFamily="serif"
-          fill={isWhite ? '#334155' : '#cbd5e1'}
+          fill={isWhite ? '#1f3347' : '#e3edf2'}
           textAnchor="middle"
         >
           𝄞
         </text>
 
-        <text x="72" y="86" fontSize="15" fontWeight="bold" fill={isWhite ? '#64748b' : '#94a3b8'} textAnchor="middle">4</text>
-        <text x="72" y="108" fontSize="15" fontWeight="bold" fill={isWhite ? '#64748b' : '#94a3b8'} textAnchor="middle">4</text>
+        <text x="72" y="86" fontSize="15" fontWeight="bold" fill={isWhite ? '#526478' : '#aebfca'} textAnchor="middle">4</text>
+        <text x="72" y="108" fontSize="15" fontWeight="bold" fill={isWhite ? '#526478' : '#aebfca'} textAnchor="middle">4</text>
 
         <line
           x1={(targetX + currentX) / 2}
           y1="48"
           x2={(targetX + currentX) / 2}
           y2="162"
-          stroke={isWhite ? '#e2e8f0' : '#334155'}
+          stroke={isWhite ? '#cbd5e1' : '#47606b'}
           strokeDasharray="4 5"
         />
 
