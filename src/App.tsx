@@ -29,6 +29,12 @@ import { HandTracker } from './services/handTracker';
 import { audioSynthesizer } from './services/audioSynthesizer';
 import type { InstrumentTimbre } from './services/instrumentSamples';
 import {
+  loadInstrumentTimbre,
+  loadLiveSoundFeedback,
+  saveInstrumentTimbre,
+  saveLiveSoundFeedback,
+} from './services/userPreferences';
+import {
   EMPTY_LEARNING_SCORE,
   addLearningPoints,
   isRankingUnlocked,
@@ -77,7 +83,8 @@ export default function App() {
 
   // Audio & Camera Mode
   const [isMuted, setIsMuted] = useState<boolean>(false);
-  const [instrumentTimbre, setInstrumentTimbre] = useState<InstrumentTimbre>('synth');
+  const [instrumentTimbre, setInstrumentTimbre] = useState<InstrumentTimbre>(() => loadInstrumentTimbre());
+  const [liveSoundFeedback, setLiveSoundFeedback] = useState<boolean>(() => loadLiveSoundFeedback());
   const [isSimulation, setIsSimulation] = useState<boolean>(true);
   const [trackingMode, setTrackingMode] = useState<TrackingModeType>('hands');
   const [colors, setColors] = useState({ color1Hex: '#ef4444', color2Hex: '#06b6d4', tolerance: 50 });
@@ -165,6 +172,14 @@ export default function App() {
     if (isSimulation) handTrackerRef.current?.enableSimulationMode(setPalmState);
   }, [isSimulation]);
   useEffect(() => { handTrackerRef.current?.colors.setConfig(colors); }, [colors]);
+
+  useEffect(() => {
+    saveInstrumentTimbre(instrumentTimbre);
+  }, [instrumentTimbre]);
+
+  useEffect(() => {
+    saveLiveSoundFeedback(liveSoundFeedback);
+  }, [liveSoundFeedback]);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -538,6 +553,8 @@ export default function App() {
                 theme={theme}
                 timbre={instrumentTimbre}
                 onTimbreChange={setInstrumentTimbre}
+                liveSoundFeedback={liveSoundFeedback}
+                onLiveSoundFeedbackChange={setLiveSoundFeedback}
               />
             )}
             {activeModuleId === 'module_1_figures_duration' && (
