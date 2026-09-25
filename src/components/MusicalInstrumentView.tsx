@@ -63,7 +63,7 @@ export const MusicalInstrumentView: React.FC<MusicalInstrumentViewProps> = ({
       </div>
 
       {/* Main Display: Note + Figure */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-stretch">
+      <div className="mx-auto grid w-full max-w-3xl grid-cols-1 items-stretch gap-4 sm:grid-cols-2">
         {/* Note Card */}
         <div
           className={`rounded-2xl p-5 border flex flex-col justify-between transition-all ${
@@ -195,7 +195,7 @@ export const MusicalInstrumentView: React.FC<MusicalInstrumentViewProps> = ({
       />
 
       {/* Primary Action Button: Tocar Nota */}
-      <div className="space-y-2 pt-1">
+      <div className="mx-auto w-full max-w-3xl space-y-2 pt-1">
         <button
           onClick={onPlayNote}
           disabled={trackingLost || isPlaying}
