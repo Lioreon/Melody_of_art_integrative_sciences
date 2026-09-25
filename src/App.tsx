@@ -482,10 +482,11 @@ export default function App() {
       {/* Main Container */}
       <main className="mx-auto w-full max-w-[1500px] flex-1 space-y-4 px-3 py-4 sm:px-4 md:space-y-5 md:px-5 md:py-5 lg:space-y-6 lg:px-6">
         {/* Primary Workspace Grid with Persistent Single CameraView */}
-        <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-12 md:gap-5 lg:gap-6">
+        <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-12 md:gap-5 lg:items-stretch lg:gap-6">
           {/* Left Column: Persistent CameraView */}
-          <div className={`${activeModuleId === 'ranking' ? 'hidden' : ''} min-w-0 space-y-4 md:col-span-5 md:space-y-5 lg:space-y-6`}>
-            <VideoSourceSelector selectedId={cameraDeviceId}
+          <div className={`${activeModuleId === 'ranking' ? 'hidden' : ''} min-w-0 space-y-4 md:col-span-5 md:space-y-5 lg:h-full lg:space-y-6`}>
+            <div className="space-y-4 md:space-y-5 lg:sticky lg:top-4 lg:z-10">
+              <VideoSourceSelector selectedId={cameraDeviceId}
               onSelect={(id) => { setCameraDeviceId(id); setCameraMessage(''); }}
               active={!isSimulation} busy={cameraBusy} onToggle={handleToggleSimulation}
               refreshKey={cameraListRevision} error={cameraMessage} theme={theme} />
@@ -502,6 +503,7 @@ export default function App() {
               diagnostics={trackingDiagnostics}
               theme={theme}
             />
+            </div>
 
             <details className="rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-4 text-sm shadow-[var(--ui-shadow)]">
               <summary className="cursor-pointer">Seguimiento y calibración</summary>
@@ -545,7 +547,7 @@ export default function App() {
           </div>
 
           {/* Right Column: Active Module View */}
-          <div className={`min-w-0 space-y-4 md:space-y-5 lg:space-y-6 ${activeModuleId === 'ranking' ? 'md:col-span-12' : 'md:col-span-7'}`}>
+          <div className={`mx-auto w-full min-w-0 self-start space-y-4 md:space-y-5 lg:space-y-6 ${activeModuleId === 'ranking' ? 'md:col-span-12 lg:max-w-[1180px]' : 'md:col-span-7 lg:max-w-[920px]'}`}>
             <WorkspaceHeader title={activeArea.title} description={activeArea.description} />
             {activeModuleId === 'instrument' && (
               <InstrumentPanel
