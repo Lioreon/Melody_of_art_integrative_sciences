@@ -4,6 +4,7 @@ Esta carpeta conserva la memoria técnica, pedagógica y de producto del proyect
 
 ## Documentos
 
+- [CODEX_BRIDGE.md](./CODEX_BRIDGE.md) — contexto operacional mínimo para transferir trabajo entre ChatGPT, Codex, Graphify y el repositorio.
 - [DECISIONES.md](./DECISIONES.md) — decisiones técnicas y criterios vigentes.
 - [HISTORIA.md](./HISTORIA.md) — evolución del proyecto desde el prototipo inicial hasta la primera matriz demostrativa pública.
 - [ROADMAP.md](./ROADMAP.md) — estado actual, incrementos posteriores a Phase 2 y prioridades futuras.
@@ -21,6 +22,6 @@ La rama `main` contiene el producto vivo. La historia del proyecto se conserva m
 
 Baseline técnico histórico: `7eff8ee` — *feat: add Rhythm Phase 2 learning loop and gesture states*.
 
-Baseline público actual: `c4d9d5a` — matriz demostrativa con UI responsive, carrusel institucional, modos de juego opcionales, Ranking local de sesión y preferencias sonoras persistentes.
+Baseline público actual: `d9ac4d1` — CameraStage v2 con cámara persistente en escritorio, espejo musical, calibración corporal local, jerarquía informacional refinada y preferencias sonoras persistentes.
 
 Versión pública: https://melody-of-art-integrative-sciences.pages.dev
