@@ -546,7 +546,7 @@ export default function App() {
                   <div className="text-sm font-medium text-[var(--ui-text)]">Ajustes rápidos</div>
                   <div className="mt-0.5 text-[11px] text-slate-500">Detección y rango corporal</div>
                 </div>
-                <span className="rounded-full bg-slate-500/8 px-2 py-1 text-[10px] font-semibold text-slate-500 group-open:hidden">
+                <span className="rounded-full bg-slate-500/[0.08] px-2 py-1 text-[10px] font-semibold text-slate-500 group-open:hidden">
                   {bodyCalibration ? 'Rango personalizado' : 'Rango estándar'}
                 </span>
               </summary>
