@@ -39,6 +39,17 @@ import {
   parseStoredInstrumentTimbre,
   parseStoredLiveSoundFeedback,
 } from '../src/services/userPreferences';
+import {
+  applyBodyCalibration,
+  musicalOpeningToRaw,
+  musicalYToRaw,
+  normalizeHeight,
+  normalizeOpening,
+  rawOpeningToMusical,
+  rawYToMusical,
+} from '../src/services/bodyCalibration';
+import { deriveCameraStageState } from '../src/services/cameraStage';
+import type { BodyCalibration } from '../src/types';
 
 test('hold uses elapsed time, completes once and resets when tracking is lost', () => {
   const timer = new HoldTimer();
@@ -482,4 +493,51 @@ test('instrument preferences restore only supported persistent values', () => {
   assert.equal(parseStoredLiveSoundFeedback('false'), false);
   assert.equal(parseStoredLiveSoundFeedback(null), true);
   assert.equal(parseStoredLiveSoundFeedback('unsupported'), true);
+});
+
+test('body calibration maps a comfortable range into the standard musical space', () => {
+  const calibration: BodyCalibration = {
+    minOpening: 20, maxOpening: 80, lowY: 0.8, highY: 0.2, capturedAt: 1, version: 1,
+  };
+  assert.equal(normalizeOpening(20, calibration), 0);
+  assert.equal(normalizeOpening(80, calibration), 1);
+  assert.equal(normalizeOpening(50, calibration), 0.5);
+  assert.equal(normalizeHeight(0.8, calibration), 0);
+  assert.equal(normalizeHeight(0.2, calibration), 1);
+  assert.equal(rawOpeningToMusical(20, calibration), 15);
+  assert.equal(rawOpeningToMusical(80, calibration), 85);
+  assert.equal(rawYToMusical(0.8, calibration), 0.92);
+  assert.equal(rawYToMusical(0.2, calibration), 0.08);
+  assert.equal(musicalOpeningToRaw(85, calibration), 80);
+  assert.equal(musicalYToRaw(0.08, calibration), 0.2);
+});
+
+test('calibration transforms musical coordinates without mutating raw tracking coordinates', () => {
+  const calibration: BodyCalibration = {
+    minOpening: 20, maxOpening: 80, lowY: 0.8, highY: 0.2, capturedAt: 1, version: 1,
+  };
+  const raw = trackingState(palmAt({ x: 0.3, y: 0.5 }), palmAt({ x: 0.7, y: 0.5 }), 640, 480, 1);
+  const musical = applyBodyCalibration(raw, calibration);
+  assert.equal(raw.leftPalm?.center.y, 0.5);
+  assert.equal(musical.leftPalm?.center.y, 0.5);
+  assert.equal(raw.distanceCm, 50);
+  assert.equal(musical.distanceCm, 50);
+  assert.notEqual(musical, raw);
+});
+
+test('CameraStage keeps raw target placement while reporting calibrated musical meaning', () => {
+  const calibration: BodyCalibration = {
+    minOpening: 20, maxOpening: 80, lowY: 0.8, highY: 0.2, capturedAt: 1, version: 1,
+  };
+  const raw = trackingState(palmAt({ x: 0.1, y: 0.2 }), palmAt({ x: 0.9, y: 0.2 }), 640, 480, 1);
+  const musical = applyBodyCalibration(raw, calibration);
+  const stage = deriveCameraStageState(raw, musical, {
+    noteId: 'si5', noteLabel: 'Si 5', targetYNorm: 0.08, targetOpening: 85, matched: true,
+  }, calibration);
+  assert.equal(stage.currentNoteId, 'si5');
+  assert.equal(stage.currentFigureId, 'redonda');
+  assert.equal(stage.targetRawY, 0.2);
+  assert.equal(stage.targetRawOpening, 80);
+  assert.equal(stage.aligned, true);
+  assert.equal(stage.calibrationActive, true);
 });
