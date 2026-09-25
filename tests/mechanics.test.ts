@@ -476,9 +476,10 @@ test('learning score ignores negative awards', () => {
 test('instrument preferences restore only supported persistent values', () => {
   assert.equal(parseStoredInstrumentTimbre('violin_pizzicato'), 'violin_pizzicato');
   assert.equal(parseStoredInstrumentTimbre('piano'), 'piano');
-  assert.equal(parseStoredInstrumentTimbre('unsupported'), 'synth');
-  assert.equal(parseStoredInstrumentTimbre(null), 'synth');
+  assert.equal(parseStoredInstrumentTimbre('unsupported'), 'violin_pizzicato');
+  assert.equal(parseStoredInstrumentTimbre(null), 'violin_pizzicato');
   assert.equal(parseStoredLiveSoundFeedback('true'), true);
   assert.equal(parseStoredLiveSoundFeedback('false'), false);
-  assert.equal(parseStoredLiveSoundFeedback(null), false);
+  assert.equal(parseStoredLiveSoundFeedback(null), true);
+  assert.equal(parseStoredLiveSoundFeedback('unsupported'), true);
 });
