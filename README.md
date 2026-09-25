@@ -6,7 +6,7 @@ Melody Motion es un módulo educativo del ecosistema **Melody of Art**. La ident
 
 Instrumento educativo: apertura horizontal → figura musical; altura promedio del par de manos → registro diatónico extendido en clave de Sol (Sol3–Si5), incluyendo líneas adicionales inferiores y superiores.
 Aplicación React + TypeScript + Vite. La cámara, el seguimiento y el audio se procesan en el navegador.
-No requiere una clave de Gemini ni un servidor de IA. Esta copia procede del ZIP entregado; el original no se modificó.
+No requiere una clave de Gemini ni un servidor de IA. El repositorio actual es la línea viva de desarrollo y conserva su evolución mediante Git, documentación y despliegues de Cloudflare Pages.
 
 ## Abrir en esta computadora
 
@@ -16,7 +16,7 @@ También puedes abrir esta carpeta en VS Code y usar su terminal.
 
 ## Instalar en otra computadora
 
-Requisitos: Node.js 24 y pnpm 11.19.0. Con Node instalado, `npm install --global pnpm@11.19.0` instala el gestor.
+Requisitos: Node.js >=22; para reproducir el entorno de producción se recomienda Node.js 24. El proyecto fija pnpm 11.19.0. Con Node instalado, `npm install --global pnpm@11.19.0` instala el gestor.
 
 ```sh
 pnpm install --frozen-lockfile
@@ -93,10 +93,10 @@ Documentación: https://developers.cloudflare.com/pages/configuration/build-conf
 
 Se incluyen pruebas de mapeo, histéresis, geometría, temporización, separación de colores y ciclo de vida de cámara.
 La cámara simulada en los tests comprueba liberación y cancelación; no demuestra precisión con manos reales.
-La vista local se comprobó con los controles virtuales y reproducción activada desde la interfaz. Falta evaluación auditiva y de precisión en tu equipo.
-Durante esta sesión, el navegador integrado informó `NotAllowedError: Permission denied by system`; la aplicación volvió al simulador. Abre la dirección local en un navegador con acceso a la cámara y revisa sus permisos y los de Windows antes de ensayar el seguimiento real.
+La herramienta ha pasado validaciones manuales sucesivas de interfaz, audio y cámara, además de tests automáticos. Estas pruebas no sustituyen un benchmark formal de precisión, latencia o robustez en distintos dispositivos e iluminaciones.
+Si un navegador informa `NotAllowedError: Permission denied by system`, la aplicación vuelve al simulador; revisa permisos del navegador y del sistema antes de ensayar el seguimiento real.
 
-Antes de publicar: ensayar manos y marcadores de color con iluminación real, medir latencia y uso de memoria durante una sesión larga, revisar accesibilidad y unificar los textos heredados de unidades.
+Antes de considerar una versión institucional estable: ampliar las pruebas de manos y marcadores de color con distintas iluminaciones, medir latencia y memoria en sesiones largas, revisar accesibilidad y terminar de unificar los textos heredados de unidades.
 Las métricas del módulo orquestal son de prototipo: no constituyen mediciones validadas de reacción, sincronización o estabilidad.
 Tracking v2 ya cubre T0/T1 y una primera capa T2: Melody Motion registra métricas locales, conserva los 21 landmarks y deriva geometría por dedo sin cambiar todavía el backend heredado. El overlay puede sombrear suavemente la mano según OPEN/CLOSED. MediaPipe Tasks/Web Worker queda para T4, después de comparar el baseline. Consulte [docs/TRACKING_V2_SPEC.md](docs/TRACKING_V2_SPEC.md).
 
