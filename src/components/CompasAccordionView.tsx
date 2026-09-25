@@ -6,7 +6,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Pause, Play, RotateCcw } from 'lucide-react';
 import { MUSICAL_FIGURES } from '../data/scorePresets';
-import type { AppTheme, DualPalmState, MusicalFigure } from '../types';
+import type { AppTheme, CameraStageTarget, DualPalmState, MusicalFigure } from '../types';
 import { audioSynthesizer } from '../services/audioSynthesizer';
 import {
   beatDurationMs,
@@ -20,6 +20,7 @@ interface CompasAccordionViewProps {
   palmState: DualPalmState;
   isSimulation: boolean;
   onSimulatedDistanceChange: (distCm: number) => void;
+  onCameraStageTargetChange?: (target: CameraStageTarget | null) => void;
   theme?: AppTheme;
 }
 
@@ -32,6 +33,7 @@ export const CompasAccordionView: React.FC<CompasAccordionViewProps> = ({
   palmState,
   isSimulation,
   onSimulatedDistanceChange,
+  onCameraStageTargetChange,
   theme = 'dark_cyan',
 }) => {
   const isWhite = theme === 'white';
@@ -66,6 +68,16 @@ export const CompasAccordionView: React.FC<CompasAccordionViewProps> = ({
     palmState.distanceCm,
   );
 
+  useEffect(() => {
+    if (!onCameraStageTargetChange) return;
+    onCameraStageTargetChange({
+      figureId: frame.currentStep.figure.id,
+      figureLabel: frame.currentStep.figure.name,
+      figureSymbol: frame.currentStep.figure.symbol,
+      targetOpening: frame.currentStep.figure.targetDistanceIdealCm,
+      matched: guidance.status === 'aligned',
+    });
+  }, [frame.currentStep.figure.id, frame.currentStep.figure.name, frame.currentStep.figure.symbol, frame.currentStep.figure.targetDistanceIdealCm, guidance.status, onCameraStageTargetChange]);
   useEffect(() => {
     if (!isPlaying) {
       if (animationFrameRef.current !== null) {
