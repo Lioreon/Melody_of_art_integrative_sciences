@@ -1,6 +1,6 @@
 # Roadmap de Melody Motion
 
-Estado de referencia público: **matriz demostrativa — commit `c4d9d5a`**. Phase 2 (`7eff8ee`) se conserva como baseline histórico de la arquitectura pedagógica.
+Estado de referencia público: **CameraStage v2 refinado — commit `d9ac4d1`**. Phase 2 (`7eff8ee`) se conserva como baseline histórico de la arquitectura pedagógica.
 
 Este roadmap separa lo implementado de la experiencia objetivo. No constituye un compromiso de calendario.
 
@@ -67,6 +67,14 @@ Este roadmap separa lo implementado de la experiencia objetivo. No constituye un
 - **Carrusel institucional**:
   - superficie translúcida tipo vidrio pulido;
   - mantiene rotación reducida y `prefers-reduced-motion`.
+- **CameraStage v2**:
+  - cámara persistente en laptop/escritorio;
+  - espejo musical con nota, figura, grave/agudo y META/TÚ;
+  - separación entre overlay pedagógico y diagnóstico técnico;
+  - calibración corporal local opcional de cuatro puntos;
+  - normalización corporal hacia el espacio musical estándar;
+  - apertura como medidor informativo en cámara real;
+  - flujo de calibración compacto de cuatro pasos.
 
 ## Fase 3 — aprendizaje musical multimodal
 
@@ -164,12 +172,15 @@ La colaboración A/B queda documentada como investigación futura y no se expone
 Especificación: [TRACKING_V2_SPEC.md](./TRACKING_V2_SPEC.md).
 
 ## Cámara y UX
-Visión futura:
-- calibración: cámara amplia;
-- aprendizaje: cámara compacta;
-- interpretación: cámara minimizable.
 
-No rediseñar la arquitectura de cámara antes de validar necesidades pedagógicas concretas.
+CameraStage v2 ya establece la base vigente. La siguiente etapa es **validación**, no otro rediseño amplio:
+
+- comprobar legibilidad del espejo musical en cámara real;
+- validar META/TÚ y calibración con usuarios;
+- completar regresión multidispositivo;
+- medir estabilidad antes de aumentar complejidad visual.
+
+No añadir nuevas capas informacionales a la cámara sin una necesidad pedagógica observada.
 
 ## Investigación pedagógica
 Melody Motion está orientado principalmente a población infanto-juvenil, pero las afirmaciones sobre memoria, plasticidad o transferencia deben tratarse como hipótesis hasta contar con evaluación experimental.
@@ -190,3 +201,19 @@ Variables futuras de investigación:
 - arquitectura genérica de aprendizaje antes de que al menos dos módulos requieran la misma abstracción;
 - cambios grandes de MediaPipe/cámara sin medición base;
 - colaboración multiusuario visible antes de diseñar identidad, consentimiento y validación pedagógica.
+
+
+## Frontera de reproducibilidad
+
+Siguiente línea recomendada para Codex:
+
+`sesión real/simulada → trayectoria temporal → replay/fixtures → misma pipeline → métricas + regresión`
+
+Candidatos:
+- Session Replay sin video;
+- fixtures canónicos de movimiento;
+- regresión visual por viewport;
+- benchmark de jitter/latencia/estabilidad;
+- exportación local JSON/CSV para análisis posterior.
+
+Estas capacidades son propuestas de investigación y todavía no forman parte del producto público.
