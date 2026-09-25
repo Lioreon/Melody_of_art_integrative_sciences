@@ -253,7 +253,7 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
       )}
 
       {/* Main Pentagram Visualizer Card */}
-      <div className="space-y-4 rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-3 text-[var(--ui-text)] shadow-[var(--ui-shadow)] transition-colors sm:p-4 md:p-6">
+      <div className="mx-auto w-full max-w-[920px] space-y-4 rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-3 text-[var(--ui-text)] shadow-[var(--ui-shadow)] transition-colors sm:p-4 md:p-6">
         {/* Header: Song Info & Target Note Summary */}
         <div className="flex flex-col items-center text-center gap-5 pb-5 border-b border-slate-100 dark:border-slate-800">
           <div>
@@ -271,7 +271,7 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
           </div>
 
           {/* Active Target Note Badge */}
-          <div className="flex flex-wrap justify-center items-stretch gap-3 w-full">
+          <div className="mx-auto flex w-full max-w-2xl flex-wrap items-stretch justify-center gap-3">
             <div className={`px-5 py-4 rounded-xl border text-center min-w-0 ${
               isPitchMatched
                 ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400'
