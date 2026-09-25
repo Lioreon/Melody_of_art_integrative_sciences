@@ -12,9 +12,11 @@ Este documento conserva la evolución técnica, visual y pedagógica de **Melody
 | Reorganización de interfaz | `2076c22` | Fase 1: reorganización de la interfaz y jerarquía visual. |
 | Graphify + Codex | `588f0c7` | Integración de Graphify por proyecto y contexto para agentes. |
 | Phase 2 validada | `7eff8ee` | Bucle pedagógico de Ritmo + estados de gesto integrados. |
-| Tracking v2 + gramática gestual | `07f9c73` | Persistencia de 21 landmarks, geometría inicial de mano y reglas experimentales de silencio / alteraciones. |
-| UI institucional responsive | `2f15ed8` | Shell adaptable para teléfono, tableta y escritorio con destino pedagógico y firma autoral visibles. |
-| Manual técnico-científico 2026 | `307a3ce` | Registro formal de la edición `MM-MAN-2026-02` y su trazabilidad documental. |
+| Tracking v2 experimental | `07f9c73` | Persistencia de 21 landmarks y geometría inicial de mano; la semántica musical experimental se retiró después de la demostración pública. |
+| UI institucional + manual técnico | `54ffc1a` | Shell responsive, identidad institucional y registro de la edición `MM-MAN-2026-02`. |
+| Identidad balanceada | `b7067e4` | Escuela de Música Matiaví · Salinas y Melody Motion reciben peso visual equivalente. |
+| Carrusel + baseline público estable | `c31e246` | Encabezado centrado, carrusel narrativo y retirada de silencios/alteraciones experimentales de los módulos públicos. |
+| Juego + Ranking + persistencia sonora | `c4d9d5a` | Modos de juego opcionales, Ranking local, pentagrama responsive y preferencias de timbre/sonido persistentes. |
 
 ## Evolución conceptual
 
