@@ -3,7 +3,7 @@
 ## Baseline vigente
 
 - Baseline histórico validado: `7eff8ee` — Phase 2.
-- Baseline público actual: `c4d9d5a` — primera matriz demostrativa consolidada.
+- Baseline público actual: `d9ac4d1` — CameraStage v2 y refinamiento de jerarquía informacional.
 - Rama de producción: `main`.
 - Despliegue: GitHub → Cloudflare Pages.
 - URL pública: https://melody-of-art-integrative-sciences.pages.dev
@@ -17,7 +17,7 @@
 - Escala de apertura virtual: ancho relativo de imagen multiplicado por 125. No presentar como medición física.
 - Detector de manos heredado @mediapipe/hands, recursos locales y modelo ligero. Modernizar solo después de comparar calidad y latencia.
 - Detector de marcadores de color sin OpenCV: HSV y mayor componente conectado, análisis 160×120 y hasta 30 Hz. El identificador interno histórico `colored_balls` se conserva temporalmente para evitar una migración innecesaria en el mismo incremento.
-- La cámara no guarda ni envía imágenes en esta versión. La calibración corporal sigue siendo de sesión.
+- La cámara no guarda ni envía imágenes en esta versión. La calibración corporal es opcional, local y persistente en el navegador; conserva tracking crudo y deriva un espacio musical normalizado.
 - No existen cuentas, backend de usuario, sincronización entre dispositivos ni persistencia de Ranking.
 - Sí existe persistencia local limitada mediante `localStorage` para el timbre seleccionado y la opción **Respuesta sonora al mover las manos**; estas preferencias permanecen en el mismo navegador hasta que el usuario las cambie o borre los datos del sitio.
 
@@ -172,3 +172,19 @@ En Compás v1 el tiempo pedagógico depende de tracking válido:
 - la pérdida de tracking no registra error ni penalización.
 
 La primera capa integra únicamente `X = apertura → figura/duración` y `T = momento`. El eje `Y = altura → nota` queda para una etapa posterior.
+
+
+## CameraStage v2 y calibración corporal
+
+- En laptop/escritorio, la cámara permanece visible mientras el panel pedagógico continúa verticalmente.
+- CameraStage funciona como espejo musical: nota, figura, eje grave/agudo y META/TÚ cuando el módulo expone un objetivo.
+- La información técnica queda en segundo plano; landmarks y diagnóstico son opcionales.
+- La apertura en cámara real se representa como medidor; el slider manipulable queda para simulación.
+- La calibración corporal captura apertura mínima/máxima cómoda y altura grave/aguda cómoda.
+- El tracking crudo no se modifica. `musicalPalmState` representa la traducción normalizada para los módulos.
+- Sin calibración, el sistema conserva el rango estándar.
+- La pérdida de tracking sigue siendo incertidumbre perceptiva y no error del estudiante.
+
+## Puente operativo ChatGPT ↔ Codex
+
+`AGENTS.md`, `docs/CODEX_BRIDGE.md`, Graphify y la skill local `.codex/skills/melody-motion/` forman la capa operativa de contexto. Su propósito es reducir lectura indiscriminada del repositorio y preservar las decisiones que una nueva sesión de Codex necesita para trabajar con seguridad.
