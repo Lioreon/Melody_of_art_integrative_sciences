@@ -42,7 +42,7 @@ export const SimpleStaffView: React.FC<SimpleStaffViewProps> = ({
 
   return (
     <div
-      className={`relative rounded-xl px-3 py-5 sm:px-5 flex flex-col items-center justify-center transition-all ${
+      className={`relative mx-auto flex w-full max-w-3xl flex-col items-center justify-center rounded-xl px-3 py-5 transition-all sm:px-5 ${
         isWhite ? 'bg-white/85 border border-slate-300' : 'bg-[#081b26] border border-slate-700'
       }`}
     >
