@@ -288,20 +288,20 @@ export const CameraView: React.FC<CameraViewProps> = ({
               </div>
             )}
 
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full border border-white/10 bg-slate-950/68 px-3 py-1.5 text-white shadow-sm backdrop-blur-md">
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full border border-white/10 bg-slate-950/[0.68] px-3 py-1.5 text-white shadow-sm backdrop-blur-md">
               {stageState.trackingPaused ? (
                 <div className="flex items-center gap-2 whitespace-nowrap text-[10px] font-medium text-amber-100">
                   <span className="h-1.5 w-1.5 rounded-full bg-amber-300" />
                   <span>Seguimiento pausado</span>
-                  <span className="text-white/45">·</span>
-                  <span className="font-normal text-white/70">muestra ambas manos</span>
+                  <span className="text-white/[0.45]">·</span>
+                  <span className="font-normal text-white/[0.70]">muestra ambas manos</span>
                 </div>
               ) : (
                 <div className="flex items-center gap-2 whitespace-nowrap text-[11px] font-medium">
                   <span className="text-lg leading-none text-cyan-200">{stageState.currentFigureSymbol}</span>
                   <span>{stageState.currentFigureLabel}</span>
-                  <span className="text-white/35">·</span>
-                  <span className="text-[10px] font-normal text-white/60">apertura</span>
+                  <span className="text-white/[0.35]">·</span>
+                  <span className="text-[10px] font-normal text-white/[0.60]">apertura</span>
                 </div>
               )}
             </div>
@@ -345,13 +345,13 @@ export const CameraView: React.FC<CameraViewProps> = ({
 
         {/* Hand presence: intentionally minimal, musical meaning lives in the pedagogical overlay. */}
         <div className="pointer-events-none absolute left-3 right-3 top-3 z-20 flex items-center justify-between">
-          <div className="flex items-center gap-1.5 rounded-full border border-white/10 bg-slate-950/55 px-2 py-1 text-[10px] text-white/70 backdrop-blur-md">
-            <span className={`h-1.5 w-1.5 rounded-full ${palmState.leftPalm?.present ? 'bg-cyan-300' : 'bg-white/25'}`} />
+          <div className="flex items-center gap-1.5 rounded-full border border-white/10 bg-slate-950/[0.55] px-2 py-1 text-[10px] text-white/[0.70] backdrop-blur-md">
+            <span className={`h-1.5 w-1.5 rounded-full ${palmState.leftPalm?.present ? 'bg-cyan-300' : 'bg-white/[0.25]'}`} />
             <span>A</span>
           </div>
-          <div className="flex items-center gap-1.5 rounded-full border border-white/10 bg-slate-950/55 px-2 py-1 text-[10px] text-white/70 backdrop-blur-md">
+          <div className="flex items-center gap-1.5 rounded-full border border-white/10 bg-slate-950/[0.55] px-2 py-1 text-[10px] text-white/[0.70] backdrop-blur-md">
             <span>B</span>
-            <span className={`h-1.5 w-1.5 rounded-full ${palmState.rightPalm?.present ? 'bg-cyan-300' : 'bg-white/25'}`} />
+            <span className={`h-1.5 w-1.5 rounded-full ${palmState.rightPalm?.present ? 'bg-cyan-300' : 'bg-white/[0.25]'}`} />
           </div>
         </div>
       </div>
