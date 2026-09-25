@@ -203,7 +203,7 @@ export default function App() {
 
   useEffect(() => {
     setCameraStageTarget(null);
-  }, [activeModuleId]);
+  }, [activeModuleId, compasExperience]);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
