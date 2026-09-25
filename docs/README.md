@@ -5,8 +5,8 @@ Esta carpeta conserva la memoria técnica, pedagógica y de producto del proyect
 ## Documentos
 
 - [DECISIONES.md](./DECISIONES.md) — decisiones técnicas y criterios vigentes.
-- [HISTORIA.md](./HISTORIA.md) — evolución del proyecto desde el prototipo inicial hasta Phase 2.
-- [ROADMAP.md](./ROADMAP.md) — roadmap posterior a Phase 2 y prioridades de implementación.
+- [HISTORIA.md](./HISTORIA.md) — evolución del proyecto desde el prototipo inicial hasta la primera matriz demostrativa pública.
+- [ROADMAP.md](./ROADMAP.md) — estado actual, incrementos posteriores a Phase 2 y prioridades futuras.
 - [MANUAL_USUARIO.md](./MANUAL_USUARIO.md) — versión textual del manual técnico-pedagógico.
 - [VISION_PEDAGOGICA_2026.md](./VISION_PEDAGOGICA_2026.md) — visión de interfaz y pedagogía posterior a las pruebas físicas.
 - [AUDIO_SOURCES.md](./AUDIO_SOURCES.md) — procedencia, licencia y arquitectura de los timbres muestreados.
@@ -21,6 +21,6 @@ La rama `main` contiene el producto vivo. La historia del proyecto se conserva m
 
 Baseline técnico histórico: `7eff8ee` — *feat: add Rhythm Phase 2 learning loop and gesture states*.
 
-Baseline público posterior: Tracking v2 + gramática gestual integrados en `07f9c73`.
+Baseline público actual: `c4d9d5a` — matriz demostrativa con UI responsive, carrusel institucional, modos de juego opcionales, Ranking local de sesión y preferencias sonoras persistentes.
 
 Versión pública: https://melody-of-art-integrative-sciences.pages.dev
