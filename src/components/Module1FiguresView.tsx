@@ -411,7 +411,7 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
           </div>
         )}
 
-        <div className="grid gap-4 text-center md:grid-cols-2">
+        <div className="mx-auto grid w-full max-w-3xl gap-4 text-center md:grid-cols-2">
           <section className="rounded-xl border border-slate-200 p-4 dark:border-slate-800">
             <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
               {level === 0 ? 'Interpretación' : 'Objetivo'}
