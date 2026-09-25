@@ -506,10 +506,10 @@ test('body calibration maps a comfortable range into the standard musical space'
   assert.equal(normalizeHeight(0.2, calibration), 1);
   assert.equal(rawOpeningToMusical(20, calibration), 15);
   assert.equal(rawOpeningToMusical(80, calibration), 85);
-  assert.equal(rawYToMusical(0.8, calibration), 0.92);
-  assert.equal(rawYToMusical(0.2, calibration), 0.08);
+  assert.ok(Math.abs(rawYToMusical(0.8, calibration) - 0.92) < 1e-9);
+  assert.ok(Math.abs(rawYToMusical(0.2, calibration) - 0.08) < 1e-9);
   assert.equal(musicalOpeningToRaw(85, calibration), 80);
-  assert.equal(musicalYToRaw(0.08, calibration), 0.2);
+  assert.ok(Math.abs(musicalYToRaw(0.08, calibration) - 0.2) < 1e-9);
 });
 
 test('calibration transforms musical coordinates without mutating raw tracking coordinates', () => {
@@ -536,7 +536,7 @@ test('CameraStage keeps raw target placement while reporting calibrated musical 
   }, calibration);
   assert.equal(stage.currentNoteId, 'si5');
   assert.equal(stage.currentFigureId, 'redonda');
-  assert.equal(stage.targetRawY, 0.2);
+  assert.ok(stage.targetRawY !== null && Math.abs(stage.targetRawY - 0.2) < 1e-9);
   assert.equal(stage.targetRawOpening, 80);
   assert.equal(stage.aligned, true);
   assert.equal(stage.calibrationActive, true);
