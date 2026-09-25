@@ -540,30 +540,82 @@ export default function App() {
             />
             </div>
 
-            <details className="rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-4 text-sm shadow-[var(--ui-shadow)]">
-              <summary className="cursor-pointer">Seguimiento y calibración</summary>
-              <div className="pt-4 space-y-3">
-                <BodyCalibrationPanel palmState={palmState} calibration={bodyCalibration} onChange={setBodyCalibration} />
-                <label className="block">Modo de detección
-                  <select aria-label="Modo de detección" className="ml-3 rounded border p-2 bg-white text-slate-800" value={trackingMode}
-                    onChange={e => setTrackingMode(e.target.value as TrackingModeType)}>
-                    <option value="hands">Manos libres</option><option value="colored_balls">Marcadores de color</option>
-                  </select>
-                </label>
-                {trackingMode === 'colored_balls' && <>
-                  <div className="flex gap-4">
-                    <label>Marcador A <input aria-label="Color del marcador A" type="color" value={colors.color1Hex}
-                      onChange={e => setColors(c => ({ ...c, color1Hex: e.target.value }))} /></label>
-                    <label>Marcador B <input aria-label="Color del marcador B" type="color" value={colors.color2Hex}
-                      onChange={e => setColors(c => ({ ...c, color2Hex: e.target.value }))} /></label>
+            <details className="group rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] text-sm shadow-[var(--ui-shadow)]">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
+                <div>
+                  <div className="text-sm font-medium text-[var(--ui-text)]">Ajustes rápidos</div>
+                  <div className="mt-0.5 text-[11px] text-slate-500">Detección y rango corporal</div>
+                </div>
+                <span className="rounded-full bg-slate-500/8 px-2 py-1 text-[10px] font-semibold text-slate-500 group-open:hidden">
+                  {bodyCalibration ? 'Rango personalizado' : 'Rango estándar'}
+                </span>
+              </summary>
+
+              <div className="space-y-3 border-t border-[var(--ui-border)] px-4 py-3">
+                <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-slate-500/[0.035] px-3 py-2.5">
+                  <div>
+                    <div className="text-xs font-semibold text-[var(--ui-text)]">Detección</div>
+                    <div className="mt-0.5 text-[11px] text-slate-500">Cómo identifica Melody Motion tus manos.</div>
                   </div>
-                  <label className="block">Tolerancia de color: {colors.tolerance}
-                    <input className="block w-full" aria-label="Tolerancia de color" type="range" min="20" max="90" value={colors.tolerance}
-                      onChange={e => setColors(c => ({ ...c, tolerance: Number(e.target.value) }))} />
-                  </label>
-                  <p className="text-xs">Usa dos referencias cromáticas saturadas y distintas. Pueden ser objetos, tarjetas, adhesivos o marcadores visibles; no tienen que ser pelotas.</p>
-                </>}
-                <p className="text-xs text-slate-500">La cámara se procesa en este equipo. La apertura usa unidades relativas; las referencias heredadas en cm son aproximaciones.</p>
+                  <select
+                    aria-label="Modo de detección"
+                    className="min-w-[150px] rounded-lg border border-[var(--ui-border)] bg-[var(--ui-background)] px-3 py-2 text-xs text-[var(--ui-text)]"
+                    value={trackingMode}
+                    onChange={e => setTrackingMode(e.target.value as TrackingModeType)}
+                  >
+                    <option value="hands">Manos libres</option>
+                    <option value="colored_balls">Marcadores de color</option>
+                  </select>
+                </div>
+
+                <BodyCalibrationPanel palmState={palmState} calibration={bodyCalibration} onChange={setBodyCalibration} />
+
+                {trackingMode === 'colored_balls' && (
+                  <div className="space-y-3 rounded-xl border border-[var(--ui-border)] px-3 py-3">
+                    <div className="flex flex-wrap items-center gap-4 text-xs">
+                      <label className="flex items-center gap-2">
+                        <span>Marcador A</span>
+                        <input
+                          aria-label="Color del marcador A"
+                          type="color"
+                          value={colors.color1Hex}
+                          onChange={e => setColors(c => ({ ...c, color1Hex: e.target.value }))}
+                        />
+                      </label>
+                      <label className="flex items-center gap-2">
+                        <span>Marcador B</span>
+                        <input
+                          aria-label="Color del marcador B"
+                          type="color"
+                          value={colors.color2Hex}
+                          onChange={e => setColors(c => ({ ...c, color2Hex: e.target.value }))}
+                        />
+                      </label>
+                    </div>
+                    <label className="block text-xs">
+                      <span className="flex items-center justify-between gap-3">
+                        <span>Tolerancia de color</span>
+                        <span className="font-mono text-slate-500">{colors.tolerance}</span>
+                      </span>
+                      <input
+                        className="mt-2 block w-full accent-cyan-700"
+                        aria-label="Tolerancia de color"
+                        type="range"
+                        min="20"
+                        max="90"
+                        value={colors.tolerance}
+                        onChange={e => setColors(c => ({ ...c, tolerance: Number(e.target.value) }))}
+                      />
+                    </label>
+                    <p className="text-[11px] leading-relaxed text-slate-500">
+                      Usa dos referencias cromáticas visibles y distintas: tarjetas, adhesivos, objetos o marcadores.
+                    </p>
+                  </div>
+                )}
+
+                <p className="text-[11px] leading-relaxed text-slate-500">
+                  Procesamiento local · apertura en unidades relativas · sin almacenamiento de video.
+                </p>
               </div>
             </details>
 
