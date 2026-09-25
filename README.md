@@ -38,16 +38,16 @@ Esto no convierte por sí solo la web publicada en una PWA disponible sin conexi
 ## Probar el instrumento
 
 1. La aplicación empieza en **Virtual**, sin solicitar cámara. Mueve la apertura para cambiar la figura.
-2. Abre **Opciones de orientación y calibración** para cambiar la altura simulada.
+2. Abre **Ajustes de cámara** para orientación, espejo pedagógico y opciones técnicas. En simulación puedes cambiar la altura desde los controles disponibles.
 3. Pulsa **Tocar nota** o la barra espaciadora. Los controles de formulario conservan sus propias teclas.
-4. En **Tempo y rango cómodo**, ajusta el tempo o guarda las posiciones extremas. La calibración es por sesión.
+4. En **Tempo**, ajusta el pulso del instrumento. La calibración corporal se realiza una sola vez desde **Ajustes rápidos**, junto a la cámara, y se comparte entre módulos.
 5. En **Fuente de video**, elige la cámara predeterminada o una cámara específica y pulsa **Activar cámara**. Permite el acceso en el navegador para ver los nombres completos. **Actualizar lista** vuelve a consultar las fuentes; la lista también se actualiza al conectar o retirar dispositivos. Al cambiar la selección con la cámara activa, la fuente anterior se cierra y se abre la elegida. Puedes detenerla con **Detener cámara**. Se admiten cámaras físicas y virtuales expuestas como entradas de video por el navegador; archivos de video y direcciones de cámaras IP no están implementados.
-6. En **Seguimiento y calibración**, elige manos libres o **marcadores de color**. Los marcadores pueden ser objetos, tarjetas o adhesivos cromáticos; no tienen que ser pelotas. Usa dos colores saturados claramente distintos y ajusta la tolerancia. La selección de color sigue siendo manual; el cuentagotas corresponde a C1.
+6. En **Ajustes rápidos**, elige manos libres o **marcadores de color** y, si lo deseas, inicia la calibración corporal de cuatro pasos. Los marcadores pueden ser objetos, tarjetas o adhesivos cromáticos; no tienen que ser pelotas. Usa dos colores saturados claramente distintos y ajusta la tolerancia. La selección de color sigue siendo manual; el cuentagotas corresponde a C1.
 
 La separación es una escala relativa de 0 a 125 unidades, proporcional al ancho de la imagen; no mide centímetros reales ni profundidad. La altura musical usa el centro vertical promedio de las dos manos y se calibra de forma independiente a la apertura horizontal.
 Los módulos heredados conservan algunos textos y nombres internos `distanceCm`, que corresponden a esa misma escala virtual. Mantén estable la distancia del cuerpo a la cámara.
 La vista Instrumento no emite nuevas notas si falta un punto. Una nota ya iniciada termina su duración programada.
-Los marcadores se distinguen por color, aunque se crucen; las manos libres siguen ordenándose por posición horizontal por compatibilidad. MediaPipe ya conserva además handedness y confidence para la futura identidad estable T5.
+La calibración corporal, cuando se completa, queda guardada localmente en ese navegador hasta restablecerla o borrar los datos del sitio. Los marcadores se distinguen por color, aunque se crucen; las manos libres siguen ordenándose por posición horizontal por compatibilidad. MediaPipe ya conserva además handedness y confidence para la futura identidad estable T5.
 
 ## Cambios de esta adaptación
 
