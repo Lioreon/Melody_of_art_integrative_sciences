@@ -2,7 +2,8 @@
 
 ## Baseline vigente
 
-- Baseline técnico validado: `7eff8ee` — Phase 2.
+- Baseline histórico validado: `7eff8ee` — Phase 2.
+- Baseline público actual: `c4d9d5a` — primera matriz demostrativa consolidada.
 - Rama de producción: `main`.
 - Despliegue: GitHub → Cloudflare Pages.
 - URL pública: https://melody-of-art-integrative-sciences.pages.dev
@@ -16,8 +17,9 @@
 - Escala de apertura virtual: ancho relativo de imagen multiplicado por 125. No presentar como medición física.
 - Detector de manos heredado @mediapipe/hands, recursos locales y modelo ligero. Modernizar solo después de comparar calidad y latencia.
 - Detector de marcadores de color sin OpenCV: HSV y mayor componente conectado, análisis 160×120 y hasta 30 Hz. El identificador interno histórico `colored_balls` se conserva temporalmente para evitar una migración innecesaria en el mismo incremento.
-- La cámara no guarda ni envía imágenes en esta versión. Configuración y calibración viven en memoria durante la sesión.
-- Sesiones, cuentas, almacenamiento persistente y sincronización entre dispositivos no están implementados.
+- La cámara no guarda ni envía imágenes en esta versión. La calibración corporal sigue siendo de sesión.
+- No existen cuentas, backend de usuario, sincronización entre dispositivos ni persistencia de Ranking.
+- Sí existe persistencia local limitada mediante `localStorage` para el timbre seleccionado y la opción **Respuesta sonora al mover las manos**; estas preferencias permanecen en el mismo navegador hasta que el usuario las cambie o borre los datos del sitio.
 
 ## Regla arquitectónica
 

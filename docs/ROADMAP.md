@@ -1,6 +1,6 @@
 # Roadmap de Melody Motion
 
-Estado de referencia: **Phase 2 — commit `7eff8ee`**.
+Estado de referencia público: **matriz demostrativa — commit `c4d9d5a`**. Phase 2 (`7eff8ee`) se conserva como baseline histórico de la arquitectura pedagógica.
 
 Este roadmap separa lo implementado de la experiencia objetivo. No constituye un compromiso de calendario.
 
@@ -111,7 +111,7 @@ Primera implementación completada en Compás v1:
 
 - patrón sencillo seleccionable;
 - pulso estable;
-- apertura/cierre de manos como secuencia rítmica;
+- apertura/separación entre manos como secuencia rítmica;
 - playhead;
 - anticipación de la figura siguiente;
 - feedback sin penalizar incertidumbre de tracking;
