@@ -15,7 +15,7 @@
     "@mediapipe/hands": "0.4.1675469240",
     "canvas-confetti": "1.9.4",
     "lucide-react": "0.546.0",
-    "react": "19.0.1",
+    "react": "19.3.0",
     "react-dom": "19.0.1",
     "recharts": "3.10.1"
   },
