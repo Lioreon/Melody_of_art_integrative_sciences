@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect, useRef, useCallback, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo, lazy, Suspense } from 'react';
 import { InstrumentPanel } from './components/InstrumentPanel';
 import { VideoSourceSelector } from './components/VideoSourceSelector';
 import { trackingState, SEPARATION_SCALE } from './services/trackingGeometry';
@@ -17,6 +17,7 @@ import { SessionReport } from './components/SessionReport';
 import { InfoModal } from './components/InfoModal';
 import { InstitutionalSignature } from './components/InstitutionalSignature';
 import { WorkspaceHeader } from './components/WorkspaceHeader';
+import { BodyCalibrationPanel } from './components/BodyCalibrationPanel';
 import { LearningRankingView } from './components/LearningRankingView';
 
 import { Module1FiguresView } from './components/Module1FiguresView';
@@ -24,7 +25,7 @@ import { Module2PentagramView } from './components/Module2PentagramView';
 import { CompasAccordionView } from './components/CompasAccordionView';
 
 import { SCORE_PIECES, ScorePiece } from './data/scorePresets';
-import { AppTheme, DualPalmState, ReactionAttempt, ScoreCue, SessionStats, TempoPreset, TrainingMode } from './types';
+import { AppTheme, BodyCalibration, CameraStageTarget, DualPalmState, ReactionAttempt, ScoreCue, SessionStats, TempoPreset, TrainingMode } from './types';
 import { HandTracker } from './services/handTracker';
 import { audioSynthesizer } from './services/audioSynthesizer';
 import type { InstrumentTimbre } from './services/instrumentSamples';
@@ -34,6 +35,14 @@ import {
   saveInstrumentTimbre,
   saveLiveSoundFeedback,
 } from './services/userPreferences';
+import {
+  applyBodyCalibration,
+  loadBodyCalibration,
+  musicalOpeningToRaw,
+  musicalYToRaw,
+  saveBodyCalibration,
+} from './services/bodyCalibration';
+import { deriveCameraStageState } from './services/cameraStage';
 import {
   EMPTY_LEARNING_SCORE,
   addLearningPoints,
@@ -75,6 +84,8 @@ export default function App() {
   const [showReportModal, setShowReportModal] = useState<boolean>(false);
   const [compasExperience, setCompasExperience] = useState<CompasExperience>('accordion');
   const [learningScore, setLearningScore] = useState(EMPTY_LEARNING_SCORE);
+  const [bodyCalibration, setBodyCalibration] = useState<BodyCalibration | null>(() => loadBodyCalibration());
+  const [cameraStageTarget, setCameraStageTarget] = useState<CameraStageTarget | null>(null);
 
   const handleToggleTheme = () => {
     setTheme((prev) => (prev === 'white' ? 'dark_cyan' : 'white'));
@@ -151,6 +162,11 @@ export default function App() {
     conductorGrade: 'A',
   });
   const [lastAttempt, setLastAttempt] = useState<ReactionAttempt | null>(null);
+  const musicalPalmState = useMemo(() => applyBodyCalibration(palmState, bodyCalibration), [palmState, bodyCalibration]);
+  const cameraStageState = useMemo(
+    () => deriveCameraStageState(palmState, musicalPalmState, cameraStageTarget, bodyCalibration),
+    [palmState, musicalPalmState, cameraStageTarget, bodyCalibration],
+  );
   const activeArea = AREA_COPY[activeModuleId] ?? AREA_COPY.instrument;
   const learningPoints = totalLearningPoints(learningScore);
   const rankingUnlocked = isRankingUnlocked(learningScore);
@@ -180,6 +196,14 @@ export default function App() {
   useEffect(() => {
     saveLiveSoundFeedback(liveSoundFeedback);
   }, [liveSoundFeedback]);
+
+  useEffect(() => {
+    saveBodyCalibration(bodyCalibration);
+  }, [bodyCalibration]);
+
+  useEffect(() => {
+    setCameraStageTarget(null);
+  }, [activeModuleId, compasExperience]);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -255,6 +279,16 @@ export default function App() {
     }
   };
 
+  const handleMusicalSimulatedDistanceChange = (distCm: number) => {
+    handleSimulatedDistanceChange(musicalOpeningToRaw(distCm, bodyCalibration));
+  };
+
+  const handleMusicalSimulatedPositionChange = (yNorm: number, distCm: number) => {
+    handleSimulatedPositionChange(
+      musicalYToRaw(yNorm, bodyCalibration),
+      musicalOpeningToRaw(distCm, bodyCalibration),
+    );
+  };
   const handleScoreGain = (pts: number) => {
     setStats((prev) => ({
       ...prev,
@@ -375,13 +409,13 @@ export default function App() {
 
   // Update orchestra audio drone according to palm distance
   useEffect(() => {
-    if (isPlaying && palmState.leftPalm?.present && palmState.rightPalm?.present) {
-      audioSynthesizer.updateOrchestraFromDistance(palmState.distanceCm);
+    if (isPlaying && musicalPalmState.leftPalm?.present && musicalPalmState.rightPalm?.present) {
+      audioSynthesizer.updateOrchestraFromDistance(musicalPalmState.distanceCm);
       if (activeCue) {
-        evaluateCueHit(activeCue, palmState);
+        evaluateCueHit(activeCue, musicalPalmState);
       }
     }
-  }, [palmState, isPlaying, activeCue, evaluateCueHit]);
+  }, [musicalPalmState, isPlaying, activeCue, evaluateCueHit]);
 
   // Metronome Beat Timer Loop
   useEffect(() => {
@@ -501,6 +535,7 @@ export default function App() {
               onToggleSimulation={handleToggleSimulation}
               cameraError={cameraError}
               diagnostics={trackingDiagnostics}
+              stageState={cameraStageState}
               theme={theme}
             />
             </div>
@@ -508,6 +543,7 @@ export default function App() {
             <details className="rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-4 text-sm shadow-[var(--ui-shadow)]">
               <summary className="cursor-pointer">Seguimiento y calibración</summary>
               <div className="pt-4 space-y-3">
+                <BodyCalibrationPanel palmState={palmState} calibration={bodyCalibration} onChange={setBodyCalibration} />
                 <label className="block">Modo de detección
                   <select aria-label="Modo de detección" className="ml-3 rounded border p-2 bg-white text-slate-800" value={trackingMode}
                     onChange={e => setTrackingMode(e.target.value as TrackingModeType)}>
@@ -551,7 +587,7 @@ export default function App() {
             <WorkspaceHeader title={activeArea.title} description={activeArea.description} />
             {activeModuleId === 'instrument' && (
               <InstrumentPanel
-                palmState={palmState}
+                palmState={musicalPalmState}
                 theme={theme}
                 timbre={instrumentTimbre}
                 onTimbreChange={setInstrumentTimbre}
@@ -561,20 +597,22 @@ export default function App() {
             )}
             {activeModuleId === 'module_1_figures_duration' && (
               <Module1FiguresView
-                palmState={palmState}
+                palmState={musicalPalmState}
                 onScoreGain={(points) => handleLearningScoreGain('rhythm', points)}
                 isSimulation={isSimulation}
-                onSimulatedDistanceChange={handleSimulatedDistanceChange}
+                onSimulatedDistanceChange={handleMusicalSimulatedDistanceChange}
+                onCameraStageTargetChange={setCameraStageTarget}
                 theme={theme}
               />
             )}
 
             {activeModuleId === 'module_2_pentagram_height' && (
               <Module2PentagramView
-                palmState={palmState}
+                palmState={musicalPalmState}
                 onScoreGain={(points) => handleLearningScoreGain('pentagram', points)}
                 isSimulation={isSimulation}
-                onSimulatedPositionChange={handleSimulatedPositionChange}
+                onSimulatedPositionChange={handleMusicalSimulatedPositionChange}
+                onCameraStageTargetChange={setCameraStageTarget}
                 theme={theme}
                 timbre={instrumentTimbre}
                 onTimbreChange={setInstrumentTimbre}
@@ -629,9 +667,10 @@ export default function App() {
 
                 {compasExperience === 'accordion' ? (
                   <CompasAccordionView
-                    palmState={palmState}
+                    palmState={musicalPalmState}
                     isSimulation={isSimulation}
-                    onSimulatedDistanceChange={handleSimulatedDistanceChange}
+                    onSimulatedDistanceChange={handleMusicalSimulatedDistanceChange}
+                    onCameraStageTargetChange={setCameraStageTarget}
                     theme={theme}
                   />
                 ) : (
@@ -641,7 +680,7 @@ export default function App() {
                       currentBeat={currentBeat}
                       currentMeasure={currentMeasure}
                       activeCue={activeCue}
-                      palmState={palmState}
+                      palmState={musicalPalmState}
                       isPlaying={isPlaying}
                       onTogglePlay={() => setIsPlaying(!isPlaying)}
                       onResetScore={handleResetScore}

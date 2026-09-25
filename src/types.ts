@@ -152,6 +152,43 @@ export interface ModuleInfo {
   iconName: string;
 }
 
+export interface BodyCalibration {
+  minOpening: number;
+  maxOpening: number;
+  lowY: number;
+  highY: number;
+  capturedAt: number;
+  version: number;
+}
+
+export interface CameraStageTarget {
+  noteId?: string;
+  noteLabel?: string;
+  figureId?: string;
+  figureLabel?: string;
+  figureSymbol?: string;
+  targetYNorm?: number;
+  targetOpening?: number;
+  matched?: boolean;
+}
+
+export interface CameraStageState {
+  hasTracking: boolean;
+  trackingPaused: boolean;
+  rawAverageY: number | null;
+  currentMusicalY: number | null;
+  currentOpening: number | null;
+  currentNoteId: string | null;
+  currentNoteLabel: string | null;
+  currentFigureId: string | null;
+  currentFigureLabel: string | null;
+  currentFigureSymbol: string | null;
+  target: CameraStageTarget | null;
+  targetRawY: number | null;
+  targetRawOpening: number | null;
+  aligned: boolean;
+  calibrationActive: boolean;
+}
 export type AppTheme = 'white' | 'dark_cyan';
 
 export type TrackingModeType = 'hands' | 'colored_balls';

@@ -10,7 +10,7 @@ import { GuidedStaffView } from './GuidedStaffView';
 import { TREBLE_TRAINING_RANGE, MUSICAL_FIGURES as INSTRUMENT_FIGURES, mapHeightToNote, mapSeparationToFigure, noteHeightForId, ledgerLineStepsForStaffStep } from '../data/musicalScaleData';
 import confetti from 'canvas-confetti';
 import { GALLERY_ITEMS } from '../data/scorePresets';
-import { DualPalmState, GalleryItem, PentagramNoteItem, AppTheme } from '../types';
+import { DualPalmState, GalleryItem, PentagramNoteItem, AppTheme, CameraStageTarget } from '../types';
 import { audioSynthesizer } from '../services/audioSynthesizer';
 import { Music, Check, ChevronDown, ChevronUp, Gamepad2, RotateCcw, Trophy } from 'lucide-react';
 import { pentagramGameAward } from '../services/learningGame';
@@ -27,6 +27,7 @@ interface Module2PentagramViewProps {
   theme?: AppTheme;
   timbre: InstrumentTimbre;
   onTimbreChange: (timbre: InstrumentTimbre) => void;
+  onCameraStageTargetChange?: (target: CameraStageTarget | null) => void;
 }
 
 export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
@@ -37,6 +38,7 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
   theme = 'dark_cyan',
   timbre,
   onTimbreChange,
+  onCameraStageTargetChange,
 }) => {
   const isWhite = theme === 'white';
   const [selectedGalleryItem, setSelectedGalleryItem] = useState<GalleryItem>(GALLERY_ITEMS[0]);
@@ -74,6 +76,19 @@ export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
   const hasBothHands = Boolean(palmState.leftPalm?.present && palmState.rightPalm?.present);
   const isTargetMatched = hasBothHands && isPitchMatched && isDistanceMatched;
 
+  useEffect(() => {
+    if (!onCameraStageTargetChange) return;
+    onCameraStageTargetChange({
+      noteId: targetScaleNote.id,
+      noteLabel: targetScaleNote.octaveName,
+      figureId: targetFigure.id,
+      figureLabel: targetFigure.name,
+      figureSymbol: targetFigure.symbol,
+      targetYNorm: noteHeightForId(targetScaleNote.id),
+      targetOpening: activeTargetNote.targetDistanceCm,
+      matched: isTargetMatched,
+    });
+  }, [activeTargetNote.targetDistanceCm, isTargetMatched, onCameraStageTargetChange, targetFigure.id, targetFigure.name, targetFigure.symbol, targetScaleNote.id, targetScaleNote.octaveName]);
   // Sound feedback on note change
   useEffect(() => {
     if (!gameMode && hasBothHands && currentDetectedNote.frequency !== lastSoundFrequency) {

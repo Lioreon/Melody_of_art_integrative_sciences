@@ -4,7 +4,7 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
-import { DualPalmState, ScoreCue, AppTheme, TrackingDiagnostics } from '../types';
+import { DualPalmState, ScoreCue, AppTheme, TrackingDiagnostics, CameraStageState } from '../types';
 import { AlertCircle, Sliders, RotateCw, FlipHorizontal, ChevronDown, ChevronUp } from 'lucide-react';
 
 const HAND_CONNECTIONS: Array<[number, number]> = [
@@ -27,6 +27,7 @@ interface CameraViewProps {
   onToggleSimulation: () => void;
   cameraError: boolean;
   diagnostics: TrackingDiagnostics;
+  stageState: CameraStageState;
   theme?: AppTheme;
 }
 
@@ -41,6 +42,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
   onToggleSimulation,
   cameraError,
   diagnostics,
+  stageState,
   theme = 'dark_cyan',
 }) => {
   const isWhite = theme === 'white';
@@ -51,6 +53,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
   const [isMirrored, setIsMirrored] = useState<boolean>(true);
   const [showAdvancedSettings, setShowAdvancedSettings] = useState<boolean>(false);
   const [showHandSkeleton, setShowHandSkeleton] = useState<boolean>(false);
+  const [showPedagogicalOverlay, setShowPedagogicalOverlay] = useState<boolean>(true);
 
   const handleRotate = () => {
     setRotationDeg((prev) => (prev + 90) % 360);
@@ -245,6 +248,72 @@ export const CameraView: React.FC<CameraViewProps> = ({
           </div>
         )}
 
+        {showPedagogicalOverlay && (
+          <div className="pointer-events-none absolute inset-0 z-[15] overflow-hidden">
+            <div className="absolute bottom-4 left-4 top-14 w-px bg-white/20">
+              <span className="absolute -left-1 top-0 -translate-x-full rounded bg-slate-950/75 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-cyan-200">Agudo</span>
+              <span className="absolute -bottom-1 -left-1 -translate-x-full rounded bg-slate-950/75 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-amber-200">Grave</span>
+            </div>
+
+            {stageState.targetRawY !== null && (
+              <div
+                className="absolute left-12 right-3 border-t border-dashed border-amber-300/70"
+                style={{ top: `${Math.max(8, Math.min(92, stageState.targetRawY * 100))}%` }}
+              >
+                <span className="absolute right-0 -top-6 rounded-md border border-amber-300/30 bg-slate-950/80 px-2 py-1 text-[10px] font-semibold text-amber-200">
+                  META {stageState.target?.noteLabel ?? ''}
+                </span>
+              </div>
+            )}
+
+            {stageState.targetRawOpening !== null && (
+              <>
+                <div
+                  className="absolute bottom-12 top-14 border-l border-dashed border-amber-300/55"
+                  style={{ left: `${50 - Math.max(6, Math.min(38, stageState.targetRawOpening / 2.5))}%` }}
+                />
+                <div
+                  className="absolute bottom-12 top-14 border-l border-dashed border-amber-300/55"
+                  style={{ left: `${50 + Math.max(6, Math.min(38, stageState.targetRawOpening / 2.5))}%` }}
+                />
+              </>
+            )}
+
+            {stageState.rawAverageY !== null && stageState.currentNoteLabel && (
+              <div
+                className="absolute left-12 rounded-lg border border-cyan-300/30 bg-slate-950/82 px-2.5 py-1.5 text-xs font-semibold text-white shadow-lg backdrop-blur-sm transition-[top] duration-150 motion-reduce:transition-none"
+                style={{ top: `${Math.max(12, Math.min(84, stageState.rawAverageY * 100))}%` }}
+              >
+                <span className="mr-1 text-cyan-300">TÚ</span>{stageState.currentNoteLabel}
+              </div>
+            )}
+
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-xl border border-white/15 bg-slate-950/82 px-3 py-2 text-center text-white shadow-lg backdrop-blur-sm">
+              {stageState.trackingPaused ? (
+                <div className="text-[11px] font-medium text-amber-200">Seguimiento pausado · muestra ambas manos</div>
+              ) : (
+                <>
+                  <div className="text-[10px] uppercase tracking-wide text-slate-400">Apertura → figura</div>
+                  <div className="mt-0.5 flex items-center justify-center gap-2 text-sm font-semibold">
+                    <span className="text-2xl leading-none text-cyan-200">{stageState.currentFigureSymbol}</span>
+                    <span>{stageState.currentFigureLabel}</span>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {stageState.target && (
+              <div className={stageState.aligned ? 'absolute right-3 top-14 rounded-lg border border-emerald-300/35 bg-emerald-950/80 px-2.5 py-1.5 text-[10px] font-semibold text-emerald-200' : 'absolute right-3 top-14 rounded-lg border border-amber-300/25 bg-slate-950/75 px-2.5 py-1.5 text-[10px] font-semibold text-amber-100'}>
+                {stageState.aligned ? '✓ META alineada' : `META ${stageState.target.figureLabel ?? stageState.target.noteLabel ?? ''}`}
+              </div>
+            )}
+
+            {stageState.calibrationActive && (
+              <div className="absolute bottom-3 right-3 rounded bg-emerald-950/75 px-2 py-1 text-[9px] font-semibold uppercase tracking-wide text-emerald-200">Rango personal</div>
+            )}
+          </div>
+        )}
+
         {/* Camera Error Notice (Safety & system status preserved) */}
         {cameraError && !isSimulation && (
           <div className="absolute inset-0 z-20 bg-slate-950/95 flex flex-col items-center justify-center p-6 text-center space-y-3">
@@ -347,16 +416,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
                         Métricas locales de la sesión; no se guarda video.
                       </div>
                     </div>
-                    {diagnostics.backend === 'mediapipe-hands' && (
-                      <label className="flex items-center gap-2 text-[11px] text-slate-500">
-                        <input
-                          type="checkbox"
-                          checked={showHandSkeleton}
-                          onChange={(event) => setShowHandSkeleton(event.target.checked)}
-                        />
-                        Mostrar 21 landmarks
-                      </label>
-                    )}
+
                   </div>
 
                   <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 sm:grid-cols-4">
@@ -379,6 +439,18 @@ export const CameraView: React.FC<CameraViewProps> = ({
                 </div>
               )}
 
+              <div className="grid gap-2 sm:grid-cols-2">
+                <label className="flex items-center gap-2 rounded-lg border border-slate-200 p-2 text-[11px] text-slate-500 dark:border-slate-800">
+                  <input type="checkbox" checked={showPedagogicalOverlay} onChange={(event) => setShowPedagogicalOverlay(event.target.checked)} />
+                  Espejo musical pedagógico
+                </label>
+                {diagnostics.backend === 'mediapipe-hands' && (
+                  <label className="flex items-center gap-2 rounded-lg border border-slate-200 p-2 text-[11px] text-slate-500 dark:border-slate-800">
+                    <input type="checkbox" checked={showHandSkeleton} onChange={(event) => setShowHandSkeleton(event.target.checked)} />
+                    Vista técnica · 21 landmarks
+                  </label>
+                )}
+              </div>
               {/* Camera Orientation buttons */}
               {!isSimulation && (
                 <div className="flex items-center gap-2">

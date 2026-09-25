@@ -103,6 +103,13 @@ Tracking v2 ya cubre T0/T1 y una primera capa T2: Melody Motion registra métric
 La geometría de mano OPEN/CLOSED se mantiene disponible como información perceptiva y de validación técnica. La relación de puños con silencios y de gestos asimétricos con alteraciones queda registrada como investigación futura y no forma parte de la primera demostración pública.
 
 
+## CameraStage v2 · espejo musical
+
+La cámara funciona también como referencia pedagógica: superpone de forma discreta la **nota actual**, la **figura asociada a la apertura** y, cuando un ejercicio tiene objetivo, la relación **META / TÚ**. Los 21 landmarks permanecen disponibles como vista técnica opcional y no forman parte de la interfaz pedagógica por defecto.
+
+Melody Motion incorpora además una **calibración corporal local y opcional**. El estudiante captura apertura mínima/máxima cómoda y posiciones grave/aguda cómodas; esos cuatro puntos se normalizan a un espacio musical 0–1 compartido por Instrumento, Ritmo, Pentagrama y Compás. La calibración se conserva únicamente en el navegador, puede restablecerse y no almacena video ni imágenes.
+
+Si no existe calibración, todos los módulos continúan usando el rango estándar anterior. La pérdida de tracking sigue representando incertidumbre del sistema y nunca se interpreta automáticamente como error del estudiante.
 ## Timbres de instrumento
 
 Los módulos **Instrumento** y **Pentagrama** comparten el sintetizador Web Audio interno o timbres muestreados de **piano, guitarra nylon, violín con arco y violín pizzicato**. En un navegador sin preferencia previa, Melody Motion inicia con **Violín · pizzicato** y con **Respuesta sonora al mover las manos** activada. A partir de ahí, el timbre y el estado de la respuesta sonora se conservan al cambiar de módulo y después de recargar la aplicación en el mismo dispositivo, respetando cualquier cambio explícito del usuario. Las muestras se cargan bajo demanda desde fuentes públicas fijadas a commits concretos; cada una conserva su atribución y licencia. Si la carga externa falla, Melody Motion vuelve al sintetizador interno. Consulte [docs/AUDIO_SOURCES.md](docs/AUDIO_SOURCES.md).
