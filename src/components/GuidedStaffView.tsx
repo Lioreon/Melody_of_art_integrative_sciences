@@ -137,7 +137,7 @@ export const GuidedStaffView: React.FC<GuidedStaffViewProps> = ({
   const currentColor = matched ? '#059669' : (isWhite ? '#0369a1' : '#55d8ee');
 
   return (
-    <div className={`rounded-xl border px-2 py-4 sm:px-5 ${
+    <div className={`mx-auto w-full max-w-3xl rounded-xl border px-2 py-4 sm:px-5 ${
       isWhite ? 'border-slate-300 bg-white/85' : 'border-slate-700 bg-[#081b26]'
     }`}>
       <div className="mb-3 text-center">
