@@ -6,7 +6,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useHoldProgress } from '../hooks/useHoldProgress';
 import { MUSICAL_FIGURES } from '../data/scorePresets';
-import type { AppTheme, DualPalmState, MusicalFigure } from '../types';
+import type { AppTheme, CameraStageTarget, DualPalmState, MusicalFigure } from '../types';
 import { audioSynthesizer } from '../services/audioSynthesizer';
 import {
   advanceRhythmSequence,
@@ -30,6 +30,7 @@ interface Module1FiguresViewProps {
   onScoreGain: (points: number) => void;
   isSimulation: boolean;
   onSimulatedDistanceChange: (distCm: number) => void;
+  onCameraStageTargetChange?: (target: CameraStageTarget | null) => void;
   theme?: AppTheme;
 }
 
@@ -53,6 +54,7 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
   onScoreGain,
   isSimulation,
   onSimulatedDistanceChange,
+  onCameraStageTargetChange,
   theme = 'dark_cyan',
 }) => {
   const isWhite = theme === 'white';
@@ -92,6 +94,17 @@ export const Module1FiguresView: React.FC<Module1FiguresViewProps> = ({
     : evaluateRhythmTarget(targetFigure, detectedFigure, hasTracking, palmState.distanceCm);
   const isHoldingCorrect = level !== 0 && phase !== 'SUCCESS' && evaluation.status === 'correct';
 
+  useEffect(() => {
+    if (!onCameraStageTargetChange) return;
+    if (level === 0) { onCameraStageTargetChange(null); return; }
+    onCameraStageTargetChange({
+      figureId: targetFigure.id,
+      figureLabel: targetFigure.name,
+      figureSymbol: targetFigure.symbol,
+      targetOpening: targetFigure.targetDistanceIdealCm,
+      matched: evaluation.status === 'correct',
+    });
+  }, [level, targetFigure.id, targetFigure.name, targetFigure.symbol, targetFigure.targetDistanceIdealCm, evaluation.status, onCameraStageTargetChange]);
   const resetSuccessTimer = () => {
     if (successTimerRef.current !== null) {
       clearTimeout(successTimerRef.current);
