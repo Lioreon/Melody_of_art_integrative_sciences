@@ -2,6 +2,8 @@
 
 Este documento es la capa de transferencia entre las conversaciones de investigación/diseño y el trabajo de ingeniería dentro de Codex. Su objetivo es **reducir reconstrucción de contexto**, no duplicar toda la historia del proyecto.
 
+**Entrada rápida en Codex:** cuando la skill del proyecto esté disponible, invoca `$melody-motion` al comenzar una tarea sustancial. La skill carga este protocolo y usa Graphify como router de contexto antes de abrir archivos en masa.
+
 > Regla de frescura: el commit indicado aquí es un punto de referencia, no una verdad eterna. Antes de trabajar, comprobar `git log -1 --oneline`, `git status` y los issues relevantes.
 
 ## 1. Identidad del proyecto
