@@ -3,6 +3,9 @@ import { INSTRUMENT_TIMBRE_OPTIONS, type InstrumentTimbre } from './instrumentSa
 const TIMBRE_KEY = 'melody-motion.instrument-timbre';
 const LIVE_SOUND_KEY = 'melody-motion.live-sound-feedback';
 
+export const DEFAULT_INSTRUMENT_TIMBRE: InstrumentTimbre = 'violin_pizzicato';
+export const DEFAULT_LIVE_SOUND_FEEDBACK = true;
+
 const validTimbres = new Set<InstrumentTimbre>(
   INSTRUMENT_TIMBRE_OPTIONS.map((option) => option.id),
 );
@@ -10,19 +13,21 @@ const validTimbres = new Set<InstrumentTimbre>(
 export function parseStoredInstrumentTimbre(value: string | null): InstrumentTimbre {
   return value && validTimbres.has(value as InstrumentTimbre)
     ? value as InstrumentTimbre
-    : 'synth';
+    : DEFAULT_INSTRUMENT_TIMBRE;
 }
 
 export function parseStoredLiveSoundFeedback(value: string | null): boolean {
-  return value === 'true';
+  if (value === 'true') return true;
+  if (value === 'false') return false;
+  return DEFAULT_LIVE_SOUND_FEEDBACK;
 }
 
 export function loadInstrumentTimbre(): InstrumentTimbre {
-  if (typeof window === 'undefined') return 'synth';
+  if (typeof window === 'undefined') return DEFAULT_INSTRUMENT_TIMBRE;
   try {
     return parseStoredInstrumentTimbre(window.localStorage.getItem(TIMBRE_KEY));
   } catch {
-    return 'synth';
+    return DEFAULT_INSTRUMENT_TIMBRE;
   }
 }
 
@@ -37,11 +42,11 @@ export function saveInstrumentTimbre(timbre: InstrumentTimbre): void {
 }
 
 export function loadLiveSoundFeedback(): boolean {
-  if (typeof window === 'undefined') return false;
+  if (typeof window === 'undefined') return DEFAULT_LIVE_SOUND_FEEDBACK;
   try {
     return parseStoredLiveSoundFeedback(window.localStorage.getItem(LIVE_SOUND_KEY));
   } catch {
-    return false;
+    return DEFAULT_LIVE_SOUND_FEEDBACK;
   }
 }
 
