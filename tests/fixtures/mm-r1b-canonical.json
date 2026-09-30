@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "backend": "simulation",
+  "context": {
+    "recordedCalibration": null,
+    "viewport": { "width": 640, "height": 480 }
+  },
+  "frames": [
+    {
+      "tMs": 0,
+      "state": {
+        "leftPalm": { "present": true, "gestureState": "UNKNOWN", "center": { "x": 0.3, "y": 0.8 }, "wrist": { "x": 0.3, "y": 0.8 }, "indexMcp": { "x": 0.3, "y": 0.8 }, "pinkyMcp": { "x": 0.3, "y": 0.8 } },
+        "rightPalm": { "present": true, "gestureState": "UNKNOWN", "center": { "x": 0.7, "y": 0.8 }, "wrist": { "x": 0.7, "y": 0.8 }, "indexMcp": { "x": 0.7, "y": 0.8 }, "pinkyMcp": { "x": 0.7, "y": 0.8 } },
+        "distancePx": 256,
+        "distanceNormalized": 0.4,
+        "distanceCm": 50,
+        "angleDegrees": 0
+      }
+    },
+    {
+      "tMs": 100,
+      "state": {
+        "leftPalm": { "present": true, "gestureState": "UNKNOWN", "center": { "x": 0.3, "y": 0.8 }, "wrist": { "x": 0.3, "y": 0.8 }, "indexMcp": { "x": 0.3, "y": 0.8 }, "pinkyMcp": { "x": 0.3, "y": 0.8 } },
+        "rightPalm": { "present": true, "gestureState": "UNKNOWN", "center": { "x": 0.7, "y": 0.8 }, "wrist": { "x": 0.7, "y": 0.8 }, "indexMcp": { "x": 0.7, "y": 0.8 }, "pinkyMcp": { "x": 0.7, "y": 0.8 } },
+        "distancePx": 256,
+        "distanceNormalized": 0.4,
+        "distanceCm": 50,
+        "angleDegrees": 0
+      }
+    },
+    {
+      "tMs": 200,
+      "state": {
+        "leftPalm": { "present": true, "gestureState": "UNKNOWN", "center": { "x": 0.3, "y": 0.5 }, "wrist": { "x": 0.3, "y": 0.5 }, "indexMcp": { "x": 0.3, "y": 0.5 }, "pinkyMcp": { "x": 0.3, "y": 0.5 } },
+        "rightPalm": { "present": true, "gestureState": "UNKNOWN", "center": { "x": 0.7, "y": 0.5 }, "wrist": { "x": 0.7, "y": 0.5 }, "indexMcp": { "x": 0.7, "y": 0.5 }, "pinkyMcp": { "x": 0.7, "y": 0.5 } },
+        "distancePx": 256,
+        "distanceNormalized": 0.4,
+        "distanceCm": 50,
+        "angleDegrees": 0
+      }
+    },
+    {
+      "tMs": 300,
+      "state": {
+        "leftPalm": { "present": true, "gestureState": "OPEN_HAND", "center": { "x": 0.2, "y": 0.5 }, "wrist": { "x": 0.2, "y": 0.5 }, "indexMcp": { "x": 0.2, "y": 0.5 }, "pinkyMcp": { "x": 0.2, "y": 0.5 } },
+        "rightPalm": { "present": true, "gestureState": "OPEN_HAND", "center": { "x": 0.8, "y": 0.5 }, "wrist": { "x": 0.8, "y": 0.5 }, "indexMcp": { "x": 0.8, "y": 0.5 }, "pinkyMcp": { "x": 0.8, "y": 0.5 } },
+        "distancePx": 384,
+        "distanceNormalized": 0.6,
+        "distanceCm": 75,
+        "angleDegrees": 0
+      }
+    },
+    {
+      "tMs": 400,
+      "state": {
+        "leftPalm": { "present": true, "gestureState": "OPEN_HAND", "center": { "x": 0.2, "y": 0.5 }, "wrist": { "x": 0.2, "y": 0.5 }, "indexMcp": { "x": 0.2, "y": 0.5 }, "pinkyMcp": { "x": 0.2, "y": 0.5 } },
+        "rightPalm": { "present": true, "gestureState": "OPEN_HAND", "center": { "x": 0.8, "y": 0.5 }, "wrist": { "x": 0.8, "y": 0.5 }, "indexMcp": { "x": 0.8, "y": 0.5 }, "pinkyMcp": { "x": 0.8, "y": 0.5 } },
+        "distancePx": 384,
+        "distanceNormalized": 0.6,
+        "distanceCm": 75,
+        "angleDegrees": 0
+      }
+    },
+    {
+      "tMs": 500,
+      "state": {
+        "leftPalm": { "present": true, "gestureState": "OPEN_HAND", "center": { "x": 0.2, "y": 0.5 }, "wrist": { "x": 0.2, "y": 0.5 }, "indexMcp": { "x": 0.2, "y": 0.5 }, "pinkyMcp": { "x": 0.2, "y": 0.5 } },
+        "rightPalm": null,
+        "distancePx": 0,
+        "distanceNormalized": 0,
+        "distanceCm": 0,
+        "angleDegrees": 0
+      }
+    },
+    {
+      "tMs": 600,
+      "state": {
+        "leftPalm": { "present": true, "gestureState": "OPEN_HAND", "center": { "x": 0.2, "y": 0.5 }, "wrist": { "x": 0.2, "y": 0.5 }, "indexMcp": { "x": 0.2, "y": 0.5 }, "pinkyMcp": { "x": 0.2, "y": 0.5 } },
+        "rightPalm": { "present": true, "gestureState": "OPEN_HAND", "center": { "x": 0.8, "y": 0.5 }, "wrist": { "x": 0.8, "y": 0.5 }, "indexMcp": { "x": 0.8, "y": 0.5 }, "pinkyMcp": { "x": 0.8, "y": 0.5 } },
+        "distancePx": 384,
+        "distanceNormalized": 0.6,
+        "distanceCm": 75,
+        "angleDegrees": 0
+      }
+    }
+  ]
+}
