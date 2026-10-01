@@ -514,34 +514,38 @@ export default function App() {
       />
 
       {/* Main Container */}
-      <main className="mx-auto w-full max-w-[1500px] flex-1 space-y-4 px-3 py-4 sm:px-4 md:space-y-5 md:px-5 md:py-5 lg:space-y-6 lg:px-6">
+      <main className="mx-auto w-full max-w-[1500px] flex-1 space-y-3 px-2.5 py-3 sm:space-y-4 sm:px-4 sm:py-4 md:space-y-5 md:px-5 md:py-5 lg:space-y-6 lg:px-6">
         {/* Primary Workspace Grid with Persistent Single CameraView */}
         <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-12 md:gap-5 lg:items-stretch lg:gap-6">
           {/* Left Column: Persistent CameraView */}
-          <div className={`${activeModuleId === 'ranking' ? 'hidden' : ''} min-w-0 space-y-4 md:col-span-5 md:space-y-5 lg:h-full lg:space-y-6`}>
-            <div className="space-y-4 md:space-y-5 lg:sticky lg:top-4 lg:z-10">
-              <VideoSourceSelector selectedId={cameraDeviceId}
-              onSelect={(id) => { setCameraDeviceId(id); setCameraMessage(''); }}
-              active={!isSimulation} busy={cameraBusy} onToggle={handleToggleSimulation}
-              refreshKey={cameraListRevision} error={cameraMessage} theme={theme} />
-            <CameraView
-              palmState={palmState}
-              activeCue={activeCue}
-              isSimulation={isSimulation}
-              onInitCamera={handleInitCamera}
-              onStopCamera={handleStopCamera}
-              onSimulatedDistanceChange={handleSimulatedDistanceChange}
-              onSimulatedPositionChange={handleSimulatedPositionChange}
-              onToggleSimulation={handleToggleSimulation}
-              cameraError={cameraError}
-              diagnostics={trackingDiagnostics}
-              stageState={cameraStageState}
-              theme={theme}
-            />
+          <div className={`${activeModuleId === 'ranking' ? 'hidden' : ''} min-w-0 space-y-3 md:col-span-5 md:space-y-5 lg:h-full lg:space-y-6`}>
+            <div className="flex flex-col gap-3 md:block md:space-y-5 lg:sticky lg:top-4 lg:z-10">
+              <div className="order-2 md:order-none">
+                <VideoSourceSelector selectedId={cameraDeviceId}
+                  onSelect={(id) => { setCameraDeviceId(id); setCameraMessage(''); }}
+                  active={!isSimulation} busy={cameraBusy} onToggle={handleToggleSimulation}
+                  refreshKey={cameraListRevision} error={cameraMessage} theme={theme} />
+              </div>
+              <div className="order-1 mx-auto w-full max-w-[330px] md:order-none md:max-w-none">
+                <CameraView
+                  palmState={palmState}
+                  activeCue={activeCue}
+                  isSimulation={isSimulation}
+                  onInitCamera={handleInitCamera}
+                  onStopCamera={handleStopCamera}
+                  onSimulatedDistanceChange={handleSimulatedDistanceChange}
+                  onSimulatedPositionChange={handleSimulatedPositionChange}
+                  onToggleSimulation={handleToggleSimulation}
+                  cameraError={cameraError}
+                  diagnostics={trackingDiagnostics}
+                  stageState={cameraStageState}
+                  theme={theme}
+                />
+              </div>
             </div>
 
             <details className="group rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] text-sm shadow-[var(--ui-shadow)]">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2.5 sm:px-4 sm:py-3">
                 <div>
                   <div className="text-sm font-medium text-[var(--ui-text)]">Ajustes rápidos</div>
                   <div className="mt-0.5 text-[11px] text-slate-500">Detección y rango corporal</div>

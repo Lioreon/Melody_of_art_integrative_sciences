@@ -153,3 +153,15 @@ input[type='range'] {
     backdrop-filter: blur(14px) saturate(125%);
   }
 }
+
+
+/* MM-UX1A · mobile learning shell foundation */
+@media (max-width: 639px) {
+  body {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .mm-story-panel {
+    animation: none;
+  }
+}

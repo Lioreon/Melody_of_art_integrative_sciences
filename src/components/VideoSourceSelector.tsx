@@ -27,15 +27,15 @@ export function VideoSourceSelector({ selectedId, onSelect, active, busy, onTogg
   }, [refresh, refreshKey]);
   const missing = selectedId && !devices.some(device => device.deviceId === selectedId);
   const white = theme === 'white';
-  return <section aria-label="Cámara" className="rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-4 space-y-3 shadow-[var(--ui-shadow)]">
+  return <section aria-label="Cámara" className="space-y-2 rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-3 shadow-[var(--ui-shadow)] sm:space-y-3 sm:p-4">
     <div className="flex items-center justify-between gap-3">
-      <h2 className="text-sm font-semibold">Cámara y seguimiento</h2>
+      <h2 className="text-sm font-semibold">Cámara <span className="hidden sm:inline">y seguimiento</span></h2>
       <span className="flex items-center gap-2 text-xs font-medium text-[var(--ui-text-muted)]">
         <span className={`h-2.5 w-2.5 rounded-full ${active ? 'bg-emerald-500' : 'bg-slate-400'}`} />
         {busy ? 'Conectando' : active ? 'Activa' : 'Virtual'}
       </span>
     </div>
-    <button className="w-full rounded-xl bg-[var(--ui-blue)] px-4 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90 dark:text-slate-950" onClick={onToggle}>
+    <button className="touch-target w-full rounded-xl bg-[var(--ui-blue)] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:opacity-90 dark:text-slate-950 sm:py-3" onClick={onToggle}>
       {active ? busy ? 'Cancelar conexión' : 'Detener cámara' : 'Activar cámara'}
     </button>
     <details className="rounded-lg border border-[var(--ui-border)] bg-[var(--ui-surface-muted)] px-3 py-2">
