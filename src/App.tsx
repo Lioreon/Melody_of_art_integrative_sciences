@@ -10,6 +10,7 @@ import { trackingState, SEPARATION_SCALE } from './services/trackingGeometry';
 import type { TrackingDiagnostics, TrackingModeType } from './types';
 import { Header } from './components/Header';
 import { CameraView } from './components/CameraView';
+import { CameraDock } from './components/CameraDock';
 import { ScoreVisualizer } from './components/ScoreVisualizer';
 const ReactionMetrics = lazy(() => import('./components/ReactionMetrics').then(module => ({ default: module.ReactionMetrics })));
 import { TrainingControls } from './components/TrainingControls';
@@ -527,6 +528,7 @@ export default function App() {
                   refreshKey={cameraListRevision} error={cameraMessage} theme={theme} />
               </div>
               <div className="order-1 mx-auto w-full max-w-[330px] md:order-none md:max-w-none">
+                <CameraDock active={activeModuleId !== 'ranking'}>
                 <CameraView
                   palmState={palmState}
                   activeCue={activeCue}
@@ -541,6 +543,7 @@ export default function App() {
                   stageState={cameraStageState}
                   theme={theme}
                 />
+                </CameraDock>
               </div>
             </div>
 

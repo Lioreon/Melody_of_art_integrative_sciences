@@ -236,7 +236,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
 
         {/* Virtual Mode background */}
         {isSimulation && (
-          <div className="absolute inset-0 bg-slate-950 flex flex-col items-center justify-center p-6 text-center">
+          <div className="mm-camera-virtual absolute inset-0 bg-slate-950 flex flex-col items-center justify-center p-6 text-center">
             <div className="max-w-xs space-y-2">
               <span className="inline-block text-xs font-medium px-2.5 py-1 rounded-md bg-slate-900 text-slate-300 border border-slate-800">
                 Simulador Virtual Activo
@@ -249,7 +249,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
         )}
 
         {showPedagogicalOverlay && (
-          <div className="pointer-events-none absolute inset-0 z-[15] overflow-hidden">
+          <div className="mm-camera-pedagogy pointer-events-none absolute inset-0 z-[15] overflow-hidden">
             <div className="absolute bottom-4 left-4 top-14 w-px bg-white/20">
               <span className="absolute -left-1 top-0 -translate-x-full rounded bg-slate-950/75 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-cyan-200">Agudo</span>
               <span className="absolute -bottom-1 -left-1 -translate-x-full rounded bg-slate-950/75 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-amber-200">Grave</span>
@@ -288,7 +288,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
               </div>
             )}
 
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full border border-white/10 bg-slate-950/[0.68] px-3 py-1.5 text-white shadow-sm backdrop-blur-md">
+            <div className="mm-camera-status absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full border border-white/10 bg-slate-950/[0.68] px-3 py-1.5 text-white shadow-sm backdrop-blur-md">
               {stageState.trackingPaused ? (
                 <div className="flex items-center gap-2 whitespace-nowrap text-[10px] font-medium text-amber-100">
                   <span className="h-1.5 w-1.5 rounded-full bg-amber-300" />
@@ -298,10 +298,12 @@ export const CameraView: React.FC<CameraViewProps> = ({
                 </div>
               ) : (
                 <div className="flex items-center gap-2 whitespace-nowrap text-[11px] font-medium">
+                  <span className="mm-camera-compact-note">{stageState.currentNoteLabel}</span>
                   <span className="text-lg leading-none text-cyan-200">{stageState.currentFigureSymbol}</span>
                   <span>{stageState.currentFigureLabel}</span>
                   <span className="text-white/[0.35]">·</span>
                   <span className="text-[10px] font-normal text-white/[0.60]">apertura</span>
+                  {stageState.target && <span className="mm-camera-compact-note">META {stageState.target.noteLabel ?? stageState.target.figureLabel}</span>}
                 </div>
               )}
             </div>
@@ -357,7 +359,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
       </div>
 
       {/* Primary Interaction Area: Distance Slider */}
-      <div className="p-4 space-y-3">
+      <div className="mm-camera-settings p-4 space-y-3">
         {/* Main Distance Control */}
         <div className="space-y-1.5">
           <div className="flex items-center justify-between text-xs">
@@ -513,4 +515,3 @@ export const CameraView: React.FC<CameraViewProps> = ({
     </div>
   );
 };
-

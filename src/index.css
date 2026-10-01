@@ -165,3 +165,76 @@ input[type='range'] {
     animation: none;
   }
 }
+
+/* MM-UX1B: the same camera subtree changes presentation only. */
+.mm-camera-dock-toolbar { display: none; }
+.mm-camera-compact-note { display: none; }
+.mm-camera-anchor { scroll-margin-top: 12px; }
+
+@media (max-width: 767px) {
+  .mm-camera-dock {
+    border: 1px solid var(--ui-border);
+    border-radius: 16px;
+    background: var(--ui-surface);
+    box-shadow: var(--ui-shadow);
+  }
+  .mm-camera-dock-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 0 4px 0 12px;
+    color: var(--ui-text);
+  }
+  .mm-camera-dock-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .mm-camera-dock-toolbar button {
+    display: grid;
+    place-items: center;
+    min-width: 44px;
+    min-height: 44px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  .mm-camera-dock-toolbar button[hidden] { display: none; }
+  .mm-camera-dock-toolbar button:focus-visible {
+    outline: 2px solid var(--ui-blue);
+    outline-offset: -3px;
+  }
+  .mm-camera-dock[data-camera-dock='floating'],
+  .mm-camera-dock[data-camera-dock='minimized'] {
+    position: fixed;
+    z-index: 30;
+    right: max(12px, env(safe-area-inset-right));
+    bottom: max(12px, env(safe-area-inset-bottom));
+    width: min(240px, calc(100vw - 24px - env(safe-area-inset-left) - env(safe-area-inset-right)));
+  }
+  .mm-camera-dock[data-camera-dock='minimized'] { width: 156px; }
+  [data-camera-dock='floating'] .mm-camera-settings { display: none; }
+  [data-camera-dock='floating'] .mm-camera-virtual { justify-content: flex-start; padding: 40px 8px 8px; }
+  [data-camera-dock='floating'] .mm-camera-virtual p { display: none; }
+  [data-camera-dock='floating'] .mm-camera-compact-note { display: inline; }
+  [data-camera-dock='floating'] .mm-camera-pedagogy > :not(.mm-camera-status) { display: none; }
+  [data-camera-dock='floating'] .mm-camera-status {
+    max-width: calc(100% - 12px);
+    padding: 4px 6px;
+  }
+  [data-camera-dock='floating'] .mm-camera-status > div {
+    flex-wrap: wrap;
+    justify-content: center;
+    white-space: normal;
+    gap: 4px;
+    text-align: center;
+  }
+  /* Room to scroll the final activity controls clear of the floating stage. */
+  main { padding-bottom: calc(240px + env(safe-area-inset-bottom)); }
+}
+
+@media (max-width: 767px) and (max-height: 480px) {
+  .mm-camera-dock[data-camera-dock='floating'] { width: 192px; }
+}
