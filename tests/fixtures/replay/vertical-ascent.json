@@ -1,0 +1,258 @@
+{
+  "schemaVersion": 1,
+  "backend": "simulation",
+  "context": {
+    "recordedCalibration": null,
+    "viewport": {
+      "width": 640,
+      "height": 480
+    }
+  },
+  "frames": [
+    {
+      "tMs": 0,
+      "state": {
+        "leftPalm": {
+          "present": true,
+          "gestureState": "UNKNOWN",
+          "center": {
+            "x": 0.3,
+            "y": 0.85
+          },
+          "wrist": {
+            "x": 0.3,
+            "y": 0.85
+          },
+          "indexMcp": {
+            "x": 0.3,
+            "y": 0.85
+          },
+          "pinkyMcp": {
+            "x": 0.3,
+            "y": 0.85
+          }
+        },
+        "rightPalm": {
+          "present": true,
+          "gestureState": "UNKNOWN",
+          "center": {
+            "x": 0.7,
+            "y": 0.85
+          },
+          "wrist": {
+            "x": 0.7,
+            "y": 0.85
+          },
+          "indexMcp": {
+            "x": 0.7,
+            "y": 0.85
+          },
+          "pinkyMcp": {
+            "x": 0.7,
+            "y": 0.85
+          }
+        },
+        "distanceNormalized": 0.39999999999999997,
+        "distanceCm": 50,
+        "distancePx": 256,
+        "angleDegrees": 0
+      }
+    },
+    {
+      "tMs": 100,
+      "state": {
+        "leftPalm": {
+          "present": true,
+          "gestureState": "UNKNOWN",
+          "center": {
+            "x": 0.3,
+            "y": 0.68
+          },
+          "wrist": {
+            "x": 0.3,
+            "y": 0.68
+          },
+          "indexMcp": {
+            "x": 0.3,
+            "y": 0.68
+          },
+          "pinkyMcp": {
+            "x": 0.3,
+            "y": 0.68
+          }
+        },
+        "rightPalm": {
+          "present": true,
+          "gestureState": "UNKNOWN",
+          "center": {
+            "x": 0.7,
+            "y": 0.68
+          },
+          "wrist": {
+            "x": 0.7,
+            "y": 0.68
+          },
+          "indexMcp": {
+            "x": 0.7,
+            "y": 0.68
+          },
+          "pinkyMcp": {
+            "x": 0.7,
+            "y": 0.68
+          }
+        },
+        "distanceNormalized": 0.39999999999999997,
+        "distanceCm": 50,
+        "distancePx": 256,
+        "angleDegrees": 0
+      }
+    },
+    {
+      "tMs": 200,
+      "state": {
+        "leftPalm": {
+          "present": true,
+          "gestureState": "UNKNOWN",
+          "center": {
+            "x": 0.3,
+            "y": 0.5
+          },
+          "wrist": {
+            "x": 0.3,
+            "y": 0.5
+          },
+          "indexMcp": {
+            "x": 0.3,
+            "y": 0.5
+          },
+          "pinkyMcp": {
+            "x": 0.3,
+            "y": 0.5
+          }
+        },
+        "rightPalm": {
+          "present": true,
+          "gestureState": "UNKNOWN",
+          "center": {
+            "x": 0.7,
+            "y": 0.5
+          },
+          "wrist": {
+            "x": 0.7,
+            "y": 0.5
+          },
+          "indexMcp": {
+            "x": 0.7,
+            "y": 0.5
+          },
+          "pinkyMcp": {
+            "x": 0.7,
+            "y": 0.5
+          }
+        },
+        "distanceNormalized": 0.39999999999999997,
+        "distanceCm": 50,
+        "distancePx": 256,
+        "angleDegrees": 0
+      }
+    },
+    {
+      "tMs": 300,
+      "state": {
+        "leftPalm": {
+          "present": true,
+          "gestureState": "UNKNOWN",
+          "center": {
+            "x": 0.3,
+            "y": 0.3
+          },
+          "wrist": {
+            "x": 0.3,
+            "y": 0.3
+          },
+          "indexMcp": {
+            "x": 0.3,
+            "y": 0.3
+          },
+          "pinkyMcp": {
+            "x": 0.3,
+            "y": 0.3
+          }
+        },
+        "rightPalm": {
+          "present": true,
+          "gestureState": "UNKNOWN",
+          "center": {
+            "x": 0.7,
+            "y": 0.3
+          },
+          "wrist": {
+            "x": 0.7,
+            "y": 0.3
+          },
+          "indexMcp": {
+            "x": 0.7,
+            "y": 0.3
+          },
+          "pinkyMcp": {
+            "x": 0.7,
+            "y": 0.3
+          }
+        },
+        "distanceNormalized": 0.39999999999999997,
+        "distanceCm": 50,
+        "distancePx": 256,
+        "angleDegrees": 0
+      }
+    },
+    {
+      "tMs": 400,
+      "state": {
+        "leftPalm": {
+          "present": true,
+          "gestureState": "UNKNOWN",
+          "center": {
+            "x": 0.3,
+            "y": 0.1
+          },
+          "wrist": {
+            "x": 0.3,
+            "y": 0.1
+          },
+          "indexMcp": {
+            "x": 0.3,
+            "y": 0.1
+          },
+          "pinkyMcp": {
+            "x": 0.3,
+            "y": 0.1
+          }
+        },
+        "rightPalm": {
+          "present": true,
+          "gestureState": "UNKNOWN",
+          "center": {
+            "x": 0.7,
+            "y": 0.1
+          },
+          "wrist": {
+            "x": 0.7,
+            "y": 0.1
+          },
+          "indexMcp": {
+            "x": 0.7,
+            "y": 0.1
+          },
+          "pinkyMcp": {
+            "x": 0.7,
+            "y": 0.1
+          }
+        },
+        "distanceNormalized": 0.39999999999999997,
+        "distanceCm": 50,
+        "distancePx": 256,
+        "angleDegrees": 0
+      }
+    }
+  ]
+}

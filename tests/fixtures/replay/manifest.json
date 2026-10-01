@@ -1,0 +1,42 @@
+[
+  {
+    "id": "F01",
+    "file": "stable-hold.json",
+    "intent": "Mantener ambas manos estables en altura y apertura."
+  },
+  {
+    "id": "F02",
+    "file": "vertical-ascent.json",
+    "intent": "Mover ambas manos de grave a agudo sin cambiar la apertura."
+  },
+  {
+    "id": "F03",
+    "file": "vertical-descent.json",
+    "intent": "Mover ambas manos de agudo a grave sin cambiar la apertura."
+  },
+  {
+    "id": "F04",
+    "file": "opening-transition.json",
+    "intent": "Aumentar la apertura por tres zonas rítmicas con altura estable."
+  },
+  {
+    "id": "F05",
+    "file": "boundary-crossing.json",
+    "intent": "Oscilar alrededor de límites de nota y figura con movimientos pequeños."
+  },
+  {
+    "id": "F06",
+    "file": "tracking-loss.json",
+    "intent": "Pasar de seguimiento válido a pérdida parcial y total."
+  },
+  {
+    "id": "F07",
+    "file": "tracking-recovery.json",
+    "intent": "Recuperar progresivamente una sesión desde pérdida total hasta dos manos."
+  },
+  {
+    "id": "F08",
+    "file": "combined-motion.json",
+    "intent": "Cambiar simultáneamente altura y apertura manteniendo dos manos válidas."
+  }
+]
