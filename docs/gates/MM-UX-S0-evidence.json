@@ -1,0 +1,612 @@
+{
+  "source_commit": "09170eec67eefd46a7ae85de61b40c194020f997",
+  "queries_executed": 21,
+  "only_reviewed_results": true,
+  "searches": [
+    {
+      "query": "education mobile learning accessible",
+      "mode": "domain",
+      "category": "product",
+      "source_dataset": "products.csv",
+      "selected_results": [
+        {
+          "Product Type": "Educational App",
+          "Keywords": "app, course, education, educational, learning, school, training",
+          "Primary Style Recommendation": "Claymorphism + Micro-interactions",
+          "Secondary Styles": "Vibrant & Block-based , Flat Design",
+          "Landing Page Pattern": "Storytelling-Driven",
+          "Dashboard Style (if applicable)": "User Behavior Analytics",
+          "Color Palette Focus": "Playful colors + clear hierarchy"
+        }
+      ],
+      "scope_note": "Reviewed for relevance; see MM-UX-S0.md adjudication."
+    },
+    {
+      "query": "music learning gesture interaction",
+      "mode": "domain",
+      "category": "product",
+      "source_dataset": "products.csv",
+      "selected_results": [
+        {
+          "Product Type": "Music Instrument Learning",
+          "Keywords": "music, instrument, piano, guitar, learn, lesson, tutorial, notes, play, chord, practice, simply",
+          "Primary Style Recommendation": "Vibrant & Block-based + Motion-Driven",
+          "Secondary Styles": "Dark Mode (OLED) , Soft UI Evolution",
+          "Landing Page Pattern": "Interactive Product Demo + Social Proof",
+          "Dashboard Style (if applicable)": "Learning Analytics",
+          "Color Palette Focus": "Musical warm deep red/brown + note color system + skill progress bar"
+        },
+        {
+          "Product Type": "Language Learning App",
+          "Keywords": "app, language, learning",
+          "Primary Style Recommendation": "Claymorphism + Vibrant & Block-based",
+          "Secondary Styles": "Micro-interactions , Flat Design",
+          "Landing Page Pattern": "Feature-Rich Showcase + Social Proof",
+          "Dashboard Style (if applicable)": "Learning Analytics",
+          "Color Palette Focus": "Playful colors + Progress indicators + Country flags"
+        }
+      ],
+      "scope_note": "Reviewed for relevance; see MM-UX-S0.md adjudication."
+    },
+    {
+      "query": "touch target compact controls",
+      "mode": "domain",
+      "category": "ux",
+      "source_dataset": "ux-guidelines.csv",
+      "selected_results": [
+        {
+          "Category": "Touch",
+          "Issue": "Touch Target Size",
+          "Platform": "Mobile",
+          "Description": "Touch target guidance depends on platform and web context",
+          "Do": "Use 44pt on iOS and 48dp on Android; for web use the separate WCAG Target Size rule",
+          "Don't": "Treat one unit or minimum as universal across platforms",
+          "Code Example Good": "iOS 44pt; Android 48dp; Web 24 CSS px plus WCAG exceptions",
+          "Code Example Bad": "w-6 h-6 buttons",
+          "Severity": "High"
+        },
+        {
+          "Category": "Touch",
+          "Issue": "Touch Spacing",
+          "Platform": "Mobile",
+          "Description": "Adjacent touch targets need adequate spacing",
+          "Do": "Minimum 8px gap between touch targets",
+          "Don't": "Tightly packed clickable elements",
+          "Code Example Good": "gap-2 between buttons",
+          "Code Example Bad": "gap-0 or gap-1",
+          "Severity": "Medium"
+        },
+        {
+          "Category": "Responsive",
+          "Issue": "Touch Friendly",
+          "Platform": "Web",
+          "Description": "Mobile layouts need touch-sized targets",
+          "Do": "Increase touch targets on mobile",
+          "Don't": "Same tiny buttons on mobile",
+          "Code Example Good": "Larger buttons on mobile",
+          "Code Example Bad": "Desktop-sized targets on mobile",
+          "Severity": "High"
+        }
+      ],
+      "scope_note": "Reviewed for relevance; see MM-UX-S0.md adjudication."
+    },
+    {
+      "query": "safe area floating controls",
+      "mode": "domain",
+      "category": "web",
+      "source_dataset": "app-interface.csv",
+      "selected_results": [
+        {
+          "Category": "Safe Areas",
+          "Issue": "Safe Area Insets",
+          "Platform": "iOS/Android/React Native",
+          "Description": "Content must not overlap notches/gesture bars",
+          "Do": "Wrap screens in SafeAreaView or apply insets",
+          "Don't": "Place tappable content under system bars",
+          "Code Example Good": "<SafeAreaView style={{ flex: 1 }}><Screen /></SafeAreaView>",
+          "Code Example Bad": "<View style={{ flex: 1 }}><Screen /></View>",
+          "Severity": "High"
+        }
+      ],
+      "scope_note": "Native pattern: adapt principle to CSS safe-area env(); do not import React Native."
+    },
+    {
+      "query": "focus not obscured",
+      "mode": "domain",
+      "category": "ux",
+      "source_dataset": "ux-guidelines.csv",
+      "selected_results": [
+        {
+          "Category": "Accessibility",
+          "Issue": "Focus Not Obscured (Enhanced)",
+          "Platform": "Web",
+          "Description": "WCAG 2.2 AAA requires keyboard focus to remain fully visible",
+          "Do": "Keep the entire focused component unobscured by author-created content",
+          "Don't": "Present this enhanced AAA criterion as an AA requirement or allow persistent UI to hide any part of focus",
+          "Code Example Good": "close persistent overlay before focus moves behind it",
+          "Code Example Bad": "sticky footer covers half the focused button",
+          "Severity": "Medium"
+        },
+        {
+          "Category": "Accessibility",
+          "Issue": "Focus Not Obscured (Minimum)",
+          "Platform": "Web",
+          "Description": "WCAG 2.2 AA requires keyboard focus to remain at least partially visible",
+          "Do": "Offset sticky UI with scroll-padding and dismiss or move persistent overlays",
+          "Don't": "Let headers footers banners or chat widgets fully cover focus",
+          "Code Example Good": "scroll-padding-top: var(--header-height)",
+          "Code Example Bad": "fixed overlay covers :focus",
+          "Severity": "High"
+        },
+        {
+          "Category": "Accessibility",
+          "Issue": "Focus Appearance",
+          "Platform": "Web",
+          "Description": "WCAG 2.2 AAA defines minimum area and contrast for focus indicators",
+          "Do": "Use an indicator at least as large as a 2 CSS px perimeter with 3:1 state contrast",
+          "Don't": "Present this enhanced AAA criterion as an AA requirement or use a thin low-contrast outline",
+          "Code Example Good": "outline: 2px solid currentColor; outline-offset: 2px",
+          "Code Example Bad": "box-shadow: 0 0 1px low-contrast",
+          "Severity": "Medium"
+        }
+      ],
+      "scope_note": "Reviewed for relevance; see MM-UX-S0.md adjudication."
+    },
+    {
+      "query": "progress feedback learning",
+      "mode": "domain",
+      "category": "ux",
+      "source_dataset": "ux-guidelines.csv",
+      "selected_results": [
+        {
+          "Category": "Feedback",
+          "Issue": "Progress Indicators",
+          "Platform": "All",
+          "Description": "Show progress for multi-step processes",
+          "Do": "Step indicators or progress bar",
+          "Don't": "No indication of progress",
+          "Code Example Good": "Step 2 of 4 indicator",
+          "Code Example Bad": "No step information",
+          "Severity": "Medium"
+        }
+      ],
+      "scope_note": "Reviewed for relevance; see MM-UX-S0.md adjudication."
+    },
+    {
+      "query": "reduced motion responsive interaction",
+      "mode": "domain",
+      "category": "ux",
+      "source_dataset": "ux-guidelines.csv",
+      "selected_results": [
+        {
+          "Category": "Animation",
+          "Issue": "Reduced Motion",
+          "Platform": "All",
+          "Description": "Respect user's motion preferences",
+          "Do": "Check prefers-reduced-motion media query",
+          "Don't": "Ignore accessibility motion settings",
+          "Code Example Good": "@media (prefers-reduced-motion: reduce)",
+          "Code Example Bad": "No motion query check",
+          "Severity": "High"
+        },
+        {
+          "Category": "Animation",
+          "Issue": "Excessive Motion",
+          "Platform": "All",
+          "Description": "Too many animations cause distraction and motion sickness",
+          "Do": "Animate 1-2 key elements per view maximum",
+          "Don't": "Animate everything that moves",
+          "Code Example Good": "Single hero animation",
+          "Code Example Bad": "animate-bounce on 5+ elements",
+          "Severity": "High"
+        },
+        {
+          "Category": "Accessibility",
+          "Issue": "Motion Sensitivity",
+          "Platform": "All",
+          "Description": "Parallax/Scroll-jacking causes nausea",
+          "Do": "Honor prefers-reduced-motion and present the final readable state without parallax or scroll-jacking",
+          "Don't": "Force scroll effects",
+          "Code Example Good": "@media (prefers-reduced-motion)",
+          "Code Example Bad": "ScrollTrigger.create()",
+          "Severity": "High"
+        }
+      ],
+      "scope_note": "Reviewed for relevance; see MM-UX-S0.md adjudication."
+    },
+    {
+      "query": "focus keyboard accessibility",
+      "mode": "stack",
+      "category": "react",
+      "source_dataset": "stacks/react.csv",
+      "selected_results": [
+        {
+          "Category": "Accessibility",
+          "Guideline": "Manage focus properly",
+          "Description": "Handle focus for modals dialogs",
+          "Do": "Focus trap in modals return focus on close",
+          "Don't": "No focus management",
+          "Code Good": "useEffect to focus input",
+          "Code Bad": "Modal without focus trap",
+          "Severity": "High",
+          "Docs URL": "https://react.dev/reference/react/useRef",
+          "Applies To": "react 19.2.x",
+          "Status": "active",
+          "Verified At": "2026-08-13"
+        },
+        {
+          "Category": "Accessibility",
+          "Guideline": "Use semantic HTML",
+          "Description": "Use semantic HTML elements for their intended behavior.",
+          "Do": "button for clicks nav for navigation",
+          "Don't": "div with onClick for buttons",
+          "Code Good": "<button onClick={...}>",
+          "Code Bad": "<div onClick={...}>",
+          "Severity": "High",
+          "Docs URL": "https://react.dev/reference/react-dom/components#all-html-components",
+          "Applies To": "react 19.2.x",
+          "Status": "active",
+          "Verified At": "2026-08-13"
+        },
+        {
+          "Category": "Accessibility",
+          "Guideline": "Label form controls",
+          "Description": "Associate labels with inputs",
+          "Do": "htmlFor matching input id",
+          "Don't": "Placeholder as only label",
+          "Code Good": "<label htmlFor=\"email\">Email</label>",
+          "Code Bad": "<input placeholder=\"Email\"/>",
+          "Severity": "High",
+          "Docs URL": "https://react.dev/reference/react-dom/components/input",
+          "Applies To": "react 19.2.x",
+          "Status": "active",
+          "Verified At": "2026-08-13"
+        }
+      ],
+      "scope_note": "Reviewed for relevance; see MM-UX-S0.md adjudication."
+    },
+    {
+      "query": "ref effect cleanup camera",
+      "mode": "stack",
+      "category": "react",
+      "source_dataset": "stacks/react.csv",
+      "selected_results": [
+        {
+          "Category": "Effects",
+          "Guideline": "Clean up effects",
+          "Description": "Return cleanup for subscriptions and timers so effects stay predictable.",
+          "Do": "Return cleanup function in useEffect",
+          "Don't": "No cleanup for subscriptions",
+          "Code Good": "useEffect(() => { sub(); return unsub; })",
+          "Code Bad": "useEffect(() => { subscribe(); })",
+          "Severity": "High",
+          "Docs URL": "https://react.dev/reference/react/useEffect#connecting-to-an-external-system",
+          "Applies To": "react 19.2.x",
+          "Status": "active",
+          "Verified At": "2026-08-13"
+        },
+        {
+          "Category": "Effects",
+          "Guideline": "Specify dependencies correctly",
+          "Description": "Include every reactive value used inside an Effect dependency array.",
+          "Do": "All referenced values in dependency array",
+          "Don't": "Empty deps with external references",
+          "Code Good": "[value] when using value in effect",
+          "Code Bad": "[] when using props/state in effect",
+          "Severity": "High",
+          "Docs URL": "https://react.dev/reference/react/useEffect#specifying-reactive-dependencies",
+          "Applies To": "react 19.2.x",
+          "Status": "active",
+          "Verified At": "2026-08-13"
+        }
+      ],
+      "scope_note": "Reviewed for relevance; see MM-UX-S0.md adjudication."
+    },
+    {
+      "query": "mobile responsive overflow",
+      "mode": "stack",
+      "category": "html-tailwind",
+      "source_dataset": "stacks/html-tailwind.csv",
+      "selected_results": [
+        {
+          "Category": "Responsive",
+          "Guideline": "Mobile-first approach",
+          "Description": "Start with mobile styles and add breakpoints",
+          "Do": "Default mobile + md: lg: xl:",
+          "Don't": "Desktop-first approach",
+          "Code Good": "text-sm md:text-base",
+          "Code Bad": "text-base max-md:text-sm",
+          "Severity": "Medium",
+          "Docs URL": "https://tailwindcss.com/docs/responsive-design",
+          "Applies To": "html-tailwind 4.3",
+          "Status": "active",
+          "Verified At": "2026-08-13"
+        },
+        {
+          "Category": "Responsive",
+          "Guideline": "Hidden/shown utilities",
+          "Description": "Control visibility per breakpoint",
+          "Do": "hidden md:block",
+          "Don't": "Different content per breakpoint",
+          "Code Good": "hidden md:flex",
+          "Code Bad": "Separate mobile/desktop components",
+          "Severity": "Low",
+          "Docs URL": "https://tailwindcss.com/docs/display",
+          "Applies To": "html-tailwind 4.3",
+          "Status": "active",
+          "Verified At": "2026-08-13"
+        },
+        {
+          "Category": "Images",
+          "Guideline": "Responsive image layout",
+          "Description": "Adjust image sizing and placement mobile-first with breakpoint variants",
+          "Do": "w-full md:w-1/2",
+          "Don't": "Use a fixed desktop width at every viewport",
+          "Code Good": "w-full md:max-w-xl",
+          "Code Bad": "w-[900px]",
+          "Severity": "High",
+          "Docs URL": "https://tailwindcss.com/docs/responsive-design",
+          "Applies To": "html-tailwind 4.3",
+          "Status": "active",
+          "Verified At": "2026-08-13"
+        }
+      ],
+      "scope_note": "Reviewed for relevance; see MM-UX-S0.md adjudication."
+    },
+    {
+      "query": "contrast text readability",
+      "mode": "domain",
+      "category": "ux",
+      "source_dataset": "ux-guidelines.csv",
+      "selected_results": [
+        {
+          "Category": "Typography",
+          "Issue": "Contrast Readability",
+          "Platform": "All",
+          "Description": "Body text needs good contrast",
+          "Do": "Use darker text on light backgrounds",
+          "Don't": "Gray text on gray background",
+          "Code Example Good": "text-gray-900 on white",
+          "Code Example Bad": "text-gray-400 on gray-100",
+          "Severity": "High"
+        },
+        {
+          "Category": "Accessibility",
+          "Issue": "Color Contrast",
+          "Platform": "All",
+          "Description": "Text must be readable against background",
+          "Do": "Minimum 4.5:1 ratio for normal text",
+          "Don't": "Low contrast text",
+          "Code Example Good": "#333 on white (7:1)",
+          "Code Example Bad": "#999 on white (2.8:1)",
+          "Severity": "High"
+        }
+      ],
+      "scope_note": "Reviewed for relevance; see MM-UX-S0.md adjudication."
+    },
+    {
+      "query": "education learning",
+      "mode": "domain",
+      "category": "color",
+      "source_dataset": "colors.csv",
+      "selected_results": [
+        {
+          "Product Type": "LMS (Learning Management System)",
+          "Primary": "#0D9488",
+          "On Primary": "#000000",
+          "Secondary": "#2DD4BF",
+          "On Secondary": "#0F172A",
+          "Accent": "#D97706",
+          "On Accent": "#000000",
+          "Background": "#F0FDFA",
+          "Foreground": "#134E4A",
+          "Card": "#FFFFFF",
+          "Card Foreground": "#134E4A",
+          "Muted": "#E8F1F4",
+          "Muted Foreground": "#475569",
+          "Border": "#5EEAD4",
+          "Destructive": "#DC2626",
+          "On Destructive": "#FFFFFF",
+          "Ring": "#0D9488",
+          "Notes": "Education teal + course amber + grade green"
+        },
+        {
+          "Product Type": "Language Learning App",
+          "Primary": "#4F46E5",
+          "On Primary": "#FFFFFF",
+          "Secondary": "#818CF8",
+          "On Secondary": "#0F172A",
+          "Accent": "#16A34A",
+          "On Accent": "#000000",
+          "Background": "#EEF2FF",
+          "Foreground": "#312E81",
+          "Card": "#FFFFFF",
+          "Card Foreground": "#312E81",
+          "Muted": "#EBEEF8",
+          "Muted Foreground": "#475569",
+          "Border": "#C7D2FE",
+          "Destructive": "#DC2626",
+          "On Destructive": "#FFFFFF",
+          "Ring": "#4F46E5",
+          "Notes": "Learning indigo + progress green [Accent adjusted from #22C55E]"
+        }
+      ],
+      "scope_note": "Reviewed for relevance; see MM-UX-S0.md adjudication."
+    },
+    {
+      "query": "semantic theme tokens",
+      "mode": "stack",
+      "category": "html-tailwind",
+      "source_dataset": "stacks/html-tailwind.csv",
+      "selected_results": [
+        {
+          "Category": "Colors",
+          "Guideline": "Semantic colors",
+          "Description": "Define semantic design tokens with CSS-first @theme",
+          "Do": "Declare --color-primary and related tokens in @theme",
+          "Don't": "Repeat palette utilities in components",
+          "Code Good": "bg-primary",
+          "Code Bad": "bg-blue-500 everywhere",
+          "Severity": "Medium",
+          "Docs URL": "https://tailwindcss.com/docs/theme",
+          "Applies To": "html-tailwind 4.3",
+          "Status": "active",
+          "Verified At": "2026-08-13"
+        },
+        {
+          "Category": "Colors",
+          "Guideline": "Theme color variables",
+          "Description": "Declare color namespaces in @theme so Tailwind generates semantic utilities",
+          "Do": "@theme { --color-primary: oklch(...); }",
+          "Don't": "Use arbitrary CSS-variable utilities for registered tokens",
+          "Code Good": "bg-primary",
+          "Code Bad": "bg-[var(--color-primary)]",
+          "Severity": "Medium",
+          "Docs URL": "https://tailwindcss.com/docs/colors#customizing-your-colors",
+          "Applies To": "html-tailwind 4.3",
+          "Status": "active",
+          "Verified At": "2026-08-13"
+        }
+      ],
+      "scope_note": "Reviewed for relevance; see MM-UX-S0.md adjudication."
+    },
+    {
+      "query": "web target size",
+      "mode": "domain",
+      "category": "ux",
+      "source_dataset": "ux-guidelines.csv",
+      "selected_results": [
+        {
+          "Category": "Accessibility",
+          "Issue": "Target Size (Minimum)",
+          "Platform": "Web",
+          "Description": "WCAG 2.2 AA requires 24 CSS px pointer targets or an applicable exception",
+          "Do": "Use at least 24 by 24 CSS px or verify spacing equivalent inline user-agent or essential exceptions",
+          "Don't": "Assume native 44pt or 48dp guidance defines web conformance",
+          "Code Example Good": "min-width: 24px; min-height: 24px",
+          "Code Example Bad": "tiny adjacent icon buttons",
+          "Severity": "High"
+        }
+      ],
+      "scope_note": "Reviewed for relevance; see MM-UX-S0.md adjudication."
+    }
+  ],
+  "contrast_method": "WCAG sRGB relative luminance; opaque token pairs from src/index.css, not a whole-page accessibility certification",
+  "contrast_pairs": [
+    {
+      "theme": "light",
+      "foreground_token": "--ui-text",
+      "foreground": "#233128",
+      "background_token": "--ui-surface",
+      "background": "#fffdfa",
+      "ratio": 13.42,
+      "normal_text_AA": true
+    },
+    {
+      "theme": "light",
+      "foreground_token": "--ui-text-muted",
+      "foreground": "#6f766f",
+      "background_token": "--ui-surface",
+      "background": "#fffdfa",
+      "ratio": 4.6,
+      "normal_text_AA": true
+    },
+    {
+      "theme": "light",
+      "foreground_token": "--ui-blue",
+      "foreground": "#3d6f9d",
+      "background_token": "--ui-surface",
+      "background": "#fffdfa",
+      "ratio": 5.22,
+      "normal_text_AA": true
+    },
+    {
+      "theme": "light",
+      "foreground_token": "--ui-forest",
+      "foreground": "#4f6f55",
+      "background_token": "--ui-surface",
+      "background": "#fffdfa",
+      "ratio": 5.53,
+      "normal_text_AA": true
+    },
+    {
+      "theme": "light",
+      "foreground_token": "--ui-jade",
+      "foreground": "#2f9f78",
+      "background_token": "--ui-surface",
+      "background": "#fffdfa",
+      "ratio": 3.26,
+      "normal_text_AA": false
+    },
+    {
+      "theme": "light",
+      "foreground_token": "--ui-gold",
+      "foreground": "#d29a32",
+      "background_token": "--ui-surface",
+      "background": "#fffdfa",
+      "ratio": 2.46,
+      "normal_text_AA": false
+    },
+    {
+      "theme": "dark",
+      "foreground_token": "--ui-text",
+      "foreground": "#f6f1e5",
+      "background_token": "--ui-surface",
+      "background": "#123139",
+      "ratio": 12.22,
+      "normal_text_AA": true
+    },
+    {
+      "theme": "dark",
+      "foreground_token": "--ui-text-muted",
+      "foreground": "#b2c2bd",
+      "background_token": "--ui-surface",
+      "background": "#123139",
+      "ratio": 7.44,
+      "normal_text_AA": true
+    },
+    {
+      "theme": "dark",
+      "foreground_token": "--ui-blue",
+      "foreground": "#a9c7d7",
+      "background_token": "--ui-surface",
+      "background": "#123139",
+      "ratio": 7.77,
+      "normal_text_AA": true
+    },
+    {
+      "theme": "dark",
+      "foreground_token": "--ui-forest",
+      "foreground": "#9bb494",
+      "background_token": "--ui-surface",
+      "background": "#123139",
+      "ratio": 6.13,
+      "normal_text_AA": true
+    },
+    {
+      "theme": "dark",
+      "foreground_token": "--ui-jade",
+      "foreground": "#64d6ad",
+      "background_token": "--ui-surface",
+      "background": "#123139",
+      "ratio": 7.72,
+      "normal_text_AA": true
+    },
+    {
+      "theme": "dark",
+      "foreground_token": "--ui-gold",
+      "foreground": "#d8b566",
+      "background_token": "--ui-surface",
+      "background": "#123139",
+      "ratio": 7.03,
+      "normal_text_AA": true
+    }
+  ],
+  "browser_observations": {
+    "viewport": "390x844 Chromium",
+    "dock_control_targets": "44x44 CSS px",
+    "expanded_camera_settings_button_height_px": 29.328125,
+    "dock_toolbar_gap_px": 2,
+    "gold_label": "Area de aprendizaje; foreground rgb(210,154,50), ui-surface background"
+  }
+}
