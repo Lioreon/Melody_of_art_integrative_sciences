@@ -16,6 +16,7 @@ import { Music, Check, ChevronDown, ChevronUp, Gamepad2, RotateCcw, Trophy } fro
 import { pentagramGameAward } from '../services/learningGame';
 import type { InstrumentTimbre } from '../services/instrumentSamples';
 import { InstrumentTimbreSelector } from './InstrumentTimbreSelector';
+import { PentagramQuizView } from './PentagramQuizView';
 
 type PentagramLearningMode = 'guided' | 'challenge';
 
@@ -31,6 +32,21 @@ interface Module2PentagramViewProps {
 }
 
 export const Module2PentagramView: React.FC<Module2PentagramViewProps> = ({
+  ...props
+}) => {
+  const [experience, setExperience] = useState<'practice' | 'quiz'>('practice');
+  useEffect(() => {
+    if (experience === 'quiz') props.onCameraStageTargetChange?.(null);
+  }, [experience, props.onCameraStageTargetChange]);
+  return <div className="space-y-4">
+    <nav aria-label="Experiencias de Pentagrama" className="flex flex-wrap gap-2 rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-2">
+      {(['practice', 'quiz'] as const).map(id => <button type="button" key={id} aria-pressed={experience === id} onClick={() => setExperience(id)} className={`touch-target rounded-lg px-4 py-3 text-sm font-semibold focus-visible:ring-2 focus-visible:ring-[var(--ui-gold)] ${experience === id ? 'bg-[var(--ui-forest)] text-white' : 'text-[var(--ui-text)]'}`}>{id === 'practice' ? 'Retos actuales · Guiado / Desafío' : 'Quiz / Evaluación'}</button>)}
+    </nav>
+    {experience === 'quiz' ? <PentagramQuizView palmState={props.palmState} theme={props.theme} /> : <PentagramPracticeView {...props} />}
+  </div>;
+};
+
+const PentagramPracticeView: React.FC<Module2PentagramViewProps> = ({
   palmState,
   onScoreGain,
   isSimulation,
