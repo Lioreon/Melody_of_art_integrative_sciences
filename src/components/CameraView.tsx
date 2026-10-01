@@ -210,20 +210,18 @@ export const CameraView: React.FC<CameraViewProps> = ({
   return (
     <div className="overflow-hidden rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface)] shadow-[var(--ui-shadow)] transition-colors">
       {/* Video & Tracking Canvas Stage */}
-      <div className="relative bg-slate-950 flex items-center justify-center aspect-[4/3] overflow-hidden">
+      <div className="mm-camera-stage relative bg-slate-950 flex items-center justify-center aspect-[4/3] overflow-hidden">
         {/* Video feed */}
-        {!isSimulation && (
           <video
             ref={videoRef}
             style={{
               transform: `${isMirrored ? 'scaleX(-1)' : 'scaleX(1)'} rotate(${rotationDeg}deg)`,
               objectFit: rotationDeg % 180 !== 0 ? 'contain' : 'cover',
             }}
-            className="absolute inset-0 w-full h-full"
+            className={`absolute inset-0 w-full h-full ${isSimulation ? 'invisible' : ''}`}
             playsInline
             muted
           />
-        )}
 
         {/* Canvas overlay */}
         <canvas
@@ -236,7 +234,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
 
         {/* Virtual Mode background */}
         {isSimulation && (
-          <div className="absolute inset-0 bg-slate-950 flex flex-col items-center justify-center p-6 text-center">
+          <div className="mm-camera-virtual absolute inset-0 bg-slate-950 flex flex-col items-center justify-center p-6 text-center">
             <div className="max-w-xs space-y-2">
               <span className="inline-block text-xs font-medium px-2.5 py-1 rounded-md bg-slate-900 text-slate-300 border border-slate-800">
                 Simulador Virtual Activo
@@ -249,7 +247,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
         )}
 
         {showPedagogicalOverlay && (
-          <div className="pointer-events-none absolute inset-0 z-[15] overflow-hidden">
+          <div className="mm-camera-overlay pointer-events-none absolute inset-0 z-[15] overflow-hidden">
             <div className="absolute bottom-4 left-4 top-14 w-px bg-white/20">
               <span className="absolute -left-1 top-0 -translate-x-full rounded bg-slate-950/75 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-cyan-200">Agudo</span>
               <span className="absolute -bottom-1 -left-1 -translate-x-full rounded bg-slate-950/75 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-amber-200">Grave</span>
@@ -318,6 +316,8 @@ export const CameraView: React.FC<CameraViewProps> = ({
           </div>
         )}
 
+        <div className="mm-camera-compact-note" aria-hidden="true">{stageState.trackingPaused ? 'Muestra ambas manos' : `TÚ · ${stageState.currentNoteLabel ?? ''}`}</div>
+
         {/* Camera Error Notice (Safety & system status preserved) */}
         {cameraError && !isSimulation && (
           <div className="absolute inset-0 z-20 bg-slate-950/95 flex flex-col items-center justify-center p-6 text-center space-y-3">
@@ -357,7 +357,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
       </div>
 
       {/* Primary Interaction Area: Distance Slider */}
-      <div className="p-4 space-y-3">
+      <div className="mm-camera-controls p-4 space-y-3">
         {/* Main Distance Control */}
         <div className="space-y-1.5">
           <div className="flex items-center justify-between text-xs">

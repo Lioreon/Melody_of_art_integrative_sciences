@@ -10,6 +10,7 @@ import { trackingState, SEPARATION_SCALE } from './services/trackingGeometry';
 import type { TrackingDiagnostics, TrackingModeType } from './types';
 import { Header } from './components/Header';
 import { CameraView } from './components/CameraView';
+import { AdaptiveCameraDock, type CameraDockMode } from './components/AdaptiveCameraDock';
 import { ScoreVisualizer } from './components/ScoreVisualizer';
 const ReactionMetrics = lazy(() => import('./components/ReactionMetrics').then(module => ({ default: module.ReactionMetrics })));
 import { TrainingControls } from './components/TrainingControls';
@@ -86,6 +87,7 @@ export default function App() {
   const [learningScore, setLearningScore] = useState(EMPTY_LEARNING_SCORE);
   const [bodyCalibration, setBodyCalibration] = useState<BodyCalibration | null>(() => loadBodyCalibration());
   const [cameraStageTarget, setCameraStageTarget] = useState<CameraStageTarget | null>(null);
+  const [cameraDockMode, setCameraDockMode] = useState<CameraDockMode>('expanded');
 
   const handleToggleTheme = () => {
     setTheme((prev) => (prev === 'white' ? 'dark_cyan' : 'white'));
@@ -491,7 +493,7 @@ export default function App() {
   }, [currentBeat, isPlaying, selectedPiece, bpm]);
 
   return (
-    <div className={`min-h-screen flex flex-col font-sans transition-colors duration-300 ${
+    <div data-camera-dock={activeModuleId === 'ranking' ? 'expanded' : cameraDockMode} className={`mm-app min-h-screen flex flex-col font-sans transition-colors duration-300 ${
       theme === 'white'
         ? 'bg-[var(--ui-background)] text-[var(--ui-text)] selection:bg-[var(--ui-forest)] selection:text-white'
         : 'dark bg-[var(--ui-background)] text-[var(--ui-text)] selection:bg-[var(--ui-gold)] selection:text-slate-950'
@@ -518,15 +520,16 @@ export default function App() {
         {/* Primary Workspace Grid with Persistent Single CameraView */}
         <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-12 md:gap-5 lg:items-stretch lg:gap-6">
           {/* Left Column: Persistent CameraView */}
-          <div className={`${activeModuleId === 'ranking' ? 'hidden' : ''} min-w-0 space-y-3 md:col-span-5 md:space-y-5 lg:h-full lg:space-y-6`}>
+          <div className={`mm-camera-column ${activeModuleId === 'ranking' ? 'hidden' : ''} min-w-0 space-y-3 md:col-span-5 md:space-y-5 lg:h-full lg:space-y-6`}>
             <div className="flex flex-col gap-3 md:block md:space-y-5 lg:sticky lg:top-4 lg:z-10">
-              <div className="order-2 md:order-none">
+              <div className="mm-camera-preparation order-2 md:order-none">
                 <VideoSourceSelector selectedId={cameraDeviceId}
                   onSelect={(id) => { setCameraDeviceId(id); setCameraMessage(''); }}
                   active={!isSimulation} busy={cameraBusy} onToggle={handleToggleSimulation}
                   refreshKey={cameraListRevision} error={cameraMessage} theme={theme} />
               </div>
               <div className="order-1 mx-auto w-full max-w-[330px] md:order-none md:max-w-none">
+                <AdaptiveCameraDock trackingPaused={cameraStageState.trackingPaused} onModeChange={setCameraDockMode}>
                 <CameraView
                   palmState={palmState}
                   activeCue={activeCue}
@@ -541,10 +544,11 @@ export default function App() {
                   stageState={cameraStageState}
                   theme={theme}
                 />
+                </AdaptiveCameraDock>
               </div>
             </div>
 
-            <details className="group rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] text-sm shadow-[var(--ui-shadow)]">
+            <details className="mm-camera-preparation group rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] text-sm shadow-[var(--ui-shadow)]">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2.5 sm:px-4 sm:py-3">
                 <div>
                   <div className="text-sm font-medium text-[var(--ui-text)]">Ajustes rápidos</div>

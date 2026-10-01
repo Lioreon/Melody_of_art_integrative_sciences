@@ -165,3 +165,72 @@ input[type='range'] {
     animation: none;
   }
 }
+
+/* MM-UX1B: one mounted camera, three presentation modes. */
+.mm-dock-toolbar,
+.mm-camera-compact-note { display: none; }
+
+@media (max-width: 767px) {
+  .mm-app { --mm-dock-rail: calc(178px + env(safe-area-inset-bottom)); }
+  .mm-dock-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+    min-height: 44px;
+    color: var(--ui-text);
+  }
+  .mm-dock-status { display: flex; align-items: center; gap: 6px; font-size: 11px; }
+  .mm-dock-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ui-jade); flex-shrink: 0; }
+  .mm-dock-dot.paused { background: var(--ui-text-muted); }
+  .mm-dock-actions { display: flex; }
+  .mm-dock-button {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 44px; min-height: 44px; border-radius: 10px;
+    color: var(--ui-blue); cursor: pointer;
+  }
+  .mm-dock-button:hover { background: var(--ui-surface-muted); }
+  .mm-dock-button:disabled { opacity: .4; cursor: default; }
+  .mm-dock-button:focus-visible { outline: 2px solid var(--ui-blue); outline-offset: -2px; }
+
+  /* The learning viewport ends above the dock rail: no floating overlay on tasks. */
+  .mm-app[data-camera-dock='floating'], .mm-app[data-camera-dock='minimized'] {
+    min-height: 0;
+    height: calc(100dvh - var(--mm-dock-rail));
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+  }
+  .mm-app[data-camera-dock='minimized'] { --mm-dock-rail: calc(64px + env(safe-area-inset-bottom)); }
+  .mm-app:not([data-camera-dock='expanded']) .mm-camera-column { margin: 0; }
+  .mm-app:not([data-camera-dock='expanded']) .mm-camera-preparation { display: none; }
+  .mm-camera-dock:not([data-mode='expanded']) {
+    position: fixed; z-index: 40;
+    inset: auto 0 0;
+    height: var(--mm-dock-rail);
+    padding: 4px max(12px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+    border-top: 1px solid var(--ui-border);
+    background: var(--ui-surface);
+    box-shadow: 0 -4px 16px rgb(73 88 65 / .07);
+  }
+  .mm-camera-dock[data-mode='floating'] .mm-dock-camera { width: 160px; margin-left: auto; }
+  .mm-camera-dock[data-mode='floating'] .mm-camera-controls,
+  .mm-camera-dock[data-mode='floating'] .mm-camera-overlay,
+  .mm-camera-dock[data-mode='floating'] .mm-camera-virtual { display: none; }
+  .mm-camera-dock[data-mode='floating'] .mm-camera-compact-note {
+    display: block; position: absolute; bottom: 6px; left: 4px; right: 4px;
+    z-index: 20; border-radius: 6px; padding: 3px;
+    background: rgb(15 23 42 / .8); color: white; text-align: center; font-size: 11px;
+  }
+  .mm-camera-dock[data-mode='minimized'] .mm-dock-camera {
+    height: 0; overflow: hidden; visibility: hidden;
+  }
+}
+
+@media (min-width: 480px) and (max-width: 767px) {
+  .mm-app { --mm-dock-rail: calc(199px + env(safe-area-inset-bottom)); }
+  .mm-camera-dock[data-mode='floating'] .mm-dock-camera { width: 188px; }
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+  .mm-camera-column > div:first-child { position: sticky; top: 16px; }
+}
