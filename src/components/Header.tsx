@@ -109,7 +109,20 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header className="border-b border-[var(--ui-border)] bg-[var(--ui-surface)] text-[var(--ui-text)] shadow-[var(--ui-shadow)] transition-colors">
       <div className="mx-auto max-w-[1500px] px-3 pt-[max(0.65rem,env(safe-area-inset-top))] sm:px-4 lg:px-6">
-        <section className="border-b border-[var(--ui-border)]/70 pb-3 text-center sm:pb-4" aria-label="Identidad institucional y del proyecto">
+        <section className="flex items-center justify-between gap-3 border-b border-[var(--ui-border)]/70 pb-2.5 sm:hidden" aria-label="Identidad institucional y del proyecto">
+          <div className="flex min-w-0 items-center gap-2.5">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-[var(--ui-gold)]/30 bg-[var(--ui-surface-muted)] text-[var(--ui-blue)] shadow-sm">
+              <Music2 className="h-4.5 w-4.5" aria-hidden="true" />
+            </span>
+            <div className="min-w-0 text-left">
+              <p className="truncate text-[9px] font-bold uppercase tracking-[0.16em] text-[var(--ui-gold)]">Escuela de Música Matiaví</p>
+              <p className="truncate text-lg font-extrabold leading-tight tracking-[-0.025em] text-[var(--ui-text)]">Melody Motion</p>
+            </div>
+          </div>
+          <span className="shrink-0 rounded-full border border-[var(--ui-jade)]/20 bg-[var(--ui-jade)]/8 px-2 py-1 text-[9px] font-bold uppercase tracking-[0.12em] text-[var(--ui-jade)]">Salinas</span>
+        </section>
+
+        <section className="hidden border-b border-[var(--ui-border)]/70 pb-3 text-center sm:block sm:pb-4" aria-label="Identidad institucional y del proyecto">
           <div className="mx-auto flex max-w-4xl flex-col items-center">
             <span className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[var(--ui-gold)]/30 bg-[var(--ui-surface-muted)] text-[var(--ui-blue)] shadow-sm sm:h-11 sm:w-11">
               <Music2 className="h-5 w-5" aria-hidden="true" />
@@ -185,7 +198,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </section>
 
-        <div className="flex flex-col gap-2 py-2.5 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-col gap-2 py-2 sm:py-2.5 lg:flex-row lg:items-center lg:justify-between">
           <nav
             className="mm-module-nav flex gap-1 overflow-x-auto rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface-muted)] p-1 sm:grid sm:grid-cols-5"
             aria-label="Áreas de aprendizaje"
@@ -204,7 +217,7 @@ export const Header: React.FC<HeaderProps> = ({
                   aria-current={isActive ? 'page' : undefined}
                   aria-disabled={isLocked}
                   title={isLocked ? 'Desbloquea Ranking al alcanzar 300 puntos de juego.' : undefined}
-                  className={`touch-target min-w-[96px] flex-1 rounded-xl px-2 py-2 text-center transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ui-gold)] sm:min-w-0 sm:px-3 ${
+                  className={`touch-target min-w-[88px] flex-1 rounded-xl px-2 py-2 text-center transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ui-gold)] sm:min-w-0 sm:px-3 ${
                     isActive
                       ? 'bg-[var(--ui-forest)] text-white shadow-sm dark:text-slate-950'
                       : isLocked
