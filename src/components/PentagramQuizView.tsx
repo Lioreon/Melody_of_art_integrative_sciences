@@ -91,7 +91,7 @@ export function PentagramQuizView({ palmState, theme }: { palmState: DualPalmSta
 
   const panel = 'rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-4 sm:p-6 shadow-[var(--ui-shadow)]';
   const button = 'touch-target rounded-xl bg-[var(--ui-forest)] px-5 py-3 font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ui-gold)]';
-  const input = 'mt-1 w-full rounded-lg border border-[var(--ui-border)] bg-[var(--ui-background)] px-3 py-2 text-[var(--ui-text)]';
+  const input = 'mt-1 w-full rounded-lg border border-[var(--ui-border)] bg-[var(--ui-background)] px-3 py-2 text-base text-[var(--ui-text)] sm:text-sm';
   const change = <K extends keyof QuizConfig>(key: K, value: QuizConfig[K]) => setConfig(previous => ({ ...previous, [key]: value }));
 
   if (!session) return <section className={`${panel} space-y-5`} data-theme={theme}>

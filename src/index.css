@@ -8,12 +8,14 @@
   --ui-surface-muted: #f4efe2;
   --ui-border: #e1d8c3;
   --ui-text: #233128;
-  --ui-text-muted: #6f766f;
+  --ui-text-muted: #626a63;
   --ui-forest: #4f6f55;
   --ui-forest-strong: #34513b;
   --ui-blue: #3d6f9d;
   --ui-gold: #d29a32;
   --ui-jade: #2f9f78;
+  --ui-gold-text: #8b6518;
+  --ui-jade-text: #1f775c;
   --ui-shadow: 0 10px 26px rgb(73 88 65 / 0.09);
 
   --music-note-accent: #1797b7;
@@ -33,6 +35,8 @@
   --ui-blue: #a9c7d7;
   --ui-gold: #d8b566;
   --ui-jade: #64d6ad;
+  --ui-gold-text: #d8b566;
+  --ui-jade-text: #64d6ad;
   --ui-shadow: 0 8px 24px rgb(2 12 15 / 0.22);
 
   --music-note-accent: #48c9de;
@@ -44,6 +48,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -56,6 +61,16 @@ summary,
 select,
 input[type='range'] {
   touch-action: manipulation;
+}
+
+.touch-target {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+:where(button, summary, select, input, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--ui-blue);
+  outline-offset: 2px;
 }
 
 .mm-module-nav {
