@@ -39,19 +39,19 @@ export function VideoSourceSelector({ selectedId, onSelect, active, busy, onTogg
       {active ? busy ? 'Cancelar conexión' : 'Detener cámara' : 'Activar cámara'}
     </button>
     <details className="rounded-lg border border-[var(--ui-border)] bg-[var(--ui-surface-muted)] px-3 py-2">
-      <summary className="cursor-pointer text-sm font-medium">Cambiar cámara y opciones</summary>
+      <summary className="touch-target flex cursor-pointer items-center text-sm font-medium">Cambiar cámara y opciones</summary>
       <div className="pt-3 space-y-3">
         <label htmlFor="video-source" className="block text-xs font-medium text-[var(--ui-text-muted)]">Fuente de video</label>
         <select id="video-source" value={selectedId} disabled={busy}
           onChange={event => onSelect(event.target.value)}
-          className={`w-full border rounded-lg p-2.5 text-sm ${white ? 'bg-white text-slate-900' : 'bg-[var(--ui-surface)] text-[var(--ui-text)]'}`}>
+          className={`w-full rounded-lg border p-2.5 text-base sm:text-sm ${white ? 'bg-white text-slate-900' : 'bg-[var(--ui-surface)] text-[var(--ui-text)]'}`}>
           <option value="">Cámara predeterminada del sistema</option>
           {missing && <option value={selectedId}>Cámara seleccionada no disponible</option>}
           {devices.map((device, index) => <option key={device.deviceId} value={device.deviceId}>
             {device.label || `Cámara ${index + 1}`}
           </option>)}
         </select>
-        <button className="rounded-lg border border-[var(--ui-border)] px-3 py-2 text-sm disabled:opacity-40" disabled={busy} onClick={() => void refresh()}>Actualizar lista</button>
+        <button className="touch-target rounded-lg border border-[var(--ui-border)] px-3 py-2 text-sm disabled:opacity-40" disabled={busy} onClick={() => void refresh()}>Actualizar lista</button>
         <p className="text-xs text-[var(--ui-text-muted)]">Admite la cámara del sistema, webcams USB y cámaras virtuales reconocidas por el navegador.</p>
       </div>
     </details>

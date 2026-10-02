@@ -115,11 +115,11 @@ export const Header: React.FC<HeaderProps> = ({
               <Music2 className="h-4.5 w-4.5" aria-hidden="true" />
             </span>
             <div className="min-w-0 text-left">
-              <p className="truncate text-[9px] font-bold uppercase tracking-[0.16em] text-[var(--ui-gold)]">Escuela de Música Matiaví</p>
+              <p className="truncate text-xs font-bold uppercase tracking-[0.12em] text-[var(--ui-gold-text)]">Escuela de Música Matiaví</p>
               <p className="truncate text-lg font-extrabold leading-tight tracking-[-0.025em] text-[var(--ui-text)]">Melody Motion</p>
             </div>
           </div>
-          <span className="shrink-0 rounded-full border border-[var(--ui-jade)]/20 bg-[var(--ui-jade)]/8 px-2 py-1 text-[9px] font-bold uppercase tracking-[0.12em] text-[var(--ui-jade)]">Salinas</span>
+          <span className="shrink-0 rounded-full border border-[var(--ui-jade)]/20 bg-[var(--ui-jade)]/8 px-2 py-1 text-xs font-bold uppercase tracking-[0.08em] text-[var(--ui-jade-text)]">Salinas</span>
         </section>
 
         <section className="hidden border-b border-[var(--ui-border)]/70 pb-3 text-center sm:block sm:pb-4" aria-label="Identidad institucional y del proyecto">
@@ -128,20 +128,20 @@ export const Header: React.FC<HeaderProps> = ({
               <Music2 className="h-5 w-5" aria-hidden="true" />
             </span>
 
-            <p className="mt-2 text-[8px] font-bold uppercase tracking-[0.24em] text-[var(--ui-gold)] sm:text-[9px]">
+            <p className="mt-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--ui-gold-text)] sm:text-xs">
               Proyecto pedagógico para
             </p>
 
             <h1 className="mt-0.5 text-[clamp(1.45rem,5vw,2.4rem)] font-extrabold leading-none tracking-[-0.035em] text-[var(--ui-text)]">
               Escuela de Música
             </h1>
-            <p className="mt-1 text-[clamp(1.1rem,4vw,1.75rem)] font-extrabold uppercase tracking-[0.07em] text-[var(--ui-jade)]">
+            <p className="mt-1 text-[clamp(1.1rem,4vw,1.75rem)] font-extrabold uppercase tracking-[0.07em] text-[var(--ui-jade-text)]">
               Matiaví · Salinas
             </p>
 
             <div className="mt-2 flex items-center gap-2 text-[10px] text-[var(--ui-text-muted)] sm:text-xs">
               <span className="h-px w-7 bg-[var(--ui-gold)]/40" aria-hidden="true" />
-              <span className="font-semibold uppercase tracking-[0.16em] text-[var(--ui-gold)]">Melody of Art</span>
+              <span className="font-semibold uppercase tracking-[0.16em] text-[var(--ui-gold-text)]">Melody of Art</span>
               <span aria-hidden="true">·</span>
               <strong className="text-sm tracking-tight text-[var(--ui-blue)] dark:text-[var(--ui-text)] sm:text-base">Melody Motion</strong>
               <span className="h-px w-7 bg-[var(--ui-gold)]/40" aria-hidden="true" />
@@ -166,32 +166,37 @@ export const Header: React.FC<HeaderProps> = ({
                 aria-live="off"
               >
                 <div className="relative z-10">
-                  <p className="text-[8px] font-bold uppercase tracking-[0.19em] text-[var(--ui-gold)] sm:text-[9px]">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--ui-gold-text)] sm:text-xs">
                     {currentStory.eyebrow}
                   </p>
                   <p className="mt-0.5 text-sm font-bold leading-tight text-[var(--ui-text)] sm:text-base">
                     {currentStory.title}
                   </p>
-                  <p className="mx-auto mt-1 max-w-2xl text-[10px] leading-relaxed text-[var(--ui-text-muted)] sm:text-xs">
+                  <p className="mx-auto mt-1 max-w-2xl text-xs leading-relaxed text-[var(--ui-text-muted)] sm:text-sm">
                     {currentStory.description}
                   </p>
                 </div>
               </div>
 
-              <div className="mt-1.5 flex items-center justify-center gap-1.5" aria-label="Seleccionar aspecto del proyecto">
+              <div className="mt-1 flex items-center justify-center gap-2" aria-label="Seleccionar aspecto del proyecto">
                 {PROJECT_STORIES.map((story, index) => (
                   <button
                     key={story.eyebrow}
                     type="button"
                     onClick={() => setStoryIndex(index)}
-                    className={`h-2 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ui-gold)] ${
-                      storyIndex === index
-                        ? 'w-6 bg-[var(--ui-jade)]'
-                        : 'w-2 bg-[var(--ui-border)] hover:bg-[var(--ui-text-muted)]/50'
-                    }`}
+                    className="touch-target grid place-items-center rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ui-gold-text)]"
                     aria-label={`Mostrar: ${story.eyebrow}`}
                     aria-pressed={storyIndex === index}
-                  />
+                  >
+                    <span
+                      aria-hidden="true"
+                      className={`h-2 rounded-full transition-all ${
+                        storyIndex === index
+                          ? 'w-6 bg-[var(--ui-jade)]'
+                          : 'w-2 bg-[var(--ui-border)]'
+                      }`}
+                    />
+                  </button>
                 ))}
               </div>
             </section>
@@ -228,7 +233,7 @@ export const Header: React.FC<HeaderProps> = ({
                   <span className="hidden text-[9px] font-semibold uppercase tracking-[0.14em] opacity-70 sm:block">
                     {area.index}
                   </span>
-                  <span className="flex items-center justify-center gap-1 truncate text-[11px] font-semibold sm:text-sm">
+                  <span className="flex items-center justify-center gap-1 truncate text-xs font-semibold sm:text-sm">
                     {isRanking && (isLocked
                       ? <LockKeyhole className="h-3 w-3 shrink-0" aria-hidden="true" />
                       : <Trophy className="h-3 w-3 shrink-0" aria-hidden="true" />)}
@@ -241,7 +246,7 @@ export const Header: React.FC<HeaderProps> = ({
 
           <div className="flex items-center justify-end gap-1.5">
             {learningPoints > 0 && (
-              <span className="inline-flex min-h-10 items-center gap-1.5 rounded-xl border border-[var(--ui-gold)]/30 bg-[var(--ui-gold)]/8 px-3 text-xs font-bold text-[var(--ui-gold)]">
+              <span className="inline-flex min-h-10 items-center gap-1.5 rounded-xl border border-[var(--ui-gold)]/30 bg-[var(--ui-gold)]/8 px-3 text-xs font-bold text-[var(--ui-gold-text)]">
                 <Trophy className="h-4 w-4" aria-hidden="true" />
                 {learningPoints} pts
               </span>

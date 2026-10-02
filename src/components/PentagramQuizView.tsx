@@ -29,12 +29,28 @@ function QuizStaff({ candidates, currentNote }: { candidates: string[]; currentN
   </svg>;
 }
 
-function ProgressBar({ label, value, detail }: { label: string; value: number; detail: string }) {
+function ProgressBar({ label, value, detail, tone = 'response' }: {
+  label: string;
+  value: number;
+  detail: string;
+  tone?: 'response' | 'hold';
+}) {
   const percent = Math.max(0, Math.min(100, value));
-  return <div>
-    <div className="mb-2 flex justify-between gap-3 text-sm"><span>{label}</span><span className="font-mono">{detail}</span></div>
-    <div role="progressbar" aria-label={label} aria-valuenow={Math.round(percent)} aria-valuemin={0} aria-valuemax={100} className="h-3 overflow-hidden rounded-full bg-[var(--ui-border)]">
-      <div className="h-full rounded-full bg-[var(--ui-blue)]" style={{ width: `${percent}%` }} />
+  const fillClass = tone === 'hold' ? 'bg-[var(--ui-jade)]' : 'bg-[var(--ui-blue)]';
+  return <div className="space-y-1.5">
+    <div className="flex justify-between gap-3 text-sm">
+      <span className="font-medium text-[var(--ui-text)]">{label}</span>
+      <span className="font-mono text-[var(--ui-text-muted)]">{detail}</span>
+    </div>
+    <div
+      role="progressbar"
+      aria-label={label}
+      aria-valuenow={Math.round(percent)}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      className="h-2.5 overflow-hidden rounded-full bg-[var(--ui-border)]"
+    >
+      <div className={`h-full rounded-full transition-[width] duration-150 ${fillClass}`} style={{ width: `${percent}%` }} />
     </div>
   </div>;
 }
@@ -91,7 +107,7 @@ export function PentagramQuizView({ palmState, theme }: { palmState: DualPalmSta
 
   const panel = 'rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-4 sm:p-6 shadow-[var(--ui-shadow)]';
   const button = 'touch-target rounded-xl bg-[var(--ui-forest)] px-5 py-3 font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ui-gold)]';
-  const input = 'mt-1 w-full rounded-lg border border-[var(--ui-border)] bg-[var(--ui-background)] px-3 py-2 text-[var(--ui-text)]';
+  const input = 'mt-1 w-full rounded-lg border border-[var(--ui-border)] bg-[var(--ui-background)] px-3 py-2 text-base text-[var(--ui-text)] sm:text-sm';
   const change = <K extends keyof QuizConfig>(key: K, value: QuizConfig[K]) => setConfig(previous => ({ ...previous, [key]: value }));
 
   if (!session) return <section className={`${panel} space-y-5`} data-theme={theme}>
@@ -124,18 +140,89 @@ export function PentagramQuizView({ palmState, theme }: { palmState: DualPalmSta
   }
 
   const question = session.questions[session.index];
+  const targetNote = noteFor(question.targetNoteId);
   const lastResult = session.results[session.results.length - 1];
   const immediateFeedback = session.phase === 'feedback' && session.config.feedback === 'immediate';
-  return <section className={`${panel} space-y-5`}>
-    <div className="flex flex-wrap items-center justify-between gap-3"><span className="text-sm">Pregunta {session.index + 1} / {session.questions.length}</span><button type="button" className="touch-target rounded-lg border border-[var(--ui-border)] px-3 py-2 text-sm" onClick={() => setSession(null)}>Terminar y configurar</button></div>
-    <h2 className="text-center text-2xl font-bold">Encuentra: {noteFor(question.targetNoteId).octaveName}</h2>
+  const onTarget = hasTracking && currentNote?.id === question.targetNoteId;
+  const guidance = !hasTracking
+    ? 'Seguimiento pausado. Muestra ambas manos; el tiempo espera.'
+    : onTarget
+      ? 'Objetivo encontrado. Mantén esta posición.'
+      : 'Sube o baja ambas manos hasta encontrar la nota.';
+
+  return <section className={`${panel} space-y-4 p-3 sm:space-y-5 sm:p-5`} data-quiz-phase={session.phase}>
+    <div className="flex items-center justify-between gap-3">
+      <div>
+        <p className="text-xs font-bold uppercase tracking-[0.12em] text-[var(--ui-gold-text)]">Pentagrama · Quiz</p>
+        <p className="mt-0.5 text-sm font-medium text-[var(--ui-text-muted)]">Pregunta {session.index + 1} / {session.questions.length}</p>
+      </div>
+      <button
+        type="button"
+        className="touch-target rounded-xl border border-[var(--ui-border)] px-3 py-2 text-sm text-[var(--ui-text-muted)] transition-colors hover:bg-[var(--ui-surface-muted)] hover:text-[var(--ui-text)]"
+        onClick={() => setSession(null)}
+      >
+        Terminar
+      </button>
+    </div>
+
+    <div className="flex items-start justify-between gap-4 rounded-2xl bg-[var(--ui-surface-muted)] px-4 py-3 sm:px-5 sm:py-4">
+      <div className="min-w-0">
+        <p className="text-xs font-bold uppercase tracking-[0.12em] text-[var(--ui-gold-text)]">Meta musical</p>
+        <h2 className="mt-1 text-2xl font-bold tracking-[-0.02em] text-[var(--ui-text)] sm:text-3xl">
+          Encuentra {targetNote.octaveName}
+        </h2>
+        <p className="mt-1 text-sm leading-relaxed text-[var(--ui-text-muted)]">
+          Usa la altura de ambas manos para buscarla y mantén la posición al encontrarla.
+        </p>
+      </div>
+      <span className="shrink-0 rounded-full border border-[var(--ui-gold)]/30 bg-[var(--ui-gold)]/10 px-2.5 py-1 text-xs font-bold uppercase tracking-[0.12em] text-[var(--ui-gold-text)]">
+        Meta
+      </span>
+    </div>
+
     <QuizStaff candidates={question.candidateIds} currentNote={currentNote} />
-    <ProgressBar label="Tiempo disponible" value={(1 - session.elapsedMs / session.config.responseTimeMs) * 100} detail={`${((session.config.responseTimeMs - session.elapsedMs) / 1000).toFixed(1)} s`} />
-    <ProgressBar label="Mantén la nota" value={session.holdMs / session.config.holdTimeMs * 100} detail={`${(session.holdMs / 1000).toFixed(2)} / ${(session.config.holdTimeMs / 1000).toFixed(2)} s`} />
-    <p role="status" aria-live="polite" className="text-center text-sm text-[var(--ui-text-muted)]">{!hasTracking ? 'Seguimiento pausado. Muestra ambas manos; el tiempo espera.' : currentNote?.id === question.targetNoteId ? 'Mantén esta posición.' : 'Sube o baja ambas manos para buscar la nota.'}</p>
-    {immediateFeedback && <div className="rounded-xl border border-[var(--ui-border)] p-4 text-center" role="status">
-      <p className="font-bold">{lastResult.result === 'correct' ? '¡Correcto! Nota sostenida.' : 'Tiempo agotado.'}</p><p className="mt-1 text-sm">La nota era {noteFor(lastResult.targetNoteId).octaveName}.</p>
-      <button type="button" className={`${button} mt-4`} onClick={() => setSession(nextQuizQuestion(session))}>{session.index + 1 === session.questions.length ? 'Ver resultado' : 'Siguiente pregunta'}</button>
-    </div>}
+
+    {immediateFeedback ? (
+      <div className="rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface-muted)] p-4 text-center" role="status">
+        <p className="font-bold text-[var(--ui-text)]">{lastResult.result === 'correct' ? '¡Correcto! Nota sostenida.' : 'Tiempo agotado.'}</p>
+        <p className="mt-1 text-sm text-[var(--ui-text-muted)]">La nota era {noteFor(lastResult.targetNoteId).octaveName}.</p>
+        <button type="button" className={`${button} mt-4`} onClick={() => setSession(nextQuizQuestion(session))}>
+          {session.index + 1 === session.questions.length ? 'Ver resultado' : 'Siguiente pregunta'}
+        </button>
+      </div>
+    ) : (
+      <div
+        role="status"
+        aria-live="polite"
+        className={`rounded-2xl px-4 py-3 text-center text-sm font-semibold ${
+          !hasTracking
+            ? 'bg-[var(--ui-surface-muted)] text-[var(--ui-text-muted)]'
+            : onTarget
+              ? 'bg-[var(--ui-jade)]/10 text-[var(--ui-jade-text)]'
+              : 'bg-[var(--music-note-accent)]/8 text-[var(--ui-text)]'
+        }`}
+      >
+        {guidance}
+      </div>
+    )}
+
+    <div className="grid gap-4 rounded-2xl bg-[var(--ui-background)] px-3 py-3 sm:grid-cols-2 sm:px-4 sm:py-4">
+      <ProgressBar
+        label="Tiempo"
+        value={(1 - session.elapsedMs / session.config.responseTimeMs) * 100}
+        detail={`${((session.config.responseTimeMs - session.elapsedMs) / 1000).toFixed(1)} s`}
+      />
+      <ProgressBar
+        label="Mantén"
+        tone="hold"
+        value={session.holdMs / session.config.holdTimeMs * 100}
+        detail={`${(session.holdMs / 1000).toFixed(2)} / ${(session.config.holdTimeMs / 1000).toFixed(2)} s`}
+      />
+    </div>
+
+    <div className="flex items-center justify-center gap-2 text-xs font-medium text-[var(--ui-text-muted)]">
+      <span className={`h-2.5 w-2.5 rounded-full ${hasTracking ? 'bg-[var(--ui-jade)]' : 'bg-[var(--ui-border)]'}`} aria-hidden="true" />
+      <span>{hasTracking ? 'Seguimiento activo' : 'Seguimiento pausado'}</span>
+    </div>
   </section>;
 }
